@@ -1,0 +1,436 @@
+\documentclass[a4paper]{article}
+\usepackage[left=2.5cm,top=3cm,bottom=3.5cm,right=2.5cm]{geometry} % Ajustar Margenes
+\usepackage[spanish, es-tabla, es-nodecimaldot]{babel} % para producir la letras acentuadas "?"
+\usepackage[utf8]{inputenc} % ecribir acentos ?
+\usepackage{booktabs} % Para crear tablas
+\usepackage{graphicx} % Para manipular imagenes 
+\usepackage{amsmath} % Para el manejo de ecuaciones
+\usepackage{color} % Para los colores
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=blue}
+\title{Resultados} % Agregar titulo
+\author{Rafael Eduardo Diaz} % Agregar Nombre
+<<echo=FALSE>>=
+opts_chunk$set(background = "#e8e8e8", tidy = TRUE,echo = FALSE, message = FALSE, warning = FALSE)
+@
+\begin{document}
+
+\maketitle
+\section{Aplicación e ilustración}
+
+A continuación, ilustramos todos los modelos descritos anteriormente aplicándolos a dos conjuntos de datos, para la serie anual del número de homicidios en Colombia de 1960 a 2018 se ajustaron varios PHMM, mientras que para la serie mensual de incendios forestales en Colombia, entre el 2002 y 2016 se ajustaron diversos ZIP-HMM. Antes de que se ajusten los modelos, se llevo a cabo un análisis exploratorio básico del conjunto de datos que aborda algunos problemas que generalmente se presentan al visualizar los datos de conteo. Al final de la sección, se comparan todos los modelos ajustados, tanto desde el enfoque clásico como Bayesiano, y se selecciona el mejor modelo a partir de las dos metodologías. 
+
+\vspace{5mm} %5mm vertical space
+
+Para ambas series, la aplicación de modelos estándar como modelos auto regresivos de media móvil (ARMA) sería inapropiado, ya que estos modelos se basan en la distribución normal. En cambio, se propone un modelo usual para datos con conteos la distribución de Poisson, pero, como se demostrará más adelante, las series presenta una sobredispersión considerable con respecto a la distribución de Poisson, y fuerte dependencia serial positiva además de inflación en ceros en el caso de la serie de incendios. Por lo tanto, un modelo que consiste en variables aleatorias independientes de Poisson; sería por dos razones inadecuado. Primero que puede haber algunos períodos con una baja tasa de homicidios e incendios, y algunos con una tasa relativamente alta. Los HMMs, permiten que la distribución de probabilidad de cada observación dependa del estado no observado (u oculto) de una cadena de Markov, por lo tanto puede acomodar la sobredispersión y la dependencia serial al mismo tiempo.
+
+<<echo=FALSE, include=FALSE>>=
+library(xtable)
+library(tibble)
+library(stargazer)
+library(scales)
+library(Bayeshmmcts)
+library(broom)
+@
+
+\subsection{Descripción de los datos}
+
+\textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
+
+<<results='asis', echo=FALSE>>=
+data("homicidios")
+Homicidios <- ts(data = round(homicidios$Tasa), start = 1960)
+df1 <- rbind(Homicidios[1:20],Homicidios[21:40],Homicidios[41:60])
+print(xtable(df1,caption = "Número de homicidios en Colombia, 1960 - 2018.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
+@
+
+\vspace{5mm} %5mm vertical space
+
+\textbf{Incendios:} Los datos referentes a incendios forestales en Colombia, fueron recolectados de la página del IDEAM - Instituto de Hidrología, Meteorología y Estudios Ambientales que ha venido realizando una revisión histórica y consolidado de los datos reportados por las siguientes instituciones: entidades del SINA, entidades del Sistema Nacional para la Prevención y atención de Desastres, la Defensa Civil, entre otras, y aunque se ha adoptado un Formulario Único de Captura (MAVDT \& otros, 2002), con el fin de estandarizar la información, este no ha sido utilizado en su totalidad y existen otros formatos desarrollados por las distintas entidades, de acuerdo con sus particularidades técnicas e informáticas, lo que ha dificultado la estandarización en el flujo de información.
+\\
+Las estadísticas sobre incendios en Colombia, permiten en términos generales, realizar análisis de su comportamiento bajo diferentes escenarios, esto es, por regiones, departamentos o municipios, con Niño o en condiciones climáticas normales,  por cobertura vegetal afectada, por Corporación Autónoma Regional, por año o por mes, y de esta manera, poder ser  utilizarlas para priorizar áreas, orientar acciones o sustentar la necesidad de realizar estudios más detallados. El Ideam ha venido realizando una revisión histórica de los datos reportados por las instituciones anteriormente mencionadas, con el fin de tener datos más confiables que permitan tener una mejor aproximación al tema. La variable de interés es el número de grandes incendios forestales (GIF), y se definen como aquellos incendios que superan las 500 hectáreas forestales afectadas. El número de observaciones es mensual iniciando en enero del 2002 y finalizando en diciembre del 2016, para un total 180 observaciones.
+
+<<echo=FALSE, results='asis'>>=
+data("incendios")
+GIF <- ts(data = incendios$GIF, start = c(2002,1), frequency = 12)
+nom <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
+trace(.preformat.ts, quote(month.abb <- nom), print = FALSE)
+xtable(GIF, caption = "Número de incendios en Colombia, 2002 - 2016.")
+@
+
+\subsubsection*{Estadísticas de resumen}
+
+A continuación se muestran algunas estadísticas descriptivas, sobre la serie de homicidios Colombia para los años 1960-2018.
+
+<<echo=FALSE, results='asis'>>=
+stargazer(data.frame(homicidios[,c(2,4)]), header = F,median = T, mean.sd = T, title = "Estadísticas de Resumen serie homicidios en Colombia.")
+@
+
+En la tabla el número mínimo de homicidios ocurrido en este período fue de 3908 con una Tasa de 19.26 homicidios por cada 100.000 habitantes, que corresponde al año 1969, mientras que el máximo número de homicidios registrados fue de 28.837 en el año 2002, sin embargo la Tasa más alta de homicidios fue en el año 1991 con casi 78 homicidios por cada 100.000 la más alta de la región para esta época según un estudio que presentó la CEPAL encontró que la tasa promedio homicidios en Latino-américa era de 20 por cada 100.000 habitantes. Algunas investigaciones sobre el tema como la de Franco (2006) y Pécaut (2003) han enfatizado ciertos aspectos coyunturales, tales como el problema del narcotráfico, la persistencia del conflicto armado interno, la debilidad del Estado, la corrupción y la inmadurez en el ejercicio de la ciudadanía pero aun son insuficientes los estudios y poco el consenso sobre las explicaciones de fondo de la situación de violencia que vive el país
+\\
+En el conjunto de los países con conflictos armados en el mundo, Colombia presenta uno de los más altos índices de homicidio40/100.000 en estas últimas seis décadas, con cifras comparables a las de países con guerra civil declarada. (Franco, 1980).
+
+<<fig.width=6, fig.height=3.5, fig.cap="Serie de tiempo homicidios en Colombia desde el año 1960 hasta el año 2018.">>=
+par(mar=c(2,2,1,.5)+.5, mgp=c(1.6,.6,0))
+plot(Homicidios,xlab="",type='o', col=4, ylab = "Número")
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(Homicidios, type='o', col=4)
+@
+
+En la figura 2, se encuentra gráficada la densidad de la serie Tasa de homicidios por 100.000 habitantes en Colombia, se deduce que utilizar modelo de regresión Poisson, sería inapropiado pues parece haber una mixtura entre dos distribuciones, ahora la pregunta que deberíamos hacernos es si estas dos distribuciones están correlacionadas, pues de no estarlo una opción para modelar esta serie sería utilizar una mixtura entre dos o más distribuciones independientes, como se muestra en Zucchini (2012, capítulo 1). Por otra parte parece haber una sobredispersión enorme pues mientras la media se sitúa en 40, la varianza es 292 es decir 7 veces la media, y recordemos que para la distribución Poisson $\mu = \sigma^2 = \lambda$. 
+
+Un primer período de incremento acelerado que va desde comienzos de los 80, en particular desde 1983, hasta 1991. Es la fase más crítica de violencia, en particular de violencia homicida, en los anales de la ciudad. Las tasas de homicidio en la ciudad llegaron a marcar la tendencia de la curva de homicidios a nivel nacional. Investigaciones anteriores \textbf{19-22} han tratado de explicar este incremento acelerado mediante la convergencia de los problemas acumulados de debilidad institucional, ausencias estatales, ciudadanía precaria, desempleo e inequidades crecientes, con la expansión del fenómeno del narcotráfico en la ciudad \textbf{23} y su confrontación armada estatal, con la intensificación de la presencia urbana del conflicto armado interno, en especial la actuación de las milicias afines a las organizaciones guerrilleras y la emergencia y acelerado desarrollo de organizaciones paramilitares \textbf{24,25}.
+
+<<fig.width=6, fig.height=4, fig.cap="Kernel Densidad de homicidios en Colombia (1960-2018).">>=
+d <- density(Homicidios)
+plot(d, ylab = "Densidad", main = "")
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+polygon(d, col=alpha("cyan", 0.2))
+@
+
+En la figura 3 se observa la función de autocorrelación muestral para la serie Tasa de homicidios hasta el rezago 30, como se evidencia existe una fuerte dependencia serial en los datos por lo que seria inapropiado utilizar un modelo de mixturas independientes (distribución Poisson), como alternativa surge la utilización de los modelos ocultos de Markov, en este caso se utilizara un PHMM.
+
+<<fig.width=6, fig.height=3.3, fig.cap="Función de autocorrelación muetral, para la seerie de homicidios.">>=
+par(mar=c(2,2,1,.5)+.5, mgp=c(1.3,.6,0))
+acf(Homicidios, xlab="Rezago",main="", lag.max = 30)
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+par(new = T)
+acf(Homicidios, xlab="",main="", lag.max = 30)
+@
+
+\subsubsection*{Ajuste clásico PHMM}
+
+<<cache=TRUE>>=
+mod1 <- pois.HMM.mle(x = Homicidios, m = 1, lambda0 = 40, stationary = TRUE)
+
+mod2 <- pois.HMM.mle(x = Homicidios, m = 2,
+                     lambda0 = c(30, 63), 
+                     gamma0 = matrix(c(0.9, 0.1, 0.1, 0.9), 2, 2, byrow = TRUE), 
+                     stationary = TRUE)
+
+mod3 <- pois.HMM.mle(x = Homicidios, m = 3,
+                     lambda0 = c(28, 40, 64), 
+                     gamma0 = matrix(c(0.8, 0.1, 0.1, 0.1, 0.8, 0.1, 0.1, 0.1, 0.8), 3, 3, byrow = TRUE), 
+                     stationary = TRUE)
+
+mod4 <- pois.HMM.mle(x = Homicidios, m = 4,
+                     lambda0 = c(14, 31, 43, 65), 
+                     gamma0 = matrix(c(0.85, 0.05, 0.05, 0.05, 
+                                       0.05, 0.85, 0.05, 0.05, 
+                                       0.05, 0.05, 0.85, 0.05,
+                                       0.05, 0.05, 0.05, 0.85), 4, 4, byrow = TRUE), 
+                     stationary = TRUE)
+
+mod5 <- pois.HMM.mle(x = Homicidios, m = 5,
+                     lambda0 = c(7, 25, 36, 47, 70), 
+                     gamma0 = matrix(c(0.80, 0.05, 0.05, 0.05, 0.05, 
+                                       0.05, 0.80, 0.05, 0.05, 0.05, 
+                                       0.05, 0.05, 0.80, 0.05, 0.05,
+                                       0.05, 0.05, 0.05, 0.80, 0.05,
+                                       0.05, 0.05, 0.05, 0.05, 0.080
+                     ), 5, 5, byrow = TRUE), 
+                     stationary = TRUE)
+@
+
+
+<<>>=
+library(flexmix)
+fmod2 <- flexmix(Homicidios~1, k = 2, model = FLXMRglm(family = "poisson"))
+fmod3 <- flexmix(Homicidios~1, k = 3, model = FLXMRglm(family = "poisson"))
+fmod4 <- flexmix(Homicidios~1, k = 4, model = FLXMRglm(family = "poisson"))
+@
+
+Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
+
+<<results='asis'>>=
+Tabla1 <- data.frame(
+  Modelo = c("PHMM - Estados 1", "PHMM - Estados 2", "PHMM - Estados 3", "PHMM - Estados 4", "PHMM - Estados 5", "mixtura indep. (2)", "mixtura indep. (3)", "mixtura indep. (4)"),
+  p = c(1, 4, 9, 16, 25, 3, 5, 7),
+  logL = c(mod1$mllk, mod2$mllk, mod3$mllk, mod4$mllk, mod5$mllk, -229.376, -228.106, -228.107),
+  AIC = c(mod1$AIC, mod2$AIC, mod3$AIC, mod4$AIC, mod5$AIC, AIC(fmod2), AIC(fmod3), AIC(fmod4)),
+  BIC = c(mod1$BIC, mod2$BIC, mod3$BIC, mod4$BIC, mod5$BIC, BIC(fmod2), BIC(fmod3), BIC(fmod4)))
+xtable(Tabla1, caption = "Datos homicidios: comparación de modelos ocultos de Markov (estacionarios) por AIC y BIC.")
+@
+
+Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en serie manifestada en la Figura 2, no es sorprendente que los modelos de mezcla independientes no tengan un buen desempeño en relación con los HMM. En segundo lugar, aunque quizás sea obvio a priori que ni siquiera se debe intentar establecer un modelo con un máximo de 16 o 25 parámetros para 59 observaciones, y observaciones dependientes, es interesante explorar las funciones de verosimilitud en el caso de HMM con cuatro y cinco estados. La verosimilitud parece ser altamente multimodal en estos casos, y es fácil encontrar varios máximos locales utilizando diferentes valores de inicio. Una estrategia que parece tener éxito en estos casos es comenzar todas las probabilidades de transición fuera de la diagonal en valores pequeños (como 0.1 o 0.05), mientras que para los valores de las medias estado dependientes se pueden usar los valores de los deciles, calculados a partir de la variable de interés.
+
+<<fig.height=4.5, fig.cap="Serie homicidios: selección de modelos AIC y BIC.", fig.pos='t'>>=
+plot(x = 1:5, y = Tabla1$AIC[1:5], type = "o", pch = 16, lty = 2, xlim = c(1,6), xlab = "Número de estados", ylab = "")
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(x = 1:5, y = Tabla1$AIC[1:5], type = "o", pch = 16, lty = 2)
+lines(x = 1:5, y = Tabla1$BIC[1:5], type = "o", pch = 16, lty = 2)
+text(x = c(5.3,5.3), y = c(435, 485), labels = c("AIC","BIC"))
+@
+
+<<results='asis',eval=FALSE>>=
+M <- mod2$gamma
+Tab=xtable(M,align=rep("",ncol(M)+1), digits = 3) # We repeat empty string 6 times
+print(Tab, floating=FALSE, tabular.environment="bmatrix",hline.after=NULL, 
+      include.rownames=FALSE, include.colnames=FALSE)
+@
+
+$$
+A = \begin{bmatrix}{}
+  0.980 & 0.020 \\ 
+  0.064 & 0.936 \\ 
+\end{bmatrix}
+$$
+
+<<>>=
+mod2
+viterbi <- pois.HMM.viterbi(x = Homicidios, mod = mod2)
+pois.HMM.state_prediction(h = 7, x = Homicidios, mod = mod2)
+@
+
+También es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF son los siguientes:
+
+<<results='asis'>>=
+ACFHMM <- data.frame(
+       round(rbind(acf(Homicidios, plot = FALSE, lag.max = 12)$acf[-1],
+              pois.HMM.moments(mod2, lag.max = 12)$rho,
+              pois.HMM.moments(mod3, lag.max = 12)$rho,
+              pois.HMM.moments(mod4, lag.max = 12)$rho),3))
+rownames(ACFHMM) <- c("observaciones","PHMM 2 Estados","PHMM 3 Estados","PHMM 4 Estados")
+colnames(ACFHMM) <- 1:12
+xtable(ACFHMM, caption = "Datos homicidios: ACF y ACF de los cuatro modelos hasta el rezago 12.")
+@
+
+<<fig.height=4.5, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.">>=
+plot(x = 0:12, y = acf(Homicidios, plot = FALSE, lag.max = 12)$acf, ylab = "", type = "h", col = 1,xlab="Rezago",xaxt="n")
+axis(1, at = 0:12)
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(x = 0:12, y = acf(Homicidios, plot = FALSE, lag.max = 12)$acf, type = "h", col = 1)
+lines(x = 0:12+0.1, y = c(1,pois.HMM.moments(mod2, lag.max = 12)$rho), type = "h", col = 3)
+lines(x = 0:12+0.2, y = c(1,pois.HMM.moments(mod3, lag.max = 12)$rho), type = "h", col = 4)
+abline(h = 0)
+@
+
+En la Figura 6, de izquierda a derecha se muestran el ACF de las observaciones, la barra de color verde pertenece al modelo de dos estados y la azul al modelo de tres estados. Nos interesa ver como está yuxtapuesto los ACF de ambos modelos con respecto al ACF de las observaciones. Está claro que los ACF del modelo con tres estados corresponden bien con el ACF de las observaciones hasta aproximadamente el rezago 6, mientras que el modelo 2 estados coincide hasta el rezago 9. Sin embargo, se pueden aplicar diagnósticos más sistemáticos, como se mostrará a continuación.
+
+\clearpage
+
+\subsubsection*{Verificación de supuestos del PHMM}
+
+En este caso hemos elegido el BIC como criterio para la selección del mejor modelo como mostramos anteriormente, sin embargo sigue existiendo el problema de decidir si el modelo es realmente adecuado; por lo tanto se necesitan herramientas para evaluar la bondad general del ajuste del modelo e identificar valores atípicos en relación con el modelo. En el contexto más simple como por ejemplo los modelos de regresión (teoría normal), el papel que juegan los residuales como herramienta para la verificación del supuesto del modelo está muy bien establecido, entre estos supuestos están la normalidad de los residuales, la homocedasticidad y la independencia de estos. Los sesudo-residuos (también conocidos como residuos gentílicos) que se ilustraron en la sección tres tienen la intención de cumplir esta función de manera mucho más general, y que son útiles en el contexto de los HMM. 
+
+<<fig.cap="Grafico pseudo-residuales ordinarios para el PHMM de 2 estados.", fig.pos='h'>>=
+residuales <- pois.HMM.pseudo_residuals(x = Homicidios, mod = mod2)
+pois.HMM.plot.residuals(residuales)
+@
+
+En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 estados. La fila superior izquierda muestra el diagramas de índice de los pseudo-residuos normales, con líneas horizontales en 0, $\pm 1.96$ y $\pm 2.58$. En la parte superior derecha se muestra los gráficos de cuantiles-cuantiles de los pseudo-residuos normales, con los cuantiles teóricos en el eje $x$. La última fila muestra en la parte izquierda el histograma de los pseudo residuales normales, y en la parte derecha la función de autocorrelación muestral de los pseudo-residuos normales. Efectivamente los pseudo-residuales parecen distribuirse normalmente, sin embargo realizamos la prueba de Shapiro-Wilks para verificar este supuesto, donde el p-valor es 0.7529, por lo tanto no podemos rechazar la hipótesis nula $H_0$, y concluimos que hay suficiente evidencia estadística para decir que los pseudo-residuos se distribuyen normalmente con un nivel de confianza del 95\%. Además todos los puntos están dentro de las bandas de confianza, sin embargo el histograma no parece acomodarse en todos sus puntos a la curva de la distribución normal, y el mayor problema es que los pseudo-residuales parecen estar correlacionados, hasta el rezago 3.
+
+<<eval=FALSE>>=
+Estad_1 <- viterbi[viterbi == 1]
+Estad_2 <- viterbi[viterbi == 2]
+par(mfrow = c(1,2))
+par(mar=c(2,2,1,.5)+.5, mgp=c(1.6,.6,0))
+plot(Homicidios,xlab="",type='o', col=4, ylab = "Número")
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(Homicidios, type='o', col=4)
+lines(x = 1959 + seq_along(Estad_1), y = rep(mod2$lambda[1], length(Estad_1)), col = "red", lty = 2)
+lines(x = 1999 + seq_along(Estad_2), y = rep(mod2$lambda[2], length(Estad_2)), col = "red", lty = 2)
+hist(Homicidios, breaks = 10, prob = T,col = "grey", border = "white", main = "", xlab = "", ylim = c(0,0.05))
+lines(density(Homicidios), col="blue", lwd=2)
+plot(x = 1:59, y = Homicidios, type = "h")
+curve(dnorm(x, mean=, sd=sqrt(6)), from=-4, to=20, add=TRUE, col="red")
+
+mod2
+
+
+plot(0:20, dpois( x=0:20, lambda=6 ), xlim=c(-2,20), type = 'h', lwd = 6)
+curve(dnorm(x, mean=6, sd=sqrt(6)), from=-4, to=20, add=TRUE, col="red")
+
+curve(dnorm(x, mean(Homicidios[1:40]), sd = mean(Homicidios[1:40])), add=TRUE, lwd = 2)
+curve(dnorm(x, mean(Homicidios[41:59]), sd = mean(Homicidios[41:59])), add=TRUE, lwd = 2)
+@
+
+
+<<>>=
+pois.HMM.forecast <- function(xf, h=1, x, mod){
+  n <- length(x)
+  nxf <- length(xf)
+  dxf <- matrix(0, nrow = h, ncol = nxf)
+  foo <- mod$delta * dpois (x[1], mod$lambda)
+  sumfoo <- sum(foo)
+  lscale <- log(sumfoo)
+  foo <- foo / sumfoo
+  for(i in 2:n){
+    foo <- foo %*% mod$gamma * dpois(x[i], mod$lambda)
+    sumfoo <- sum(foo)
+    lscale <- lscale + log(sumfoo)
+    foo <- foo / sumfoo
+  }
+  for(i in 1:h){
+    foo <- foo %*% mod$gamma
+    for (j in 1:mod$m) dxf[i, ] <- dxf[i, ] + foo[j] * dpois(xf, mod$lambda[j])
+  }
+  return(dxf)
+}
+@
+
+
+<<eval=FALSE>>=
+#=== Use it for 1-step - ahead and plot the forecast distribution .
+h <-1
+xf <- 0:50
+forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
+par(mfrow = c(1 ,1), las=1)
+plot(xf ,forecasts , type ="h", main = paste ("Serie homicidios: distribución de pronóstico para", 2019), xlim =c(0, max (xf)),ylim =c(0, 0.1), xlab = "conteos", ylab = "probabilidad", lwd=3)
+
+
+#=== Forecast 1-4 steps ahead and plot these .
+h <- 4
+xf <- 0:45
+forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
+par(mfrow = c(2, 2), las = 1)
+for(i in 1:4){
+  fc <- forecasts[i, ]
+  plot(xf, fc, type = "h", main = paste("Forecast distribution for", i), xlim =c(0, max (xf)),
+        ylim =c (0 ,0.1) ,xlab =" count ", ylab =" probability ", lwd =3)
+  }
+
+#=== Compute the marginal distribution ( called " dstat " below )
+# for mod3h .
+#=== This is also the long - term forecast .
+m <- 2
+
+lambda <- mod2$lambda
+delta <- solve(t(diag(m) - mod2$gamma + 1), rep(1, m))
+dstat <- numeric(length(xf))
+for(j in 1:m) dstat <- dstat + delta[j] * dpois(xf, lambda[j])
+
+#=== Compare the 50- year - ahead forecast with the long - term forecast .
+h <- 50
+xf <- 0:45
+forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
+fc <- forecasts[h ,]
+par(mfrow = c(1, 1), las = 1)
+plot(xf, fc, type ="h", main = paste (" Forecast distribution for ", 1+h), xlim = c(0, max(xf)), 
+     ylim = c(0 ,0.10), xlab =" count ", ylab =" probability ", lwd =3)
+lines(xf, dstat, col = "gray", lwd = 3)
+@
+
+%http://www.scielo.br/pdf/csc/v17n12/06.pdf
+
+<<echo=TRUE, eval=FALSE>>=
+# devtools::install_github("RafaelEduardoDiaz/Bayeshmmcts")
+
+###################################################
+########## Poisson - Hidden Markov Model ##########
+###################################################
+
+#--------------------#
+# Cargo los paquetes #
+library(Bayeshmmcts)
+library(pander)
+library(tibble)
+#--------------------#
+
+### Cargo la base
+data("homicidios.rds")
+Homicidios <- ts(data = round(homicidios$Tasa), start = 1960)
+
+
+acf(x, lag.max = 30)
+plot(density(x))
+hist(x, breaks = 18, probability = TRUE)
+points(dpois(x,lambda = 40), add = T, col = "red", lty = 2)
+plot(table(x))
+mean(x); var(x); median(x)
+
+pander(rbind(homicidios$Homicidios[1:20] , homicidios$Homicidios[21:40],
+             homicidios$Homicidios[41:60], homicidios$Homicidios[61:80]),
+       caption = "Número de homicidios en Colombia, 1947 - 2018.")
+
+
+temp.ts <- ts(cumsum(1 + round(rnorm(100), 0)),
+              start = c(1954, 7), frequency = 12)
+temp.table <- xtable(temp.ts, digits = 0)
+temp.table
+
+
+#===============================================================================================
+# Gráficas
+#===============================================================================================
+
+### Grafica 1
+par(mar=c(4,4,3,3), mgp=c(2,1,0))
+plot(serie,xlab="",type='o', col=4,
+     ylab = "Número", main = "Serie de tiempo homicidios",
+     sub="Figura 1. Número de homicidios en Colombia, 1957 - 2018.")
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white')
+grid(lty=1, col='white'); lines(serie, type='o', col=4)
+
+### Grafica 2
+acf(serie,xlab="",sub = "Figura 2. Serie de homicidios: función de autocorrelación muestral.")
+
+### Grafica 3
+plot(density(serie[10:62]))
+hist(serie[10:62], breaks = 18, probability = T)
+curve(dpois(x, lambda = mean(serie[10:62])), add = TRUE, col = "red", lty = 2)
+
+#----------------------------------------------------------------------
+mod1 <- pois.HMM.mle(x = x, m = 1, lambda0 = 40, stationary = TRUE)
+
+mod2 <- pois.HMM.mle(x = x, m = 2,
+                     lambda0 = c(30, 63), 
+                     gamma0 = matrix(c(0.9, 0.1, 0.1, 0.9), 2, 2, byrow = TRUE), 
+                     stationary = TRUE)
+
+mod3 <- pois.HMM.mle(x = x, m = 3,
+                     lambda0 = c(28, 40, 64), 
+                     gamma0 = matrix(c(0.8, 0.1, 0.1, 0.1, 0.8, 0.1, 0.1, 0.1, 0.8), 3, 3, byrow = TRUE), 
+                     stationary = TRUE)
+
+mod4 <- pois.HMM.mle(x = x, m = 4,
+                     lambda0 = c(14, 31, 43, 65), 
+                     gamma0 = matrix(c(0.85, 0.05, 0.05, 0.05, 
+                                       0.05, 0.85, 0.05, 0.05, 
+                                       0.05, 0.05, 0.85, 0.05,
+                                       0.05, 0.05, 0.05, 0.85), 4, 4, byrow = TRUE), 
+                     stationary = TRUE)
+
+mod5 <- pois.HMM.mle(x = x, m = 5,
+                     lambda0 = c(18, 29, 38, 47, 66), 
+                     gamma0 = matrix(c(0.80, 0.05, 0.05, 0.05, 0.05, 
+                                       0.05, 0.80, 0.05, 0.05, 0.05, 
+                                       0.05, 0.05, 0.80, 0.05, 0.05,
+                                       0.05, 0.05, 0.05, 0.80, 0.05,
+                                       0.05, 0.05, 0.05, 0.05, 0.080
+                     ), 5, 5, byrow = TRUE), 
+                     stationary = TRUE)
+mod5
+
+### Estimación Bayesiana
+
+# Modelo de 2 estados
+PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99))
+print(PHHMM_2states, digits_summary = 3)
+
+# Modelo de 3 estados
+PHHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99))
+print(PHHMM_3states, digits_summary = 3)
+
+# Modelo de 4 estados
+PHHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15))
+print(PHHMM_4states, digits_summary = 3)
+
+# Modelo de 5 estados
+PHHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15))
+print(PHHMM_5states, digits_summary = 3)
+
+###################################################
+### Zero Inflated Poisson - Hidden Markov Model ###
+###################################################
+
+rm(list = ls())
+
+incendios <- readRDS("incendios.rds")
+GIF <- ts(data = incendios$GIF, start = c(2002,1), frequency = 12)
+GIF
+
+@
+
+
+\end{document}
