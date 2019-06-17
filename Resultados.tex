@@ -81,7 +81,7 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Fri Jun 14 18:38:06 2019
+% Mon Jun 17 22:26:39 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -104,7 +104,7 @@ Las estadísticas sobre incendios en Colombia, permiten en términos generales, 
 
 [1] ".preformat.ts"
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Fri Jun 14 18:38:06 2019
+% Mon Jun 17 22:26:39 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -196,7 +196,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Fri Jun 14 18:38:08 2019
+% Mon Jun 17 22:26:41 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -209,7 +209,7 @@ Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y 
   4 & PHMM - Estados 4 & 16.00 & -190.84 & 413.69 & 446.93 \\ 
   5 & PHMM - Estados 5 & 25.00 & -190.29 & 430.58 & 482.51 \\ 
   6 & mixtura indep. (2) & 3.00 & -229.38 & 464.75 & 470.98 \\ 
-  7 & mixtura indep. (3) & 5.00 & -228.11 & 468.68 & 479.07 \\ 
+  7 & mixtura indep. (3) & 5.00 & -228.11 & 468.75 & 479.14 \\ 
   8 & mixtura indep. (4) & 7.00 & -228.11 & 470.21 & 484.76 \\ 
    \hline
 \end{tabular}
@@ -231,7 +231,6 @@ Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en
 
 La estimaciones del modelo son las siguientes la media de los estados dependientes $\lambda = (29.72, 62.8)$  y los valores de la distribución estacionaria son $\pi = (0.764, 0.236)$. Ahora veamos la estimación de la matriz de transición para el modelo con 2 estados:
 
-mod2
 $$
 A = \begin{pmatrix}{}
   0.980 & 0.020 \\ 
@@ -242,7 +241,7 @@ $$
 Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF son los siguientes:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Fri Jun 14 18:38:09 2019
+% Mon Jun 17 22:26:42 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -288,21 +287,22 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 \subsubsection*{Algoritmo Viterbi}
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Fri Jun 14 18:38:09 2019
+% Mon Jun 17 22:26:42 2019
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr}
+\begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
   \hline
-1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 & 26 & 27 & 28 & 29 & 30 & 31 & 32 & 33 & 34 & 35 & 36 & 37 & 38 & 39 & 40 & 41 & 42 & 43 & 44 & 45 & 46 & 47 & 48 & 49 & 50 & 51 & 52 & 53 & 54 & 55 & 56 & 57 & 58 & 59 \\ 
   \hline
-1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ 
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ 
+  1 & 1 & 1 & 1 & 1 & 1 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 & 2 \\ 
+  2 & 2 & 2 & 2 & 2 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 &  \\ 
    \hline
 \end{tabular}
 \caption{Resultados de la decodificación global con el algoritmo Viterbi.} 
 \end{table}
 
 
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la siguiente tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
@@ -312,28 +312,28 @@ El algoritmo Viterbi, permite realizar la decodificación global de los estados 
 
 \end{knitrout}
 
-Más adelante realizaremos la predicción de los estados para un rezago $h$, dado y el pronostico de las probabilidades,
+Ahora realizaremos la predicción de los estados para un rezago $h = 12$, dado y de la distribución para una año en especifico.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Fri Jun 14 18:38:09 2019
+% Mon Jun 17 22:26:42 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrr}
   \hline
  & Estado 1 & Estado 2 \\ 
   \hline
-1 & 0.9802 & 0.0198 \\ 
-  2 & 0.9621 & 0.0379 \\ 
-  3 & 0.9456 & 0.0544 \\ 
-  4 & 0.9304 & 0.0696 \\ 
-  5 & 0.9164 & 0.0836 \\ 
-  6 & 0.9037 & 0.0963 \\ 
-  7 & 0.8920 & 0.1080 \\ 
-  8 & 0.8813 & 0.1187 \\ 
-  9 & 0.8714 & 0.1286 \\ 
-  10 & 0.8624 & 0.1376 \\ 
-  11 & 0.8542 & 0.1458 \\ 
-  12 & 0.8467 & 0.1533 \\ 
+2019 & 0.9802 & 0.0198 \\ 
+  2020 & 0.9621 & 0.0379 \\ 
+  2021 & 0.9456 & 0.0544 \\ 
+  2022 & 0.9304 & 0.0696 \\ 
+  2023 & 0.9164 & 0.0836 \\ 
+  2024 & 0.9037 & 0.0963 \\ 
+  2025 & 0.8920 & 0.1080 \\ 
+  2026 & 0.8813 & 0.1187 \\ 
+  2027 & 0.8714 & 0.1286 \\ 
+  2028 & 0.8624 & 0.1376 \\ 
+  2029 & 0.8542 & 0.1458 \\ 
+  2030 & 0.8467 & 0.1533 \\ 
    \hline
 \end{tabular}
 \caption{Predicción de las probabilidades para un rezago h = 12.} 
@@ -342,27 +342,62 @@ Más adelante realizaremos la predicción de los estados para un rezago $h$, dad
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} \caption[Serie homicidios]{Serie homicidios: distribución de pronóstico para el año 2019.}\label{fig:unnamed-chunk-20}
+\end{figure}
+
 
 \end{knitrout}
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} \caption[Pronostico de la distribución para los años 2019 a 2022]{Pronostico de la distribución para los años 2019 a 2022.}\label{fig:unnamed-chunk-21}
+\end{figure}
+
 
 \end{knitrout}
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-22-1} \caption[La distribución prónostica]{La distribución prónostica}\label{fig:unnamed-chunk-22}
+\end{figure}
+
 
 \end{knitrout}
-
 
 %http://www.scielo.br/pdf/csc/v17n12/06.pdf
+
+\subsubsection*{Estimación Bayesiana del PHMM}
+
+
+
+% latex table generated in R 3.4.4 by xtable 1.8-4 package
+% Mon Jun 17 22:26:48 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrrrr}
+  \hline
+ & mean & se\_mean & sd & 2.5\% & 25\% & 50\% & 75\% & 97.5\% & n\_eff & Rhat \\ 
+  \hline
+Gamma[1,1] & 0.74 & 0.25 & 0.31 & 0.29 & 0.29 & 0.94 & 0.97 & 0.99 & 1.58 & 4.29 \\ 
+  Gamma[1,2] & 0.26 & 0.25 & 0.31 & 0.01 & 0.03 & 0.06 & 0.71 & 0.71 & 1.58 & 4.29 \\ 
+  Gamma[2,1] & 0.07 & 0.03 & 0.06 & 0.01 & 0.02 & 0.05 & 0.11 & 0.23 & 3.61 & 1.30 \\ 
+  Gamma[2,2] & 0.93 & 0.03 & 0.06 & 0.77 & 0.89 & 0.95 & 0.98 & 0.99 & 3.61 & 1.30 \\ 
+  lambda[1] & 28.38 & 1.49 & 4.63 & 8.00 & 28.11 & 29.13 & 29.95 & 31.30 & 9.61 & 1.18 \\ 
+  lambda[2] & 61.37 & 1.66 & 4.31 & 40.87 & 60.48 & 61.63 & 63.33 & 66.02 & 6.77 & 1.23 \\ 
+  lp\_\_ & -228.29 & 21.18 & 32.05 & -365.06 & -252.79 & -211.10 & -209.73 & -208.73 & 2.29 & 1.84 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+\section{Anexo Códigos}
+
 
 
 

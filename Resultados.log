@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.6.13)  14 JUN 2019 18:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.6.13)  17 JUN 2019 22:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -802,7 +802,7 @@ Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 158.
  [2]
 Package color Info: Redefining color shadecolor on input line 160.
- <figure/unnamed-chunk-6-1.pdf, id=34, 433.62pt x 289.08pt>
+ <figure/unnamed-chunk-6-1.pdf, id=38, 433.62pt x 289.08pt>
 File: figure/unnamed-chunk-6-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-6-1.pdf>
@@ -810,7 +810,7 @@ Package pdftex.def Info: figure/unnamed-chunk-6-1.pdf used on input line 161.
 (pdftex.def)             Requested size: 433.61894pt x 289.09251pt.
 Package color Info: Redefining color shadecolor on input line 172.
 
-<figure/unnamed-chunk-7-1.pdf, id=35, 454.69875pt x 346.29375pt>
+<figure/unnamed-chunk-7-1.pdf, id=39, 454.69875pt x 346.29375pt>
 File: figure/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-7-1.pdf>
@@ -818,7 +818,7 @@ Package pdftex.def Info: figure/unnamed-chunk-7-1.pdf used on input line 173.
 (pdftex.def)             Requested size: 454.69763pt x 346.29817pt.
 Package color Info: Redefining color shadecolor on input line 182.
 
-<figure/unnamed-chunk-8-1.pdf, id=36, 433.62pt x 252.945pt>
+<figure/unnamed-chunk-8-1.pdf, id=40, 433.62pt x 252.945pt>
 File: figure/unnamed-chunk-8-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-8-1.pdf>
@@ -877,137 +877,134 @@ Package babel Info: Redefining spanish shorthand "?
 [4 <./figure/unnamed-chunk-7-1.pdf> <./figure/unnamed-chunk-8-1.pdf>]
 Package color Info: Redefining color shadecolor on input line 223.
 
-<figure/unnamed-chunk-12-1.pdf, id=73, 505.89pt x 325.215pt>
+<figure/unnamed-chunk-12-1.pdf, id=77, 505.89pt x 325.215pt>
 File: figure/unnamed-chunk-12-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-12-1.pdf used on input line 224.
 (pdftex.def)             Requested size: 455.24411pt x 292.66101pt.
-Package color Info: Redefining color shadecolor on input line 263.
+Package color Info: Redefining color shadecolor on input line 262.
 
-<figure/unnamed-chunk-15-1.pdf, id=74, 505.89pt x 361.35pt>
+<figure/unnamed-chunk-15-1.pdf, id=78, 505.89pt x 361.35pt>
 File: figure/unnamed-chunk-15-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-15-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-15-1.pdf used on input line 264.
+Package pdftex.def Info: figure/unnamed-chunk-15-1.pdf used on input line 263.
 (pdftex.def)             Requested size: 455.24411pt x 325.17891pt.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
  [5]
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
  [6 <./figure/unnamed-chunk-12-1.pdf>]
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 272.
+(babel)             in language  on input line 271.
 
 [7 <./figure/unnamed-chunk-15-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 279.
+Package color Info: Redefining color shadecolor on input line 278.
 
-<figure/unnamed-chunk-16-1.pdf, id=109, 505.89pt x 505.89pt>
+<figure/unnamed-chunk-16-1.pdf, id=113, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-16-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-16-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-16-1.pdf used on input line 280.
+Package pdftex.def Info: figure/unnamed-chunk-16-1.pdf used on input line 279.
 (pdftex.def)             Requested size: 455.24411pt x 455.25046pt.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 287.
+(babel)             in language  on input line 286.
  [8
 
  <./figure/unnamed-chunk-16-1.pdf>]
-Overfull \hbox (797.75845pt too wide) in paragraph at lines 294--301
- [][] 
- []
-
 Package color Info: Redefining color shadecolor on input line 308.
-<figure/unnamed-chunk-18-1.pdf, id=122, 433.62pt x 289.08pt>
+
+<figure/unnamed-chunk-18-1.pdf, id=126, 433.62pt x 289.08pt>
 File: figure/unnamed-chunk-18-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-18-1.pdf>
@@ -1015,160 +1012,190 @@ Package pdftex.def Info: figure/unnamed-chunk-18-1.pdf used on input line 309.
 (pdftex.def)             Requested size: 433.61894pt x 289.09251pt.
 Package color Info: Redefining color shadecolor on input line 345.
 
-<figure/unnamed-chunk-20-1.pdf, id=123, 505.89pt x 361.35pt>
+<figure/unnamed-chunk-20-1.pdf, id=127, 505.89pt x 325.215pt>
 File: figure/unnamed-chunk-20-1.pdf Graphic file (type pdf)
 
 <use figure/unnamed-chunk-20-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-20-1.pdf used on input line 346.
-(pdftex.def)             Requested size: 455.24411pt x 325.17891pt.
+(pdftex.def)             Requested size: 455.24411pt x 292.66101pt.
+Package color Info: Redefining color shadecolor on input line 354.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 346--347
-[][] 
- []
-
-Package color Info: Redefining color shadecolor on input line 352.
-<figure/unnamed-chunk-21-1.pdf, id=124, 505.89pt x 505.89pt>
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 353.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 353.
- [9 <./figure/unnamed-chunk-18-1.pdf>]
+<figure/unnamed-chunk-21-1.pdf, id=128, 505.89pt x 505.89pt>
 File: figure/unnamed-chunk-21-1.pdf Graphic file (type pdf)
- <use figure/unnamed-chunk-21-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-21-1.pdf used on input line 353.
+
+<use figure/unnamed-chunk-21-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-21-1.pdf used on input line 355.
 (pdftex.def)             Requested size: 455.24411pt x 455.25046pt.
+Package color Info: Redefining color shadecolor on input line 363.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 353--354
-[][] 
- []
-
-Package color Info: Redefining color shadecolor on input line 359.
-<figure/unnamed-chunk-22-1.pdf, id=140, 505.89pt x 361.35pt>
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 360.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 360.
- [10 <./figure/unnamed-chunk-20-1.pdf>]
+<figure/unnamed-chunk-22-1.pdf, id=129, 505.89pt x 361.35pt>
 File: figure/unnamed-chunk-22-1.pdf Graphic file (type pdf)
- <use figure/unnamed-chunk-22-1.pdf>
-Package pdftex.def Info: figure/unnamed-chunk-22-1.pdf used on input line 360.
+
+<use figure/unnamed-chunk-22-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-22-1.pdf used on input line 364.
 (pdftex.def)             Requested size: 455.24411pt x 325.17891pt.
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 360--361
-[][] 
+Overfull \hbox (15.60968pt too wide) in paragraph at lines 380--393
+ [][] 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 370.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 399.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 399.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 399.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 399.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 399.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 399.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 405.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 370.
-[11 <./figure/unnamed-chunk-21-1.pdf>]
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
+[9 <./figure/unnamed-chunk-18-1.pdf>]
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 370.
+(babel)             in language  on input line 405.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 370.
- [12 <./figure/unnamed-chunk-22-1.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 370.
-
-(./Resultados.aux
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+ [10]
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+ [11 <./figure/unnamed-chunk-20-1.pdf>]
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+ [12 <./figure/unnamed-chunk-21-1.pdf>]
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 405.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 405.
+ [13 <./figure/unnamed-chunk-22-1.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 405.
+ (./Resultados.aux
 LaTeX Info: Redefining \. on input line 23.
 LaTeX Info: Redefining \% on input line 23.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 370.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 370.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 405.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 405.
 Package rerunfilecheck Info: File `Resultados.out' has not changed.
-(rerunfilecheck)             Checksum: 279E93636CA2561D8509712C2A5C2C10;141.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 370.
+(rerunfilecheck)             Checksum: 2EC08778AA6DB924D9B7F2295EB6843C;192.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 405.
  ) 
 Here is how much of TeX's memory you used:
- 7422 strings out of 493029
- 105264 string characters out of 6136234
- 220075 words of memory out of 5000000
- 10824 multiletter control sequences out of 15000+600000
+ 7433 strings out of 493029
+ 105410 string characters out of 6136234
+ 220247 words of memory out of 5000000
+ 10829 multiletter control sequences out of 15000+600000
  9369 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 29i,9n,32p,1303b,459s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,9n,32p,1303b,384s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
@@ -1179,10 +1206,10 @@ t/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts
 public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmti10.pfb>
-Output written on Resultados.pdf (12 pages, 193584 bytes).
+Output written on Resultados.pdf (13 pages, 197160 bytes).
 PDF statistics:
- 215 PDF objects out of 1000 (max. 8388607)
- 169 compressed objects within 2 object streams
- 33 named destinations out of 1000 (max. 500000)
- 67 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 237 PDF objects out of 1000 (max. 8388607)
+ 190 compressed objects within 2 object streams
+ 39 named destinations out of 1000 (max. 500000)
+ 75 words of extra memory for PDF output out of 10000 (max. 10000000)
 

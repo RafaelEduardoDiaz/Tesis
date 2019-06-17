@@ -171,7 +171,6 @@ print(Tab, floating=FALSE, tabular.environment="pmatrix",hline.after=NULL,
 
 La estimaciones del modelo son las siguientes la media de los estados dependientes $\lambda = (29.72, 62.8)$  y los valores de la distribución estacionaria son $\pi = (0.764, 0.236)$. Ahora veamos la estimación de la matriz de transición para el modelo con 2 estados:
 
-mod2
 $$
 A = \begin{pmatrix}{}
   0.980 & 0.020 \\ 
@@ -221,10 +220,11 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 
 <<results='asis'>>=
 viterbi2 <- pois.HMM.viterbi(x = Homicidios, mod = mod2)
-print(xtable(t(as.data.frame(viterbi2)), caption = "Resultados de la decodificación global con el algoritmo Viterbi.", digits = 0), include.rownames = FALSE)
+df2 <- rbind(viterbi2[1:20], viterbi2[21:40], viterbi2[41:60])
+print(xtable(df2, caption = "Resultados de la decodificación global con el algoritmo Viterbi.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
 @
 
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la siguiente tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
 
 <<fig.width=6, fig.height=4, fig.cap="Algoritmo Viterbi aplicado a un PHMM de dos estados.">>=
 par(mfrow = c(1,1))
@@ -236,27 +236,30 @@ abline(h = mod2$lambda, col = "chartreuse2", lty = 2)
 points(x = homicidios[,1], y = ifelse(viterbi2 == 1, mod2$lambda[1], mod2$lambda[2]), pch = 16, col = "chartreuse2")
 @
 
-Más adelante realizaremos la predicción de los estados para un rezago $h$, dado y el pronostico de las probabilidades,
+Ahora realizaremos la predicción de los estados para un rezago $h = 12$, dado y de la distribución para una año en especifico.
 
 <<results='asis'>>=
+año <- homicidios[,1]
 Estad_pred <- as.data.frame(pois.HMM.state_prediction(h = 12, x = Homicidios, mod = mod2))
 colnames(Estad_pred) <- c("Estado 1","Estado 2")
+rownames(Estad_pred) <- año[59]+1:12
 xtable(Estad_pred, caption = "Predicción de las probabilidades para un rezago h = 12.", digits = 4)
 @
 
 
-<<fig.height=5>>=
+<<fig.height=4.5, fig.cap="Serie homicidios: distribución de pronóstico para el año 2019.">>=
 #=== Use it for 1-step - ahead and plot the forecast distribution .
-año <- homicidios[,1]
 h <-1
 xf <- 0:50
 forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
-par(mfrow = c(1 ,1), las=1)
-plot(xf ,forecasts , type ="h", main = paste("Serie homicidios: distribución de pronóstico para", 2019), xlim =c(0, max (xf)),ylim =c(0, 0.1), xlab = "conteos", ylab = "probabilidad", lwd=3)
+par(mfrow = c(1 ,1), las=1, mar=c(2.1,2.5,1,.5)+.5, mgp=c(1.7,.3,0))
+plot(xf ,forecasts , type ="h", xlim =c(0, max (xf)),ylim =c(0, 0.1), xlab = "conteos", ylab = "probabilidad", lwd=3)
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(xf ,forecasts , type ="h", lwd = 3)
 @
 
 
-<<>>=
+<<fig.cap="Pronostico de la distribución para los años 2019 a 2022.">>=
 #=== Forecast 1-4 steps ahead and plot these .
 h <- 4
 xf <- 5:50
@@ -267,152 +270,97 @@ for(i in 1:4){
   plot(xf, fc, type = "h", main = paste("Forecast distribution for", año[59] + i), 
        xlim = c(0, max(xf+2)), ylim = c(0 ,0.1), 
        xlab = "conteo", ylab = "probabilidad", lwd =3)
+  rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+  lines(xf, fc, type = "h", lwd = 3)
   }
-
 @
 
 
-<<fig.height=5>>=
+<<fig.height=5, fig.cap="La distribución prónostica">>=
 #=== Compute the marginal distribution ( called " dstat " below ) for mod2.
 #=== This is also the long - term forecast .
-m <- 2
-lambda <- mod2$lambda
-delta <- solve(t(diag(m) - mod2$gamma + 1), rep(1, m))
-dstat <- numeric(length(xf))
-for(j in 1:m) dstat <- dstat + delta[j] * dpois(xf, lambda[j])
+delta <- pois.HMM.stadist(mod2)
 
-#=== Compare the 50- year - ahead forecast with the long - term forecast .
+dstat <- numeric(length(xf))
+for(j in 1:mod2$m) dstat <- dstat + delta[j] * dpois(xf, mod2$lambda[j])
+#=== Compare the 50- year - ahead forecast with the long - term forecast.
 h <- 50
-xf <- 0:45
+xf <- 5:50
 forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
 fc <- forecasts[,h]
 par(mfrow = c(1, 1), las = 1)
 plot(xf, fc, type ="h", main = paste (" Forecast distribution for ", año[59]+h), 
      xlim = c(0, max(xf)), 
      ylim = c(0 ,0.10), xlab ="conteo", ylab = "probabilidad", lwd =3)
-lines(xf+5, dstat, col = "gray", lwd = 3)
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(xf, fc,type = "h", lwd = 3)
+lines(xf, dstat, col = "chartreuse2", lwd = 3)
 @
-
 
 %http://www.scielo.br/pdf/csc/v17n12/06.pdf
 
-<<echo=FALSE, eval=FALSE>>=
+\subsubsection*{Estimación Bayesiana del PHMM}
+
+Para la estimación bayesiana primero vamos a elegir el número apropiado de estados utilizando el factor de Bayes
+
+<<include=FALSE, cache=TRUE>>=
+# Modelo de 2 estados
+system.time(
+PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
+
+# Modelo de 3 estados
+system.time(
+PHHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
+
+# Modelo de 4 estados
+system.time(
+PHHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
+
+# Modelo de 5 estados
+system.time(
+PHHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
+@
+
+
+<<results='asis'>>=
+resultado1 <- as.data.frame(summary(PHHMM_2states)$summary)
+xtable(resultado1)
+@
+
+
+\section{Anexo Códigos}
+
+<<eval=FALSE, echo=TRUE>>=
+
+################
+### Packages ###
+################
+library(Bayeshmmcts)
+library(broom)
+
+
+################
+##### Data #####
+################
+data("homicidios")
+data("incendios")
 
 ###################################################
 ########## Poisson - Hidden Markov Model ##########
 ###################################################
 
-#--------------------#
-# Cargo los paquetes #
-library(Bayeshmmcts)
-library(pander)
-library(tibble)
-#--------------------#
 
-### Cargo la base
-data("homicidios.rds")
-Homicidios <- ts(data = round(homicidios$Tasa), start = 1960)
-
-
-acf(x, lag.max = 30)
-plot(density(x))
-hist(x, breaks = 18, probability = TRUE)
-points(dpois(x,lambda = 40), add = T, col = "red", lty = 2)
-plot(table(x))
-mean(x); var(x); median(x)
-
-pander(rbind(homicidios$Homicidios[1:20] , homicidios$Homicidios[21:40],
-             homicidios$Homicidios[41:60], homicidios$Homicidios[61:80]),
-       caption = "Número de homicidios en Colombia, 1947 - 2018.")
-
-
-temp.ts <- ts(cumsum(1 + round(rnorm(100), 0)),
-              start = c(1954, 7), frequency = 12)
-temp.table <- xtable(temp.ts, digits = 0)
-temp.table
-
-
-#===============================================================================================
-# Gráficas
-#===============================================================================================
-
-### Grafica 1
-par(mar=c(4,4,3,3), mgp=c(2,1,0))
-plot(serie,xlab="",type='o', col=4,
-     ylab = "Número", main = "Serie de tiempo homicidios",
-     sub="Figura 1. Número de homicidios en Colombia, 1957 - 2018.")
-rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white')
-grid(lty=1, col='white'); lines(serie, type='o', col=4)
-
-### Grafica 2
-acf(serie,xlab="",sub = "Figura 2. Serie de homicidios: función de autocorrelación muestral.")
-
-### Grafica 3
-plot(density(serie[10:62]))
-hist(serie[10:62], breaks = 18, probability = T)
-curve(dpois(x, lambda = mean(serie[10:62])), add = TRUE, col = "red", lty = 2)
-
-#----------------------------------------------------------------------
-mod1 <- pois.HMM.mle(x = x, m = 1, lambda0 = 40, stationary = TRUE)
-
-mod2 <- pois.HMM.mle(x = x, m = 2,
-                     lambda0 = c(30, 63), 
-                     gamma0 = matrix(c(0.9, 0.1, 0.1, 0.9), 2, 2, byrow = TRUE), 
-                     stationary = TRUE)
-
-mod3 <- pois.HMM.mle(x = x, m = 3,
-                     lambda0 = c(28, 40, 64), 
-                     gamma0 = matrix(c(0.8, 0.1, 0.1, 0.1, 0.8, 0.1, 0.1, 0.1, 0.8), 3, 3, byrow = TRUE), 
-                     stationary = TRUE)
-
-mod4 <- pois.HMM.mle(x = x, m = 4,
-                     lambda0 = c(14, 31, 43, 65), 
-                     gamma0 = matrix(c(0.85, 0.05, 0.05, 0.05, 
-                                       0.05, 0.85, 0.05, 0.05, 
-                                       0.05, 0.05, 0.85, 0.05,
-                                       0.05, 0.05, 0.05, 0.85), 4, 4, byrow = TRUE), 
-                     stationary = TRUE)
-
-mod5 <- pois.HMM.mle(x = x, m = 5,
-                     lambda0 = c(18, 29, 38, 47, 66), 
-                     gamma0 = matrix(c(0.80, 0.05, 0.05, 0.05, 0.05, 
-                                       0.05, 0.80, 0.05, 0.05, 0.05, 
-                                       0.05, 0.05, 0.80, 0.05, 0.05,
-                                       0.05, 0.05, 0.05, 0.80, 0.05,
-                                       0.05, 0.05, 0.05, 0.05, 0.080
-                     ), 5, 5, byrow = TRUE), 
-                     stationary = TRUE)
-mod5
-
-### Estimación Bayesiana
-
-# Modelo de 2 estados
-PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99))
-print(PHHMM_2states, digits_summary = 3)
-
-# Modelo de 3 estados
-PHHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99))
-print(PHHMM_3states, digits_summary = 3)
-
-# Modelo de 4 estados
-PHHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15))
-print(PHHMM_4states, digits_summary = 3)
-
-# Modelo de 5 estados
-PHHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15))
-print(PHHMM_5states, digits_summary = 3)
+rm(list = ls())
 
 ###################################################
 ### Zero Inflated Poisson - Hidden Markov Model ###
 ###################################################
 
-rm(list = ls())
-
 incendios <- readRDS("incendios.rds")
 GIF <- ts(data = incendios$GIF, start = c(2002,1), frequency = 12)
 GIF
-
 @
+
 
 
 \end{document}
