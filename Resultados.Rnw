@@ -31,6 +31,10 @@ library(stargazer)
 library(scales)
 library(Bayeshmmcts)
 library(broom)
+library(bayesplot)
+library(rstan)
+library(bridgesampling)
+options(mc.cores = 4)
 @
 
 \subsection{Descripción de los datos}
@@ -301,25 +305,64 @@ lines(xf, dstat, col = "chartreuse2", lwd = 3)
 
 \subsubsection*{Estimación Bayesiana del PHMM}
 
-Para la estimación bayesiana primero vamos a elegir el número apropiado de estados utilizando el factor de Bayes
-
 <<include=FALSE, cache=TRUE>>=
-# Modelo de 2 estados
+# Modelo de 2 estados - 9.60 seg
 system.time(
 PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
 
-# Modelo de 3 estados
+# Modelo de 3 estados - 45.70
 system.time(
 PHHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
 
-# Modelo de 4 estados
+# Modelo de 4 estados - 1345.76
 system.time(
 PHHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 
-# Modelo de 5 estados
+# Modelo de 5 estados - 1943.18
 system.time(
 PHHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 @
+
+<<cache=TRUE>>=
+library(bridgesampling)
+# estimates of the log marginal likelihoods
+set.seed(1)
+bridge_H0 <- bridge_sampler(samples = PHHMM_2states)
+bridge_H1 <- bridge_sampler(samples = PHHMM_3states)
+bridge_H2 <- bridge_sampler(samples = PHHMM_4states, method = "normal")
+bridge_H3 <- bridge_sampler(samples = PHHMM_5states,repetitions = 1)
+
+error_measures(bridge_H0)$percentage #"0.990%"
+error_measures(bridge_H1)$percentage #"3.22%"
+error_measures(bridge_H2)$percentage #"28.7%"
+error_measures(bridge_H3)$percentage #"31.9%"
+#The Bayes factor in favor of H0 over H1 can then be obtained as follows:
+bf(bridge_H0, bridge_H1) # A favor de H0 3.10770
+bf(bridge_H0, bridge_H2) # fuertemente a favor de H0 3047.46
+bf(bridge_H0, bridge_H3) # fuertemente a favor de H0 390147608.97574
+
+bf(bridge_H1, bridge_H2) # fuertemente a favor de H1 980.61632
+bf(bridge_H1, bridge_H3) # fuertemente a favor de H1 125542040.73572
+
+bf(bridge_H2, bridge_H3) # fuertemente a favor de H2 128023.60921
+@
+
+
+<<>>=
+# Extract posterior draws for later use
+posterior <- as.array(PHHMM_2states)
+
+lp_cp <- log_posterior(PHHMM_2states)
+np_cp <- nuts_params(PHHMM_2states)
+color_scheme_set("mix-brightblue-gray")
+mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]",
+                                              "lambda[1]","lambda[2]"), off_diag_args = list(size = 0.75))
+
+@
+
+
+Para la estimación bayesiana primero vamos a elegir el número apropiado de estados utilizando el factor de Bayes
+
 
 
 <<results='asis'>>=

@@ -10,3 +10,8 @@ lattice
 flexmix
 Matrix
 expm
+bayesplot
+ggplot2
+StanHeaders
+rstan
+bridgesampling
