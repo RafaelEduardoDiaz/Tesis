@@ -195,7 +195,7 @@ colnames(ACFHMM) <- 1:12
 xtable(ACFHMM, caption = "Datos homicidios: ACF y ACF de los cuatro modelos hasta el rezago 12.")
 @
 
-<<fig.height=5, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.">>=
+<<fig.height=4.7, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.">>=
 plot(x = 0:12, y = acf(Homicidios, plot = FALSE, lag.max = 12)$acf, ylab = "", type = "h", col = 1,xlab="Rezago",xaxt="n")
 axis(1, at = 0:12)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
@@ -284,12 +284,12 @@ for(i in 1:4){
 #=== Compute the marginal distribution ( called " dstat " below ) for mod2.
 #=== This is also the long - term forecast .
 delta <- pois.HMM.stadist(mod2)
+h <- 80
+xf <- 0:80
 
 dstat <- numeric(length(xf))
 for(j in 1:mod2$m) dstat <- dstat + delta[j] * dpois(xf, mod2$lambda[j])
 #=== Compare the 50- year - ahead forecast with the long - term forecast.
-h <- 50
-xf <- 5:50
 forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
 fc <- forecasts[,h]
 par(mfrow = c(1, 1), las = 1)
@@ -303,9 +303,11 @@ lines(xf, dstat, col = "chartreuse2", lwd = 3)
 
 %http://www.scielo.br/pdf/csc/v17n12/06.pdf
 
+\clearpage
+
 \subsubsection*{Estimación Bayesiana del PHMM}
 
-<<include=FALSE, cache=TRUE>>=
+<<include=FALSE, cache=TRUE, eval=FALSE>>=
 # Modelo de 2 estados - 9.60 seg
 system.time(
 PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
@@ -323,7 +325,7 @@ system.time(
 PHHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 @
 
-<<cache=TRUE>>=
+<<cache=TRUE, eval=FALSE>>=
 library(bridgesampling)
 # estimates of the log marginal likelihoods
 set.seed(1)
@@ -347,27 +349,73 @@ bf(bridge_H1, bridge_H3) # fuertemente a favor de H1 125542040.73572
 bf(bridge_H2, bridge_H3) # fuertemente a favor de H2 128023.60921
 @
 
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$-verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery(1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de mmuestreo por puente, no presenta ese problema además de su facil implementación. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado:
+
+<<results='asis'>>=
+FactorBayes <- data.frame("mod 2 Estados" = c(NA, 3.10770, 3047.46, 390147608),
+                          "mod 3 Estados" = c(NA, NA, 980.61, 125542040),
+                          "mod 4 Estados" = c(NA, NA, NA, 128023), check.names = F)
+rownames(FactorBayes) <- c("mod 2 Estados", "mod 3 Estados", "mod 4 Estados", "mod 5 Estados")
+xtable(FactorBayes, caption = "Comparación resultados Factor de Bayes.")
+@
+
+<<include=FALSE, cache=TRUE>>=
+system.time(
+PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, 
+                            control = list(adapt_delta = 0.99)))
+@
+
+Por lo tanto se elige un PHMM de orden 2 lo cual coincide con la teoría clásica. A continuación mostramos las estimaciones:
+
+<<results='asis'>>=
+resumenPHMM <- summary(PHHMM_2states)$summary
+#colnames(resumenPHMM) <- c("Media","Err.Sta","Desv","2.5%","25%","50%","75%","97.5%","n_eff","Rhat")
+#rownames(resumenPHMM) <- c("$\\A_{11}$","$\\A_{12}$","$\\A_{21}$","$\\A_{22}$","$\\lambda_1$","$\\lambda_2$","$lp__$")
+print(xtable(resumenPHMM))#, sanitize.colnames.function = identity)
+@
 
 <<>>=
 # Extract posterior draws for later use
 posterior <- as.array(PHHMM_2states)
-
 lp_cp <- log_posterior(PHHMM_2states)
 np_cp <- nuts_params(PHHMM_2states)
 color_scheme_set("mix-brightblue-gray")
 mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]",
-                                              "lambda[1]","lambda[2]"), off_diag_args = list(size = 0.75))
-
+                                           "lambda[1]","lambda[2]"), off_diag_args = list(size = 0.75))
 @
 
+<<>>=
+traceplot(PHHMM_2states)
+@
 
 Para la estimación bayesiana primero vamos a elegir el número apropiado de estados utilizando el factor de Bayes
-
-
 
 <<results='asis'>>=
 resultado1 <- as.data.frame(summary(PHHMM_2states)$summary)
 xtable(resultado1)
+@
+
+<<>>=
+color_scheme_set("red")
+mcmc_intervals(posterior, pars = c("Gamma[1,1]", "Gamma[1,2]", "Gamma[2,1]", "Gamma[2,2]"))
+mcmc_intervals(posterior, pars = c("lambda[1]", "lambda[2]"))
+@
+
+<<>>=
+library(coda)
+PHMM_mcmc <- as.mcmc(as.matrix(PHHMM_2states))
+Test_HyW <- heidel.diag(PHMM_mcmc)
+Test_HyW
+@
+
+
+\subsection{Modelo Poisson Cero inflado - Oculto de Markov}
+
+<<>>=
+rm(list = ls())
+library(Bayeshmmcts)
+data(incendios)
+head(incendios)
 @
 
 
