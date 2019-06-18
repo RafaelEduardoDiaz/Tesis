@@ -81,7 +81,7 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:42 2019
+% Tue Jun 18 22:54:08 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -104,7 +104,7 @@ Las estadísticas sobre incendios en Colombia, permiten en términos generales, 
 
 [1] ".preformat.ts"
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:43 2019
+% Tue Jun 18 22:54:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -196,7 +196,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:44 2019
+% Tue Jun 18 22:54:10 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -241,7 +241,7 @@ $$
 Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF son los siguientes:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:44 2019
+% Tue Jun 18 22:54:10 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -287,7 +287,7 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 \subsubsection*{Algoritmo Viterbi}
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:44 2019
+% Tue Jun 18 22:54:10 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -315,7 +315,7 @@ El algoritmo Viterbi, permite realizar la decodificación global de los estados 
 Ahora realizaremos la predicción de los estados para un rezago $h = 12$, dado y de la distribución para una año en especifico.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:45 2019
+% Tue Jun 18 22:54:11 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrr}
@@ -377,20 +377,19 @@ Ahora realizaremos la predicción de los estados para un rezago $h = 12$, dado y
 
 
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$-verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery(1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de mmuestreo por puente, no presenta ese problema además de su facil implementación. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado:
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$-verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery(1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función `bridge_sampler()` del paquete `bridgesampling`, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.0742$ \%, mientras que para el modelo de 3 estados el error es de $3.22$ \% aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:45 2019
+% Tue Jun 18 22:54:11 2019
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrrr}
+\begin{tabular}{rrrrr}
   \hline
- & mod 2 Estados & mod 3 Estados & mod 4 Estados \\ 
+ & mod 2 Estados & mod 3 Estados & mod 4 Estados & mod 5 Estados \\ 
   \hline
-mod 2 Estados &  &  &  \\ 
-  mod 3 Estados & 3.11 &  &  \\ 
-  mod 4 Estados & 3047.46 & 980.61 &  \\ 
-  mod 5 Estados & 390147608.00 & 125542040.00 & 128023.00 \\ 
+mod 2 Estados &  & 3.11 & 3047.46 & 390147608.00 \\ 
+  mod 3 Estados &  &  & 980.61 & 125542040.00 \\ 
+  mod 4 Estados &  &  &  & 128023.00 \\ 
    \hline
 \end{tabular}
 \caption{Comparación resultados Factor de Bayes.} 
@@ -399,23 +398,23 @@ mod 2 Estados &  &  &  \\
 
 
 
-Por lo tanto se elige un PHMM de orden 2 lo cual coincide con la teoría clásica. A continuación mostramos las estimaciones:
+Por lo tanto se elige un PHMM de orden 2 lo cual coincide con la teoría clásica. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:45 2019
+% Tue Jun 18 22:54:11 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrr}
   \hline
  & mean & se\_mean & sd & 2.5\% & 25\% & 50\% & 75\% & 97.5\% & n\_eff & Rhat \\ 
   \hline
-Gamma[1,1] & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 1431.78 & 1.00 \\ 
-  Gamma[1,2] & 0.05 & 0.00 & 0.03 & 0.01 & 0.02 & 0.04 & 0.06 & 0.13 & 1431.78 & 1.00 \\ 
-  Gamma[2,1] & 0.10 & 0.00 & 0.06 & 0.01 & 0.05 & 0.09 & 0.13 & 0.26 & 1020.51 & 1.00 \\ 
-  Gamma[2,2] & 0.90 & 0.00 & 0.06 & 0.74 & 0.87 & 0.91 & 0.95 & 0.99 & 1020.51 & 1.00 \\ 
-  lambda[1] & 29.74 & 0.03 & 0.93 & 27.99 & 29.11 & 29.72 & 30.37 & 31.67 & 1143.40 & 1.00 \\ 
-  lambda[2] & 62.72 & 0.05 & 1.89 & 59.18 & 61.43 & 62.69 & 64.04 & 66.42 & 1508.00 & 1.00 \\ 
-  lp\_\_ & -210.55 & 0.06 & 1.46 & -214.28 & -211.33 & -210.18 & -209.49 & -208.73 & 586.18 & 1.00 \\ 
+Gamma[1,1] & 0.95 & 0.00 & 0.03 & 0.87 & 0.93 & 0.96 & 0.98 & 0.99 & 1180.11 & 1.00 \\ 
+  Gamma[1,2] & 0.05 & 0.00 & 0.03 & 0.01 & 0.02 & 0.04 & 0.07 & 0.13 & 1180.11 & 1.00 \\ 
+  Gamma[2,1] & 0.10 & 0.00 & 0.06 & 0.01 & 0.05 & 0.09 & 0.14 & 0.25 & 1232.99 & 1.00 \\ 
+  Gamma[2,2] & 0.90 & 0.00 & 0.06 & 0.75 & 0.86 & 0.91 & 0.95 & 0.99 & 1232.99 & 1.00 \\ 
+  lambda[1] & 29.68 & 0.03 & 0.88 & 28.00 & 29.06 & 29.68 & 30.29 & 31.41 & 1193.62 & 1.00 \\ 
+  lambda[2] & 62.69 & 0.06 & 1.95 & 58.98 & 61.42 & 62.72 & 64.01 & 66.46 & 1089.96 & 1.00 \\ 
+  lp\_\_ & -210.57 & 0.05 & 1.50 & -214.33 & -211.20 & -210.24 & -209.52 & -208.75 & 1068.37 & 1.00 \\ 
    \hline
 \end{tabular}
 \end{table}
@@ -433,33 +432,12 @@ Gamma[1,1] & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 1431.78 & 1
 
 \end{knitrout}
 
-Para la estimación bayesiana primero vamos a elegir el número apropiado de estados utilizando el factor de Bayes
-
-% latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Tue Jun 18 19:25:55 2019
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrrrrr}
-  \hline
- & mean & se\_mean & sd & 2.5\% & 25\% & 50\% & 75\% & 97.5\% & n\_eff & Rhat \\ 
-  \hline
-Gamma[1,1] & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 1431.78 & 1.00 \\ 
-  Gamma[1,2] & 0.05 & 0.00 & 0.03 & 0.01 & 0.02 & 0.04 & 0.06 & 0.13 & 1431.78 & 1.00 \\ 
-  Gamma[2,1] & 0.10 & 0.00 & 0.06 & 0.01 & 0.05 & 0.09 & 0.13 & 0.26 & 1020.51 & 1.00 \\ 
-  Gamma[2,2] & 0.90 & 0.00 & 0.06 & 0.74 & 0.87 & 0.91 & 0.95 & 0.99 & 1020.51 & 1.00 \\ 
-  lambda[1] & 29.74 & 0.03 & 0.93 & 27.99 & 29.11 & 29.72 & 30.37 & 31.67 & 1143.40 & 1.00 \\ 
-  lambda[2] & 62.72 & 0.05 & 1.89 & 59.18 & 61.43 & 62.69 & 64.04 & 66.42 & 1508.00 & 1.00 \\ 
-  lp\_\_ & -210.55 & 0.06 & 1.46 & -214.28 & -211.33 & -210.18 & -209.49 & -208.73 & 586.18 & 1.00 \\ 
-   \hline
-\end{tabular}
-\end{table}
-
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-1} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-30-1} 
 
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-2} 
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-30-2} 
 
 \end{knitrout}
 
@@ -469,23 +447,23 @@ Gamma[1,1] & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 1431.78 & 1
 ##                                          
 ##            Stationarity start     p-value
 ##            test         iteration        
-## Gamma[1,1] passed       1         0.510  
-## Gamma[2,1] passed       1         0.282  
-## Gamma[1,2] passed       1         0.510  
-## Gamma[2,2] passed       1         0.282  
-## lambda[1]  passed       1         0.449  
-## lambda[2]  passed       1         0.747  
-## lp__       passed       1         0.516  
+## Gamma[1,1] passed       1         0.0765 
+## Gamma[2,1] passed       1         0.1884 
+## Gamma[1,2] passed       1         0.0765 
+## Gamma[2,2] passed       1         0.1884 
+## lambda[1]  passed       1         0.8587 
+## lambda[2]  passed       1         0.5854 
+## lp__       passed       1         0.7470 
 ##                                         
 ##            Halfwidth Mean      Halfwidth
 ##            test                         
-## Gamma[1,1] passed       0.9518 0.00164  
-## Gamma[2,1] passed       0.1010 0.00412  
-## Gamma[1,2] passed       0.0482 0.00164  
-## Gamma[2,2] passed       0.8990 0.00412  
-## lambda[1]  passed      29.7419 0.05514  
-## lambda[2]  passed      62.7245 0.09162  
-## lp__       passed    -210.5536 0.12087
+## Gamma[1,1] passed       0.9518 0.00183  
+## Gamma[2,1] passed       0.0990 0.00350  
+## Gamma[1,2] passed       0.0482 0.00183  
+## Gamma[2,2] passed       0.9010 0.00350  
+## lambda[1]  passed      29.6772 0.04900  
+## lambda[2]  passed      62.6925 0.11668  
+## lp__       passed    -210.5730 0.09063
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -493,16 +471,40 @@ Gamma[1,1] & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 1431.78 & 1
 
 \subsection{Modelo Poisson Cero inflado - Oculto de Markov}
 
+
+
+
+% latex table generated in R 3.4.4 by xtable 1.8-4 package
+% Tue Jun 18 22:54:22 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlr}
+  \hline
+ & Fecha & GIF \\ 
+  \hline
+1 & 2002-01 &   0 \\ 
+  2 & 2002-02 &   1 \\ 
+  3 & 2002-03 &   4 \\ 
+  4 & 2002-04 &   0 \\ 
+  5 & 2002-05 &   0 \\ 
+  6 & 2002-06 &   0 \\ 
+   \hline
+\end{tabular}
+\caption{Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.} 
+\end{table}
+
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-##     Fecha GIF
-## 1 2002-01   0
-## 2 2002-02   1
-## 3 2002-03   4
-## 4 2002-04   0
-## 5 2002-05   0
-## 6 2002-06   0
+## 
+##   0   1   2   3   4   5   6   8  10  11  16  18  20  23 
+## 124  19   9   8   6   1   5   1   2   1   1   1   1   1
+## 
+##     0     1     2     3     4     5     6     8    10    11    16    18 
+## 0.689 0.106 0.050 0.044 0.033 0.006 0.028 0.006 0.011 0.006 0.006 0.006 
+##    20    23 
+## 0.006 0.006
 \end{verbatim}
 \end{kframe}
 \end{knitrout}

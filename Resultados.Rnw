@@ -195,7 +195,7 @@ colnames(ACFHMM) <- 1:12
 xtable(ACFHMM, caption = "Datos homicidios: ACF y ACF de los cuatro modelos hasta el rezago 12.")
 @
 
-<<fig.height=4.7, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.">>=
+<<fig.height=4.3, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.">>=
 plot(x = 0:12, y = acf(Homicidios, plot = FALSE, lag.max = 12)$acf, ylab = "", type = "h", col = 1,xlab="Rezago",xaxt="n")
 axis(1, at = 0:12)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
@@ -310,19 +310,19 @@ lines(xf, dstat, col = "chartreuse2", lwd = 3)
 <<include=FALSE, cache=TRUE, eval=FALSE>>=
 # Modelo de 2 estados - 9.60 seg
 system.time(
-PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
+PHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
 
 # Modelo de 3 estados - 45.70
 system.time(
-PHHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
+PHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
 
 # Modelo de 4 estados - 1345.76
 system.time(
-PHHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
+PHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 
 # Modelo de 5 estados - 1943.18
 system.time(
-PHHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
+PHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 @
 
 <<cache=TRUE, eval=FALSE>>=
@@ -349,53 +349,54 @@ bf(bridge_H1, bridge_H3) # fuertemente a favor de H1 125542040.73572
 bf(bridge_H2, bridge_H3) # fuertemente a favor de H2 128023.60921
 @
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$-verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery(1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de mmuestreo por puente, no presenta ese problema además de su facil implementación. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado:
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$-verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery(1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función `bridge_sampler()` del paquete `bridgesampling`, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.0742 \%$, mientras que para el modelo de 3 estados el error es de $3.22 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
 
 <<results='asis'>>=
 FactorBayes <- data.frame("mod 2 Estados" = c(NA, 3.10770, 3047.46, 390147608),
                           "mod 3 Estados" = c(NA, NA, 980.61, 125542040),
                           "mod 4 Estados" = c(NA, NA, NA, 128023), check.names = F)
 rownames(FactorBayes) <- c("mod 2 Estados", "mod 3 Estados", "mod 4 Estados", "mod 5 Estados")
-xtable(FactorBayes, caption = "Comparación resultados Factor de Bayes.")
+xtable(t(FactorBayes), caption = "Comparación resultados Factor de Bayes.")
 @
 
 <<include=FALSE, cache=TRUE>>=
 system.time(
-PHHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, 
+PHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 2500, thin = 3, 
                             control = list(adapt_delta = 0.99)))
+set.seed(3)
+bridge_H0 <- bridge_sampler(samples = PHMM_2states)
+error_measures(bridge_H0)
 @
 
-Por lo tanto se elige un PHMM de orden 2 lo cual coincide con la teoría clásica. A continuación mostramos las estimaciones:
+Por lo tanto se elige un PHMM de orden 2 lo cual coincide con la teoría clásica. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 <<results='asis'>>=
-resumenPHMM <- summary(PHHMM_2states)$summary
+resumenPHMM <- as.data.frame(summary(PHMM_2states)$summary)
 #colnames(resumenPHMM) <- c("Media","Err.Sta","Desv","2.5%","25%","50%","75%","97.5%","n_eff","Rhat")
 #rownames(resumenPHMM) <- c("$\\A_{11}$","$\\A_{12}$","$\\A_{21}$","$\\A_{22}$","$\\lambda_1$","$\\lambda_2$","$lp__$")
 print(xtable(resumenPHMM))#, sanitize.colnames.function = identity)
+A_bayes <- matrix(resumenPHMM$mean[1:4], 2,2)
+lambda_bayes <- resumenPHMM$mean[5:6]
 @
 
 <<>>=
 # Extract posterior draws for later use
-posterior <- as.array(PHHMM_2states)
-lp_cp <- log_posterior(PHHMM_2states)
-np_cp <- nuts_params(PHHMM_2states)
+posterior <- as.array(PHMM_2states)
+lp_cp <- log_posterior(PHMM_2states)
+np_cp <- nuts_params(PHMM_2states)
 color_scheme_set("mix-brightblue-gray")
 mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]",
                                            "lambda[1]","lambda[2]"), off_diag_args = list(size = 0.75))
+#mcmc_acf(posterior,pars=c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]","lambda[1]","lambda[2]"))
+#mcmc_acf_bar(x=posterior,pars=c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]","lambda[1]","lambda[2]"))
 @
 
 <<>>=
-traceplot(PHHMM_2states)
+traceplot(PHMM_2states)
 @
 
-Para la estimación bayesiana primero vamos a elegir el número apropiado de estados utilizando el factor de Bayes
 
-<<results='asis'>>=
-resultado1 <- as.data.frame(summary(PHHMM_2states)$summary)
-xtable(resultado1)
-@
-
-<<>>=
+<<fig.width=6, fig.height=4.5>>=
 color_scheme_set("red")
 mcmc_intervals(posterior, pars = c("Gamma[1,1]", "Gamma[1,2]", "Gamma[2,1]", "Gamma[2,2]"))
 mcmc_intervals(posterior, pars = c("lambda[1]", "lambda[2]"))
@@ -403,7 +404,7 @@ mcmc_intervals(posterior, pars = c("lambda[1]", "lambda[2]"))
 
 <<>>=
 library(coda)
-PHMM_mcmc <- as.mcmc(as.matrix(PHHMM_2states))
+PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
 Test_HyW <- heidel.diag(PHMM_mcmc)
 Test_HyW
 @
@@ -414,8 +415,18 @@ Test_HyW
 <<>>=
 rm(list = ls())
 library(Bayeshmmcts)
+#library(ziphsmm)
 data(incendios)
-head(incendios)
+@
+
+
+<<results='asis'>>=
+xtable(head(incendios), caption = "Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.")
+@
+
+<<>>=
+table(incendios$GIF)
+round(prop.table(table(incendios$GIF)),3)
 @
 
 
