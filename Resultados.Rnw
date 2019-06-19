@@ -10,6 +10,9 @@
 \hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=blue}
 \title{Resultados} % Agregar titulo
 \author{Rafael Eduardo Diaz} % Agregar Nombre
+
+\setlength{\abovecaptionskip}{2pt plus 1pt minus 0pt} % Chosen fairly arbitrarily
+
 <<echo=FALSE>>=
 opts_chunk$set(background = "#e8e8e8", tidy = TRUE,echo = FALSE, message = FALSE, warning = FALSE)
 @
@@ -156,15 +159,15 @@ Tabla1 <- data.frame(
 xtable(Tabla1, caption = "Datos homicidios: comparación de modelos ocultos de Markov (estacionarios) por AIC y BIC.")
 @
 
-Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en serie manifestada en la Figura 2, no es sorprendente que los modelos de mezcla independientes no tengan un buen desempeño en relación con los HMM. En segundo lugar, aunque quizás sea obvio a priori que ni siquiera se debe intentar establecer un modelo con un máximo de 16 o 25 parámetros para 59 observaciones, y observaciones dependientes, es interesante explorar las funciones de verosimilitud en el caso de HMM con cuatro y cinco estados. La verosimilitud parece ser altamente multimodal en estos casos, y es fácil encontrar varios máximos locales utilizando diferentes valores de inicio. Una estrategia que parece tener éxito en estos casos es comenzar todas las probabilidades de transición fuera de la diagonal en valores pequeños (como 0.1 o 0.05), mientras que para los valores de las medias estado dependientes se pueden usar los valores de los deciles, calculados a partir de la variable de interés.
-
-<<fig.height=4.5, fig.cap="Serie homicidios: selección de modelos AIC y BIC.", fig.pos='t'>>=
+<<fig.height=4.8, fig.cap="Serie homicidios: selección de modelos AIC y BIC.", fig.pos='h'>>=
 plot(x = 1:5, y = Tabla1$AIC[1:5], type = "o", pch = 16, lty = 2, xlim = c(1,6), xlab = "Número de estados", ylab = "")
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 lines(x = 1:5, y = Tabla1$AIC[1:5], type = "o", pch = 16, lty = 2)
 lines(x = 1:5, y = Tabla1$BIC[1:5], type = "o", pch = 16, lty = 2)
 text(x = c(5.3,5.3), y = c(435, 485), labels = c("AIC","BIC"))
 @
+
+Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en serie manifestada en la Figura 2, no es sorprendente que los modelos de mezcla independientes no tengan un buen desempeño en relación con los HMM. En segundo lugar, aunque quizás sea obvio a priori que ni siquiera se debe intentar establecer un modelo con un máximo de 16 o 25 parámetros para 59 observaciones, y observaciones dependientes, es interesante explorar las funciones de verosimilitud en el caso de HMM con cuatro y cinco estados. La verosimilitud parece ser altamente multimodal en estos casos, y es fácil encontrar varios máximos locales utilizando diferentes valores de inicio. Una estrategia que parece tener éxito en estos casos es comenzar todas las probabilidades de transición fuera de la diagonal en valores pequeños (como 0.1 o 0.05), mientras que para los valores de las medias estado dependientes se pueden usar los valores de los deciles, calculados a partir de la variable de interés.
 
 <<results='asis',eval=FALSE>>=
 M <- mod2$gamma
@@ -182,7 +185,7 @@ A = \begin{pmatrix}{}
 \end{pmatrix}
 $$
 
-Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF son los siguientes:
+Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
 <<results='asis'>>=
 ACFHMM <- data.frame(
@@ -195,7 +198,7 @@ colnames(ACFHMM) <- 1:12
 xtable(ACFHMM, caption = "Datos homicidios: ACF y ACF de los cuatro modelos hasta el rezago 12.")
 @
 
-<<fig.height=4, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.">>=
+<<fig.height=4.3, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.", fig.pos='h'>>=
 plot(x = 0:12, y = acf(Homicidios, plot = FALSE, lag.max = 12)$acf, ylab = "", type = "h", col = 1,xlab="Rezago",xaxt="n")
 axis(1, at = 0:12)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
@@ -207,13 +210,11 @@ abline(h = 0)
 
 En la Figura 6, de izquierda a derecha se muestran el ACF de las observaciones, la barra de color verde pertenece al modelo de dos estados y la azul al modelo de tres estados. Nos interesa ver como está yuxtapuesto los ACF de ambos modelos con respecto al ACF de las observaciones. Está claro que los ACF del modelo con tres estados corresponden bien con el ACF de las observaciones hasta aproximadamente el rezago 6, mientras que el modelo 2 estados coincide hasta el rezago 9. Sin embargo, se pueden aplicar diagnósticos más sistemáticos, como se mostrará a continuación.
 
-\clearpage
-
 \subsubsection*{Verificación de supuestos del PHMM}
 
 En este caso hemos elegido el BIC como criterio para la selección del mejor modelo como mostramos anteriormente, sin embargo sigue existiendo el problema de decidir si el modelo es realmente adecuado; por lo tanto se necesitan herramientas para evaluar la bondad general del ajuste del modelo e identificar valores atípicos en relación con el modelo. En el contexto más simple como por ejemplo los modelos de regresión (teoría normal), el papel que juegan los residuales como herramienta para la verificación del supuesto del modelo está muy bien establecido, entre estos supuestos están la normalidad de los residuales, la homocedasticidad y la independencia de estos. Los pseudo-residuos (también conocidos como residuos quantílicos) que se ilustraron en la sección tres tienen la intención de cumplir esta función de manera mucho más general, y que son útiles en el contexto de los HMM. 
 
-<<fig.cap="Grafico pseudo-residuales ordinarios para el PHMM de 2 estados.", fig.pos='h'>>=
+<<fig.cap="Grafico pseudo-residuales ordinarios para el PHMM de 2 estados.", fig.pos='h', fig.height=6.3>>=
 residuales <- pois.HMM.pseudo_residuals(x = Homicidios, mod = mod2)
 pois.HMM.plot.residuals(residuales)
 @
@@ -222,13 +223,13 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 
 \subsubsection*{Algoritmo Viterbi}
 
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
+
 <<results='asis'>>=
 viterbi2 <- pois.HMM.viterbi(x = Homicidios, mod = mod2)
 df2 <- rbind(viterbi2[1:20], viterbi2[21:40], viterbi2[41:60])
 print(xtable(df2, caption = "Resultados de la decodificación global con el algoritmo Viterbi.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
 @
-
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
 
 <<fig.width=8, fig.height=4, fig.cap="Algoritmo Viterbi aplicado a un PHMM de dos estados.">>=
 par(mfrow = c(1,2))
@@ -266,6 +267,7 @@ año <- homicidios[,1]
 Estad_pred <- as.data.frame(pois.HMM.state_prediction(h = 12, x = Homicidios, mod = mod2))
 colnames(Estad_pred) <- c("Estado 1","Estado 2")
 rownames(Estad_pred) <- año[59]+1:12
+Estad_pred$Estado <- apply(Estad_pred, 1, which.max)
 xtable(Estad_pred, caption = "Predicción de las probabilidades para un rezago h = 12.", digits = 4)
 @
 
@@ -277,16 +279,16 @@ forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
 par(mfrow = c(3, 4), las = 1)
 for(i in 1:h){
   fc <- forecasts[, i]
-  plot(xf, fc, type = "h", main = paste("Forecast distribution for", año[59] + i), 
-       xlim = c(5, max(xf+2)), ylim = c(0 ,0.1), 
-       xlab = "conteo", ylab = "probabilidad", lwd =3)
+  plot(xf, fc, type = "h", main = paste("Dist. pronós.", año[59] + i), 
+       xlim = c(5, max(xf+2)), ylim = c(0 ,0.1), cex.main = 0.85,
+       xlab = "conteo", ylab = "probabilidad", lwd = 1)
   rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
-  lines(xf, fc, type = "h", lwd = 3)
+  lines(xf, fc, type = "h", lwd = 1)
   }
 @
 
 
-<<fig.height=5, fig.cap="La distribución prónosticada para el año 2098">>=
+<<fig.height=5, fig.cap="La distribución prónosticada para el año 2098", fig.pos='t'>>=
 #=== Compute the marginal distribution ( called " dstat " below ) for mod2.
 #=== This is also the long - term forecast .
 delta <- pois.HMM.stadist(mod2)
@@ -399,12 +401,13 @@ print(xtable(df3, caption = "Resultados de la decodificación global bayesiana c
 B_state_pred <- as.data.frame(bayes.state_prediction(h = 12, x = Homicidios, model = PHMM_2states,m = 2))
 colnames(B_state_pred) <- c("Estado 1","Estado 2")
 rownames(B_state_pred) <- año[59]+1:12
+B_state_pred$Estado <- apply(B_state_pred, 1, which.max)
 xtable(B_state_pred, caption = "Predicción bayesiana de las probabilidades para un rezago h = 12.", digits = 4)
 @
 
 \subsubsection*{Diagnosticos de la cadena}
 
-<<cache=TRUE>>=
+<<>>=
 # Extract posterior draws for later use
 posterior <- as.array(PHMM_2states)
 lp_cp <- log_posterior(PHMM_2states)
@@ -422,9 +425,11 @@ traceplot(PHMM_2states)
 
 
 <<fig.width=6, fig.height=4.5>>=
+library(gridExtra)
 color_scheme_set("red")
-mcmc_intervals(posterior, pars = c("Gamma[1,1]", "Gamma[1,2]", "Gamma[2,1]", "Gamma[2,2]"))
-mcmc_intervals(posterior, pars = c("lambda[1]", "lambda[2]"))
+p1 <- mcmc_intervals(posterior, pars = c("Gamma[1,1]", "Gamma[1,2]", "Gamma[2,1]", "Gamma[2,2]"))
+p2 <- mcmc_intervals(posterior, pars = c("lambda[1]", "lambda[2]"))
+grid.arrange(p1, p2, ncol = 2)
 @
 
 <<>>=

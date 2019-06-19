@@ -61,6 +61,9 @@
 \title{Resultados} % Agregar titulo
 \author{Rafael Eduardo Diaz} % Agregar Nombre
 
+\setlength{\abovecaptionskip}{2pt plus 1pt minus 0pt} % Chosen fairly arbitrarily
+
+
 
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
@@ -81,7 +84,7 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:17 2019
+% Wed Jun 19 22:35:04 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -104,7 +107,7 @@ Las estadísticas sobre incendios en Colombia, permiten en términos generales, 
 
 [1] ".preformat.ts"
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:18 2019
+% Wed Jun 19 22:35:05 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -196,7 +199,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:21 2019
+% Wed Jun 19 22:35:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -217,15 +220,15 @@ Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y 
 \end{table}
 
 
-Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en serie manifestada en la Figura 2, no es sorprendente que los modelos de mezcla independientes no tengan un buen desempeño en relación con los HMM. En segundo lugar, aunque quizás sea obvio a priori que ni siquiera se debe intentar establecer un modelo con un máximo de 16 o 25 parámetros para 59 observaciones, y observaciones dependientes, es interesante explorar las funciones de verosimilitud en el caso de HMM con cuatro y cinco estados. La verosimilitud parece ser altamente multimodal en estos casos, y es fácil encontrar varios máximos locales utilizando diferentes valores de inicio. Una estrategia que parece tener éxito en estos casos es comenzar todas las probabilidades de transición fuera de la diagonal en valores pequeños (como 0.1 o 0.05), mientras que para los valores de las medias estado dependientes se pueden usar los valores de los deciles, calculados a partir de la variable de interés.
-
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[t]
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} \caption[Serie homicidios]{Serie homicidios: selección de modelos AIC y BIC.}\label{fig:unnamed-chunk-12}
 \end{figure}
 
 
 \end{knitrout}
+
+Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en serie manifestada en la Figura 2, no es sorprendente que los modelos de mezcla independientes no tengan un buen desempeño en relación con los HMM. En segundo lugar, aunque quizás sea obvio a priori que ni siquiera se debe intentar establecer un modelo con un máximo de 16 o 25 parámetros para 59 observaciones, y observaciones dependientes, es interesante explorar las funciones de verosimilitud en el caso de HMM con cuatro y cinco estados. La verosimilitud parece ser altamente multimodal en estos casos, y es fácil encontrar varios máximos locales utilizando diferentes valores de inicio. Una estrategia que parece tener éxito en estos casos es comenzar todas las probabilidades de transición fuera de la diagonal en valores pequeños (como 0.1 o 0.05), mientras que para los valores de las medias estado dependientes se pueden usar los valores de los deciles, calculados a partir de la variable de interés.
 
 
 
@@ -238,10 +241,10 @@ A = \begin{pmatrix}{}
 \end{pmatrix}
 $$
 
-Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF son los siguientes:
+Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:22 2019
+% Wed Jun 19 22:35:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -259,7 +262,7 @@ observaciones & 0.94 & 0.89 & 0.83 & 0.75 & 0.67 & 0.58 & 0.49 & 0.39 & 0.30 & 0
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} \caption[Datos homicidios]{Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.}\label{fig:unnamed-chunk-15}
 \end{figure}
 
@@ -267,8 +270,6 @@ observaciones & 0.94 & 0.89 & 0.83 & 0.75 & 0.67 & 0.58 & 0.49 & 0.39 & 0.30 & 0
 \end{knitrout}
 
 En la Figura 6, de izquierda a derecha se muestran el ACF de las observaciones, la barra de color verde pertenece al modelo de dos estados y la azul al modelo de tres estados. Nos interesa ver como está yuxtapuesto los ACF de ambos modelos con respecto al ACF de las observaciones. Está claro que los ACF del modelo con tres estados corresponden bien con el ACF de las observaciones hasta aproximadamente el rezago 6, mientras que el modelo 2 estados coincide hasta el rezago 9. Sin embargo, se pueden aplicar diagnósticos más sistemáticos, como se mostrará a continuación.
-
-\clearpage
 
 \subsubsection*{Verificación de supuestos del PHMM}
 
@@ -286,8 +287,10 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 
 \subsubsection*{Algoritmo Viterbi}
 
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
+
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:22 2019
+% Wed Jun 19 22:35:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -302,8 +305,6 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 \end{table}
 
 
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
-
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-18-1} \caption[Algoritmo Viterbi aplicado a un PHMM de dos estados]{Algoritmo Viterbi aplicado a un PHMM de dos estados.}\label{fig:unnamed-chunk-18}
@@ -315,25 +316,25 @@ El algoritmo Viterbi, permite realizar la decodificación global de los estados 
 Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:22 2019
+% Wed Jun 19 22:35:09 2019
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrr}
+\begin{tabular}{rrrr}
   \hline
- & Estado 1 & Estado 2 \\ 
+ & Estado 1 & Estado 2 & Estado \\ 
   \hline
-2019 & 0.9802 & 0.0198 \\ 
-  2020 & 0.9621 & 0.0379 \\ 
-  2021 & 0.9456 & 0.0544 \\ 
-  2022 & 0.9304 & 0.0696 \\ 
-  2023 & 0.9164 & 0.0836 \\ 
-  2024 & 0.9037 & 0.0963 \\ 
-  2025 & 0.8920 & 0.1080 \\ 
-  2026 & 0.8813 & 0.1187 \\ 
-  2027 & 0.8714 & 0.1286 \\ 
-  2028 & 0.8624 & 0.1376 \\ 
-  2029 & 0.8542 & 0.1458 \\ 
-  2030 & 0.8467 & 0.1533 \\ 
+2019 & 0.9802 & 0.0198 &     1 \\ 
+  2020 & 0.9621 & 0.0379 &     1 \\ 
+  2021 & 0.9456 & 0.0544 &     1 \\ 
+  2022 & 0.9304 & 0.0696 &     1 \\ 
+  2023 & 0.9164 & 0.0836 &     1 \\ 
+  2024 & 0.9037 & 0.0963 &     1 \\ 
+  2025 & 0.8920 & 0.1080 &     1 \\ 
+  2026 & 0.8813 & 0.1187 &     1 \\ 
+  2027 & 0.8714 & 0.1286 &     1 \\ 
+  2028 & 0.8624 & 0.1376 &     1 \\ 
+  2029 & 0.8542 & 0.1458 &     1 \\ 
+  2030 & 0.8467 & 0.1533 &     1 \\ 
    \hline
 \end{tabular}
 \caption{Predicción de las probabilidades para un rezago h = 12.} 
@@ -350,7 +351,7 @@ Ahora realizaremos la predicción de los estados más probables para los proximo
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[t]
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} \caption[La distribución prónosticada para el año 2098]{La distribución prónosticada para el año 2098}\label{fig:unnamed-chunk-21}
 \end{figure}
 
@@ -370,7 +371,7 @@ Ahora realizaremos la predicción de los estados más probables para los proximo
 Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.527 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:22 2019
+% Wed Jun 19 22:35:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -391,7 +392,7 @@ mod 2 Estados &  & 3.36 & 3047.46 & 390147608.00 \\
 Por lo tanto se ajusta un PHMM de orden 2 lo cual coincide con la teoría clásica. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:23 2019
+% Wed Jun 19 22:35:10 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrr}
@@ -411,7 +412,7 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:23 2019
+% Wed Jun 19 22:35:10 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -428,25 +429,25 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:23 2019
+% Wed Jun 19 22:35:10 2019
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrr}
+\begin{tabular}{rrrr}
   \hline
- & Estado 1 & Estado 2 \\ 
+ & Estado 1 & Estado 2 & Estado \\ 
   \hline
-2019 & 0.7832 & 0.2168 \\ 
-  2020 & 0.6289 & 0.3711 \\ 
-  2021 & 0.5193 & 0.4807 \\ 
-  2022 & 0.4413 & 0.5587 \\ 
-  2023 & 0.3858 & 0.6142 \\ 
-  2024 & 0.3463 & 0.6537 \\ 
-  2025 & 0.3182 & 0.6818 \\ 
-  2026 & 0.2983 & 0.7017 \\ 
-  2027 & 0.2841 & 0.7159 \\ 
-  2028 & 0.2740 & 0.7260 \\ 
-  2029 & 0.2668 & 0.7332 \\ 
-  2030 & 0.2617 & 0.7383 \\ 
+2019 & 0.7832 & 0.2168 &     1 \\ 
+  2020 & 0.6289 & 0.3711 &     1 \\ 
+  2021 & 0.5193 & 0.4807 &     1 \\ 
+  2022 & 0.4413 & 0.5587 &     2 \\ 
+  2023 & 0.3858 & 0.6142 &     2 \\ 
+  2024 & 0.3463 & 0.6537 &     2 \\ 
+  2025 & 0.3182 & 0.6818 &     2 \\ 
+  2026 & 0.2983 & 0.7017 &     2 \\ 
+  2027 & 0.2841 & 0.7159 &     2 \\ 
+  2028 & 0.2740 & 0.7260 &     2 \\ 
+  2029 & 0.2668 & 0.7332 &     2 \\ 
+  2030 & 0.2617 & 0.7383 &     2 \\ 
    \hline
 \end{tabular}
 \caption{Predicción bayesiana de las probabilidades para un rezago h = 12.} 
@@ -471,8 +472,6 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
 \includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-1} 
-
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-2} 
 
 \end{knitrout}
 
@@ -510,7 +509,7 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 19:22:46 2019
+% Wed Jun 19 22:35:34 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlr}
