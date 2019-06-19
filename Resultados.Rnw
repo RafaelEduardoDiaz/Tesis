@@ -259,7 +259,7 @@ lines(xf, dstat2, col = "blue", lwd = 2)
 lines(x = mod2$lambda, y = c(max(dstat1), max(dstat2)), type = "h", col = c("red", "blue"), lwd = 2, lty = 2)
 @
 
-Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario, .
+Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario.
 
 <<results='asis'>>=
 año <- homicidios[,1]
@@ -313,7 +313,7 @@ lines(xf, dstat, col = "chartreuse2", lwd = 3)
 
 \subsubsection*{Estimación Bayesiana del PHMM}
 
-<<include=FALSE, cache=TRUE, eval=FALSE>>=
+<<eval=FALSE>>=
 # Modelo de 2 estados - 9.60 seg
 system.time(
 PHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
@@ -331,7 +331,7 @@ system.time(
 PHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 @
 
-<<cache=TRUE, eval=FALSE>>=
+<<eval=FALSE>>=
 library(bridgesampling)
 # estimates of the log marginal likelihoods
 set.seed(1)
@@ -355,7 +355,7 @@ bf(bridge_H1, bridge_H3) # fuertemente a favor de H1 125542040.73572
 bf(bridge_H2, bridge_H3) # fuertemente a favor de H2 128023.60921
 @
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la \log - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery(1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función `bridge_sampler` del paquete `bridgesampling`, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de 0.616 \%, mientras que para el modelo de 3 estados el error es de 3.11 \% aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.527 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
 
 <<results='asis'>>=
 FactorBayes <- data.frame("mod 2 Estados" = c(NA, 3.36230, 3047.46, 390147608),
@@ -375,7 +375,6 @@ bridge_H0 <- bridge_sampler(samples = PHMM_2states)
 error_measures(bridge_H0)
 @
 
-
 Por lo tanto se ajusta un PHMM de orden 2 lo cual coincide con la teoría clásica. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 <<results='asis'>>=
@@ -387,11 +386,20 @@ A_bayes <- matrix(resumenPHMM$mean[1:4], 2,2)
 lambda_bayes <- resumenPHMM$mean[5:6]
 @
 
-<<>>=
+<<results='asis'>>=
 source("Bayes_fun.R")
-bayes.viterbi(x = Homicidios, model = PHMM_2states, m = 2)
+B_vitervi <- bayes.viterbi(x = Homicidios, model = PHMM_2states, m = 2)
 # bayes.lforward(x = Homicidios, model = PHMM_2states, m = 2)
-bayes.state_prediction(h = 12, x = Homicidios, model = PHMM_2states, m = 2)
+df3 <- rbind(B_vitervi[1:20], B_vitervi[21:40], B_vitervi[41:60])
+print(xtable(df3, caption = "Resultados de la decodificación global bayesiana con el algoritmo Viterbi.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
+@
+
+
+<<results='asis'>>=
+B_state_pred <- as.data.frame(bayes.state_prediction(h = 12, x = Homicidios, model = PHMM_2states,m = 2))
+colnames(B_state_pred) <- c("Estado 1","Estado 2")
+rownames(B_state_pred) <- año[59]+1:12
+xtable(B_state_pred, caption = "Predicción bayesiana de las probabilidades para un rezago h = 12.", digits = 4)
 @
 
 \subsubsection*{Diagnosticos de la cadena}

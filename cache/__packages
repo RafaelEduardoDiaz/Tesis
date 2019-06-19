@@ -6,12 +6,12 @@ stargazer
 scales
 Bayeshmmcts
 broom
-lattice
-flexmix
-Matrix
-expm
 bayesplot
 ggplot2
 StanHeaders
 rstan
 bridgesampling
+lattice
+flexmix
+Matrix
+expm
