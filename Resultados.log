@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.6.13)  20 JUN 2019 19:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.6.13)  20 JUN 2019 22:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1074,7 +1074,7 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 363.
  [10 <./figure/unnamed-chunk-21-1.pdf>]
-Overfull \hbox (15.60968pt too wide) in paragraph at lines 398--411
+Overfull \hbox (23.95416pt too wide) in paragraph at lines 398--411
  [][] 
  []
 
@@ -1120,38 +1120,8 @@ File: figure/unnamed-chunk-30-1.pdf Graphic file (type pdf)
 <use figure/unnamed-chunk-30-1.pdf>
 Package pdftex.def Info: figure/unnamed-chunk-30-1.pdf used on input line 474.
 (pdftex.def)             Requested size: 455.24411pt x 455.25046pt.
-
-
-! Package inputenc Error: Unicode char ´ (U+B4)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.474 ...rafico mcmc_pairs]{G´rafico mcmc_pairs.}
-                                                  \label{fig:unnamed-chunk-30}
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.474 ...rafico mcmc_pairs]{G´rafico mcmc_pairs.}
-                                                  \label{fig:unnamed-chunk-30}
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.474 ...rafico mcmc_pairs]{G´rafico mcmc_pairs.}
-                                                  \label{fig:unnamed-chunk-30}
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
 Package color Info: Redefining color shadecolor on input line 481.
+
 <figure/unnamed-chunk-31-1.pdf, id=187, 505.89pt x 361.35pt>
 File: figure/unnamed-chunk-31-1.pdf Graphic file (type pdf)
 
@@ -1242,59 +1212,50 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 501.
  [14 <./figure/unnamed-chunk-31-1.pdf> <./figure/unnamed-chunk-32-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 504.
+Package color Info: Redefining color shadecolor on input line 503.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 530.
+(babel)             in language  on input line 529.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 530.
+(babel)             in language  on input line 529.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 530.
+(babel)             in language  on input line 529.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 530.
+(babel)             in language  on input line 529.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 530.
+(babel)             in language  on input line 529.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 530.
+(babel)             in language  on input line 529.
+Package color Info: Redefining color shadecolor on input line 532.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 535.
+(babel)             in language  on input line 539.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 535.
+(babel)             in language  on input line 539.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 535.
+(babel)             in language  on input line 539.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 535.
+(babel)             in language  on input line 539.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 535.
+(babel)             in language  on input line 539.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 535.
-Package color Info: Redefining color shadecolor on input line 561.
-Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 576.
-Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 576.
-Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 576.
-Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 576.
-Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 576.
-Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 576.
-Package color Info: Redefining color shadecolor on input line 579.
-LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 582.
+(babel)             in language  on input line 539.
 
-Overfull \hbox (29.4878pt too wide) in paragraph at lines 590--590
-[][]\OT1/cmtt/m/it/10 ################################################### Poiss
-on - Hidden Markov Model ##########[][] 
- []
+! Missing $ inserted.
+<inserted text> 
+                $
+l.543 ...�s el promedio de GIF se ubico en 1.3 \pm
+                                                   3.5 incendio por mes.
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.544 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-Overfull \hbox (66.23747pt too wide) in paragraph at lines 595--595
-[][]\OT1/cmtt/m/it/10 ################################################### Zero 
-Inflated Poisson - Hidden Markov Model ###[][] 
- []
-
+Package color Info: Redefining color shadecolor on input line 572.
 Package babel Info: Redefining spanish shorthand <<
 (babel)             in language  on input line 601.
 Package babel Info: Redefining spanish shorthand >>
@@ -1320,67 +1281,126 @@ Package babel Info: Redefining spanish shorthand "!
 Package babel Info: Redefining spanish shorthand "?
 (babel)             in language  on input line 601.
 [15]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 606.
+Package color Info: Redefining color shadecolor on input line 607.
+ <figure/unnamed-chunk-38-1.pdf, id=241, 433.62pt x 252.945pt>
+File: figure/unnamed-chunk-38-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-38-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-38-1.pdf used on input line 608.
+(pdftex.def)             Requested size: 433.61894pt x 252.95595pt.
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 616.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 616.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 616.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 616.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 616.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 616.
+Package color Info: Redefining color shadecolor on input line 619.
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 622.
+
+Overfull \hbox (29.4878pt too wide) in paragraph at lines 630--630
+[][]\OT1/cmtt/m/it/10 ################################################### Poiss
+on - Hidden Markov Model ##########[][] 
+ []
+
+
+Overfull \hbox (66.23747pt too wide) in paragraph at lines 635--635
+[][]\OT1/cmtt/m/it/10 ################################################### Zero 
+Inflated Poisson - Hidden Markov Model ###[][] 
+ []
+
 Package babel Info: Redefining spanish shorthand <<
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 641.
 Package babel Info: Redefining spanish shorthand >>
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 641.
 Package babel Info: Redefining spanish shorthand "=
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 641.
 Package babel Info: Redefining spanish shorthand "~
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 641.
 Package babel Info: Redefining spanish shorthand "!
-(babel)             in language  on input line 606.
+(babel)             in language  on input line 641.
 Package babel Info: Redefining spanish shorthand "?
-(babel)             in language  on input line 606.
- [16]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 606.
+(babel)             in language  on input line 641.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 641.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 641.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 641.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 641.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 641.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 641.
+[16]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 646.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand <<
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand >>
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "=
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "~
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "!
+(babel)             in language  on input line 646.
+Package babel Info: Redefining spanish shorthand "?
+(babel)             in language  on input line 646.
+ [17 <./figure/unnamed-chunk-38-1.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 646.
  (./Resultados.aux
 LaTeX Info: Redefining \. on input line 23.
 LaTeX Info: Redefining \% on input line 23.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 606.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 606.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 646.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 646.
 Package rerunfilecheck Info: File `Resultados.out' has not changed.
 (rerunfilecheck)             Checksum: 8D74104BDFA42DB17A9089C29C1022CC;389.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 606.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 646.
  ) 
 Here is how much of TeX's memory you used:
- 7472 strings out of 493029
- 106170 string characters out of 6136234
- 221443 words of memory out of 5000000
- 10850 multiletter control sequences out of 15000+600000
+ 7479 strings out of 493029
+ 106360 string characters out of 6136234
+ 221548 words of memory out of 5000000
+ 10854 multiletter control sequences out of 15000+600000
  9705 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 29i,9n,32p,1303b,402s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 29i,9n,32p,1303b,406s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-msy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on Resultados.pdf (16 pages, 2348986 bytes).
+ist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10
+.pfb>
+Output written on Resultados.pdf (17 pages, 2428774 bytes).
 PDF statistics:
- 305 PDF objects out of 1000 (max. 8388607)
- 245 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
- 106 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 315 PDF objects out of 1000 (max. 8388607)
+ 253 compressed objects within 3 object streams
+ 54 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 

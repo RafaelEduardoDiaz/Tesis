@@ -97,7 +97,7 @@ polygon(d, col=alpha("cyan", 0.2))
 
 En la figura 3 se observa la función de autocorrelación muestral para la serie Tasa de homicidios hasta el rezago 30, como se evidencia existe una fuerte dependencia serial en los datos por lo que seria inapropiado utilizar un modelo de mixturas independientes (distribución Poisson), como alternativa surge la utilización de los modelos ocultos de Markov, en este caso se utilizara un PHMM.
 
-<<fig.width=6, fig.height=3.5, fig.cap="Función de autocorrelación muetral, para la seerie de homicidios.">>=
+<<fig.width=6, fig.height=3.5, fig.cap="Función de autocorrelación muetral, para la serie de homicidios.">>=
 par(mar=c(2,2,1,.5)+.5, mgp=c(1.3,.6,0))
 acf(Homicidios, xlab="Rezago",main="", lag.max = 30)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
@@ -268,7 +268,7 @@ Estad_pred <- as.data.frame(pois.HMM.state_prediction(h = 12, x = Homicidios, mo
 colnames(Estad_pred) <- c("Estado 1","Estado 2")
 rownames(Estad_pred) <- año[59]+1:12
 Estad_pred$Estado <- apply(Estad_pred, 1, which.max)
-xtable(Estad_pred, caption = "Predicción de las probabilidades para un rezago h = 12.", digits = 4)
+xtable(Estad_pred, caption = "Predicción para las probabilidades de los estados hasta un rezago h = 12.", digits = 4)
 @
 
 <<fig.cap="Pronostico de la distribución para los años 2019 a 2030.">>=
@@ -370,8 +370,7 @@ xtable(t(FactorBayes), caption = "Comparación resultados Factor de Bayes.")
 <<include=FALSE, cache=TRUE>>=
 system.time(
 PHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 5000, thin = 3, 
-                            control = list(adapt_delta = 0.99)))  # 57.07 seg
-
+                            control = list(adapt_delta = 0.99)))  # 57.07 seg vs 13.80 seg
 set.seed(3)
 bridge_H0 <- bridge_sampler(samples = PHMM_2states)
 error_measures(bridge_H0)
@@ -430,7 +429,7 @@ B_state_pred <- as.data.frame(bayes.state_prediction(h = 12, x = Homicidios, mod
 colnames(B_state_pred) <- c("Estado 1","Estado 2")
 rownames(B_state_pred) <- año[59]+1:12
 B_state_pred$Estado <- apply(B_state_pred, 1, which.max)
-xtable(B_state_pred, caption = "Predicción bayesiana de las probabilidades para un rezago h = 12.", digits = 4)
+xtable(B_state_pred, caption = "Predicción bayesiana para las probabilidades de los estados hasta un rezago h = 12.", digits = 4)
 @
 
 \subsubsection*{Diagnosticos de la cadena}
@@ -441,7 +440,7 @@ En sentido estricto, la no identificabilidad significa que dos valores de los pa
 
 En este caso parece no haber problemas con la identificabilidad, es decir que no existen problemas que señalan divergencias, lo único que se observa es colinealidad entre los parámetros de las filas de la matriz de transición, sin embargo recordemos por definición que la suma de las filas de la tpm suman 1, por lo tanto están de por si correlacionadas. Por lo tanto como el modelo es identificable, no estamos asegurando que las inferencias no están sesgadas.
 
-<<fig.cap="G´rafico mcmc_pairs.">>=
+<<fig.cap="Gráfico de dispersión para las muestras MCMC.">>=
 # Extract posterior draws for later use
 posterior <- as.array(PHMM_2states)
 lp_cp <- log_posterior(PHMM_2states)
@@ -456,7 +455,7 @@ mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]
 <<fig.height=5, fig.cap="Traza de las cadenas.">>=
 rstan::traceplot(PHMM_2states)
 @
-
+                              
 Las gráficas de intervalos de incertidumbre calculados a partir de las muestras posteriores con todas las cadenas fusionadas.
 
 <<fig.width=6, fig.height=3.3, fig.cap="Intervalos de crédibilidad.">>=
@@ -471,7 +470,6 @@ La prueba de convergencia utiliza la estadística de Cramer-von-Mises para proba
 
 La prueba de ancho medio calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que eps, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
 
-
 <<>>=
 library(coda)
 PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
@@ -482,9 +480,10 @@ Test_HyW
 \subsubsection{Comparación PHMM clásico vs Bayesiano}
 
 <<>>=
-muestras <- pois.HMM.generate_sample(ns = 1000, mod = mod2)
+set.seed(201906)
+muestras <- pois.HMM.generate_sample(ns = 10000, mod = mod2)
+sum(pois.HMM.viterbi(x = muestras, mod = mod2) == bayes.viterbi(x = muestras, model = PHMM_2states, m = 2))
 @
-
 
 \subsection{Modelo Poisson Cero inflado - Oculto de Markov}
 
@@ -495,17 +494,30 @@ library(Bayeshmmcts)
 data(incendios)
 @
 
+En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016.  La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en Colombia fue 23 en febrero del 2017, seguido de 20 en enero del 2010 y en tercer puesto 18 incendios para marzo del 2016, además el promedio de GIF se ubico en 1.3 \pm 3.5 incendio por mes.
 
 <<results='asis'>>=
-xtable(head(incendios), caption = "Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.")
+xtable(head(incendios,12), caption = "Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.")
 @
 
 <<>>=
-table(incendios$GIF)
-round(prop.table(table(incendios$GIF)),3)
+tabla.incendios <- data.frame(cbind(table(incendios$GIF),round(prop.table(table(incendios$GIF)),3)))
+colnames(tabla.incendios) <- c("Conteo","Proporción")
+xtable(tabla.incendios, caption = "Tabla de frecuencia para la base GIF Colombia.")
+@
+
+Se quiere determinar si existe correlación entre los GIF de cada mes, 
+
+<<fig.width=6, fig.height=3.5, fig.cap="Función de autocorrelación muetral, para la serie GIF.">>=
+par(mar=c(2,2,1,.5)+.5, mgp=c(1.3,.6,0), mfrow = c(1,1))
+acf(incendios$GIF, xlab="Rezago",main="", lag.max = 80)
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+par(new = T)
+acf(incendios$GIF, xlab="",main="", lag.max = 80)
 @
 
 
+Como se vio en la tabla 11 y 12, a
 \section{Anexo Códigos}
 
 <<eval=FALSE, echo=TRUE>>=
