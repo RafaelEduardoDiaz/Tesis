@@ -274,7 +274,7 @@ xtable(Estad_pred, caption = "Predicción de las probabilidades para un rezago h
 <<fig.cap="Pronostico de la distribución para los años 2019 a 2030.">>=
 #=== Forecast 1-4 steps ahead and plot these .
 h <- 12
-xf <- 5:65
+xf <- 5:75
 forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
 par(mfrow = c(3, 4), las = 1)
 for(i in 1:h){
@@ -390,12 +390,40 @@ lambda_bayes <- resumenPHMM$mean[5:6]
 
 <<results='asis'>>=
 source("Bayes_fun.R")
-B_vitervi <- bayes.viterbi(x = Homicidios, model = PHMM_2states, m = 2)
+B_viterbi <- bayes.viterbi(x = Homicidios, model = PHMM_2states, m = 2)
 # bayes.lforward(x = Homicidios, model = PHMM_2states, m = 2)
-df3 <- rbind(B_vitervi[1:20], B_vitervi[21:40], B_vitervi[41:60])
+df3 <- rbind(B_viterbi[1:20], B_viterbi[21:40], B_viterbi[41:60])
 print(xtable(df3, caption = "Resultados de la decodificación global bayesiana con el algoritmo Viterbi.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
 @
 
+<<fig.width=8, fig.height=4, fig.cap="Algoritmo Viterbi aplicado a un PHMM de dos estados.">>=
+par(mfrow = c(1,2))
+par(mar=c(2,2,1,.5)+.5, mgp=c(1.6,.6,0))
+### Plot 1
+plot(Homicidios,xlab="Año",type='o', col=4, ylab = "Número")
+rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
+lines(Homicidios, type='o', col=4)
+abline(h = lambda_bayes, col = "orange", lty = 2)
+points(x = homicidios[,1], y = ifelse(B_viterbi == 1, lambda_bayes[1], lambda_bayes[2]), pch = 16, col = "orange")
+### Plot 2
+delta_bayes <- bayes.stadist(model = PHMM_2states, m = 2)
+xf <- 5:95
+dstatB <- numeric(length(xf))
+for(j in 1:2) dstatB <- dstatB + delta_bayes[j] * dpois(xf, lambda_bayes[j])
+
+dstatB1 <- numeric(length(xf))
+dstatB2 <- numeric(length(xf))
+
+dstatB1 <- delta_bayes[1] * dpois(xf, lambda_bayes[1])
+dstatB2 <- delta_bayes[2] * dpois(xf, lambda_bayes[2])
+
+hist(Homicidios, probability = T,ylim = c(0,0.06), xlim = c(5,95), col = "grey", border = "white", breaks = 20, ylab = "", xlab = "", main = "")
+par(new = TRUE)
+plot(xf, dstatB, type = "l", ylim = c(0,0.06),xlim = c(5,95), lwd = 2, ylab = "", xlab = "")
+lines(xf, dstatB1, col = "violetred", lwd = 2)
+lines(xf, dstatB2, col = "forestgreen", lwd = 2)
+lines(x = lambda_bayes, y = c(max(dstatB1), max(dstatB2)), type = "h", col = c("violetred", "forestgreen"), lwd = 2, lty = 2)
+@
 
 <<results='asis'>>=
 B_state_pred <- as.data.frame(bayes.state_prediction(h = 12, x = Homicidios, model = PHMM_2states,m = 2))
@@ -407,7 +435,13 @@ xtable(B_state_pred, caption = "Predicción bayesiana de las probabilidades para
 
 \subsubsection*{Diagnosticos de la cadena}
 
-<<>>=
+En esta sección se verificara el diagnostico de convergencia de las cadenas utilizadas en la extracción de las muestras. Para los métodos MCMC ajustados con \textbf{Stan}, ya sean Hamiltonian Monte (HMC) o No-U-Turn-Sampler (NUTS), el paquete \emph{bayesplot} y \emph{coda}, cuenta con una serie de herrmientas gráficas y purebas diagnosticas para después del ajuste de modelos bayesianos. En la figura No se muestra los histogramas univariados y diagramas de dispersión bivariados para los parámetros de la matriz de transición de probabilidad y para el vector de medias de los estados dependientes, especialmente útil para identificar la colinealidad entre variables (que se manifiesta como gráficos bivariados estrechos), así como la presencia de no-identificabilidad multiplicativa (formas tipo plátano).
+
+En sentido estricto, la no identificabilidad significa que dos valores de los parámetros dan como resultado la misma distribución de probabilidad de los datos observados. Algunas veces también se usa para cubrir situaciones en las que no hay un máximo local único de la densidad posterior, ya sea porque hay múltiples máximos separados o porque hay una meseta donde un conjunto de puntos tiene la misma densidad posterior (estos pueden o pueden No ser identificable en sentido estricto).
+
+En este caso parece no haber problemas con la identificabilidad, es decir que no existen problemas que señalan divergencias, lo único que se observa es colinealidad entre los parámetros de las filas de la matriz de transición, sin embargo recordemos por definición que la suma de las filas de la tpm suman 1, por lo tanto están de por si correlacionadas. Por lo tanto como el modelo es identificable, no estamos asegurando que las inferencias no están sesgadas.
+
+<<fig.cap="G´rafico mcmc_pairs.">>=
 # Extract posterior draws for later use
 posterior <- as.array(PHMM_2states)
 lp_cp <- log_posterior(PHMM_2states)
@@ -419,12 +453,13 @@ mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]
 #mcmc_acf_bar(x=posterior,pars=c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]","lambda[1]","lambda[2]"))
 @
 
-<<>>=
-traceplot(PHMM_2states)
+<<fig.height=5, fig.cap="Traza de las cadenas.">>=
+rstan::traceplot(PHMM_2states)
 @
 
+Las gráficas de intervalos de incertidumbre calculados a partir de las muestras posteriores con todas las cadenas fusionadas.
 
-<<fig.width=6, fig.height=4.5>>=
+<<fig.width=6, fig.height=3.3, fig.cap="Intervalos de crédibilidad.">>=
 library(gridExtra)
 color_scheme_set("red")
 p1 <- mcmc_intervals(posterior, pars = c("Gamma[1,1]", "Gamma[1,2]", "Gamma[2,1]", "Gamma[2,2]"))
@@ -432,11 +467,22 @@ p2 <- mcmc_intervals(posterior, pars = c("lambda[1]", "lambda[2]"))
 grid.arrange(p1, p2, ncol = 2)
 @
 
+La prueba de convergencia utiliza la estadística de Cramer-von-Mises para probar la hipótesis nula de que los valores muestreados provienen de una distribución estacionaria. La prueba se aplica sucesivamente, primero a toda la cadena, luego, después de descartar el primer $10 \%$, $20 \%$, ... de la cadena hasta que se acepte la hipótesis nula, o se haya descartado el $50 \%$ de la cadena. El último resultado constituye un \emph{fallo} de la prueba de estacionariedad e indica que se necesita una ejecución MCMC más larga. Si se pasa la prueba de estacionariedad, se informa el número de iteraciones a mantener y el número a descartar.
+
+La prueba de ancho medio calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que eps, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
+
+
 <<>>=
 library(coda)
 PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
 Test_HyW <- heidel.diag(PHMM_mcmc)
 Test_HyW
+@
+
+\subsubsection{Comparación PHMM clásico vs Bayesiano}
+
+<<>>=
+muestras <- pois.HMM.generate_sample(ns = 1000, mod = mod2)
 @
 
 

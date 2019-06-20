@@ -84,7 +84,7 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:04 2019
+% Thu Jun 20 19:24:29 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -107,7 +107,7 @@ Las estadísticas sobre incendios en Colombia, permiten en términos generales, 
 
 [1] ".preformat.ts"
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:05 2019
+% Thu Jun 20 19:24:29 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -199,7 +199,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:09 2019
+% Thu Jun 20 19:24:31 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -244,7 +244,7 @@ $$
 Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:09 2019
+% Thu Jun 20 19:24:31 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -290,7 +290,7 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:09 2019
+% Thu Jun 20 19:24:31 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -316,7 +316,7 @@ El algoritmo Viterbi, permite realizar la decodificación global de los estados 
 Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario.
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:09 2019
+% Thu Jun 20 19:24:31 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
@@ -371,7 +371,7 @@ Ahora realizaremos la predicción de los estados más probables para los proximo
 Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.527 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:09 2019
+% Thu Jun 20 19:24:31 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -392,27 +392,27 @@ mod 2 Estados &  & 3.36 & 3047.46 & 390147608.00 \\
 Por lo tanto se ajusta un PHMM de orden 2 lo cual coincide con la teoría clásica. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:10 2019
+% Thu Jun 20 19:24:32 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrr}
   \hline
  & mean & se\_mean & sd & 2.5\% & 25\% & 50\% & 75\% & 97.5\% & n\_eff & Rhat \\ 
   \hline
-Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89 \\ 
-  Gamma[1,2] & 0.22 & 0.20 & 0.29 & 0.01 & 0.03 & 0.06 & 0.34 & 0.94 & 2.03 & 1.89 \\ 
-  Gamma[2,1] & 0.07 & 0.03 & 0.07 & 0.00 & 0.02 & 0.05 & 0.11 & 0.24 & 3.65 & 1.30 \\ 
-  Gamma[2,2] & 0.93 & 0.03 & 0.07 & 0.76 & 0.89 & 0.95 & 0.98 & 1.00 & 3.65 & 1.30 \\ 
-  lambda[1] & 19.97 & 11.24 & 13.79 & 0.00 & 0.31 & 29.08 & 29.98 & 31.39 & 1.51 & 14.95 \\ 
-  lambda[2] & 55.34 & 8.63 & 10.67 & 39.27 & 40.97 & 61.42 & 63.42 & 66.18 & 1.53 & 7.00 \\ 
-  lp\_\_ & -262.43 & 59.88 & 73.38 & -368.77 & -364.96 & -211.21 & -209.87 & -208.87 & 1.50 & 53.94 \\ 
+Gamma[1,1] & 0.78 & 0.21 & 0.30 & 0.05 & 0.68 & 0.94 & 0.97 & 0.99 & 2.07 & 1.85 \\ 
+  Gamma[1,2] & 0.22 & 0.21 & 0.30 & 0.01 & 0.03 & 0.06 & 0.32 & 0.95 & 2.07 & 1.85 \\ 
+  Gamma[2,1] & 0.07 & 0.03 & 0.07 & 0.00 & 0.02 & 0.06 & 0.11 & 0.24 & 3.83 & 1.27 \\ 
+  Gamma[2,2] & 0.93 & 0.03 & 0.07 & 0.76 & 0.89 & 0.94 & 0.98 & 1.00 & 3.83 & 1.27 \\ 
+  lambda[1] & 20.25 & 10.99 & 13.70 & 0.00 & 0.44 & 29.12 & 30.03 & 31.52 & 1.55 & 5.21 \\ 
+  lambda[2] & 55.51 & 8.45 & 10.60 & 39.33 & 41.04 & 61.51 & 63.41 & 66.32 & 1.57 & 4.41 \\ 
+  lp\_\_ & -261.75 & 59.17 & 72.85 & -368.93 & -364.94 & -211.29 & -209.89 & -208.82 & 1.52 & 9.64 \\ 
    \hline
 \end{tabular}
 \end{table}
 
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:10 2019
+% Thu Jun 20 19:24:32 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -427,27 +427,34 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 \end{table}
 
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-28-1} \caption[Algoritmo Viterbi aplicado a un PHMM de dos estados]{Algoritmo Viterbi aplicado a un PHMM de dos estados.}\label{fig:unnamed-chunk-28}
+\end{figure}
+
+
+\end{knitrout}
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:10 2019
+% Thu Jun 20 19:24:32 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
   \hline
  & Estado 1 & Estado 2 & Estado \\ 
   \hline
-2019 & 0.7832 & 0.2168 &     1 \\ 
-  2020 & 0.6289 & 0.3711 &     1 \\ 
-  2021 & 0.5193 & 0.4807 &     1 \\ 
-  2022 & 0.4413 & 0.5587 &     2 \\ 
-  2023 & 0.3858 & 0.6142 &     2 \\ 
-  2024 & 0.3463 & 0.6537 &     2 \\ 
-  2025 & 0.3182 & 0.6818 &     2 \\ 
-  2026 & 0.2983 & 0.7017 &     2 \\ 
-  2027 & 0.2841 & 0.7159 &     2 \\ 
-  2028 & 0.2740 & 0.7260 &     2 \\ 
-  2029 & 0.2668 & 0.7332 &     2 \\ 
-  2030 & 0.2617 & 0.7383 &     2 \\ 
+2019 & 0.7804 & 0.2196 &     1 \\ 
+  2020 & 0.6249 & 0.3751 &     1 \\ 
+  2021 & 0.5148 & 0.4852 &     1 \\ 
+  2022 & 0.4368 & 0.5632 &     2 \\ 
+  2023 & 0.3815 & 0.6185 &     2 \\ 
+  2024 & 0.3424 & 0.6576 &     2 \\ 
+  2025 & 0.3147 & 0.6853 &     2 \\ 
+  2026 & 0.2950 & 0.7050 &     2 \\ 
+  2027 & 0.2811 & 0.7189 &     2 \\ 
+  2028 & 0.2713 & 0.7287 &     2 \\ 
+  2029 & 0.2643 & 0.7357 &     2 \\ 
+  2030 & 0.2594 & 0.7406 &     2 \\ 
    \hline
 \end{tabular}
 \caption{Predicción bayesiana de las probabilidades para un rezago h = 12.} 
@@ -456,24 +463,42 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 
 \subsubsection*{Diagnosticos de la cadena}
 
+En esta sección se verificara el diagnostico de convergencia de las cadenas utilizadas en la extracción de las muestras. Para los métodos MCMC ajustados con \textbf{Stan}, ya sean Hamiltonian Monte (HMC) o No-U-Turn-Sampler (NUTS), el paquete \emph{bayesplot} y \emph{coda}, cuenta con una serie de herrmientas gráficas y purebas diagnosticas para después del ajuste de modelos bayesianos. En la figura No se muestra los histogramas univariados y diagramas de dispersión bivariados para los parámetros de la matriz de transición de probabilidad y para el vector de medias de los estados dependientes, especialmente útil para identificar la colinealidad entre variables (que se manifiesta como gráficos bivariados estrechos), así como la presencia de no-identificabilidad multiplicativa (formas tipo plátano).
+
+En sentido estricto, la no identificabilidad significa que dos valores de los parámetros dan como resultado la misma distribución de probabilidad de los datos observados. Algunas veces también se usa para cubrir situaciones en las que no hay un máximo local único de la densidad posterior, ya sea porque hay múltiples máximos separados o porque hay una meseta donde un conjunto de puntos tiene la misma densidad posterior (estos pueden o pueden No ser identificable en sentido estricto).
+
+En este caso parece no haber problemas con la identificabilidad, es decir que no existen problemas que señalan divergencias, lo único que se observa es colinealidad entre los parámetros de las filas de la matriz de transición, sin embargo recordemos por definición que la suma de las filas de la tpm suman 1, por lo tanto están de por si correlacionadas. Por lo tanto como el modelo es identificable, no estamos asegurando que las inferencias no están sesgadas.
+
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-29-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-30-1} \caption[G´rafico mcmc_pairs]{G´rafico mcmc_pairs.}\label{fig:unnamed-chunk-30}
+\end{figure}
+
 
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-30-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-1} \caption[Traza de las cadenas]{Traza de las cadenas.}\label{fig:unnamed-chunk-31}
+\end{figure}
+
 
 \end{knitrout}
 
+Las gráficas de intervalos de incertidumbre calculados a partir de las muestras posteriores con todas las cadenas fusionadas.
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-32-1} \caption[Intervalos de crédibilidad]{Intervalos de crédibilidad.}\label{fig:unnamed-chunk-32}
+\end{figure}
+
 
 \end{knitrout}
+
+La prueba de convergencia utiliza la estadística de Cramer-von-Mises para probar la hipótesis nula de que los valores muestreados provienen de una distribución estacionaria. La prueba se aplica sucesivamente, primero a toda la cadena, luego, después de descartar el primer $10 \%$, $20 \%$, ... de la cadena hasta que se acepte la hipótesis nula, o se haya descartado el $50 \%$ de la cadena. El último resultado constituye un \emph{fallo} de la prueba de estacionariedad e indica que se necesita una ejecución MCMC más larga. Si se pasa la prueba de estacionariedad, se informa el número de iteraciones a mantener y el número a descartar.
+
+La prueba de ancho medio calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que eps, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
+
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{kframe}
@@ -481,26 +506,30 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 ##                                          
 ##            Stationarity start     p-value
 ##            test         iteration        
-## Gamma[1,1] passed       1         0.845  
-## Gamma[2,1] passed       1         0.140  
-## Gamma[1,2] passed       1         0.845  
-## Gamma[2,2] passed       1         0.140  
-## lambda[1]  passed       1         0.779  
-## lambda[2]  passed       1         0.781  
-## lp__       passed       1         0.750  
+## Gamma[1,1] passed       1         0.554  
+## Gamma[2,1] passed       1         0.558  
+## Gamma[1,2] passed       1         0.554  
+## Gamma[2,2] passed       1         0.558  
+## lambda[1]  passed       1         0.630  
+## lambda[2]  passed       1         0.693  
+## lp__       passed       1         0.748  
 ##                                         
 ##            Halfwidth Mean      Halfwidth
 ##            test                         
-## Gamma[1,1] failed       0.7832  0.2421  
-## Gamma[2,1] failed       0.0719  0.0283  
-## Gamma[1,2] failed       0.2168  0.2421  
-## Gamma[2,2] passed       0.9281  0.0283  
-## lambda[1]  failed      19.9699 17.0371  
-## lambda[2]  failed      55.3381 11.8201  
-## lp__       failed    -262.4284 90.6731
+## Gamma[1,1] failed       0.7804  0.2630  
+## Gamma[2,1] failed       0.0722  0.0322  
+## Gamma[1,2] failed       0.2196  0.2630  
+## Gamma[2,2] passed       0.9278  0.0322  
+## lambda[1]  failed      20.2492 15.5014  
+## lambda[2]  failed      55.5131 12.3396  
+## lp__       failed    -261.7496 98.3914
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
+\subsubsection{Comparación PHMM clásico vs Bayesiano}
+
+
 
 
 \subsection{Modelo Poisson Cero inflado - Oculto de Markov}
@@ -509,7 +538,7 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 
 
 % latex table generated in R 3.4.4 by xtable 1.8-4 package
-% Wed Jun 19 22:35:34 2019
+% Thu Jun 20 19:24:44 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlr}
@@ -549,32 +578,24 @@ Gamma[1,1] & 0.78 & 0.20 & 0.29 & 0.06 & 0.66 & 0.94 & 0.97 & 0.99 & 2.03 & 1.89
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlcom{################}
-\hlcom{### Packages ###}
-\hlcom{################}
+\hlcom{################ Packages ###}
 \hlkwd{library}\hlstd{(Bayeshmmcts)}
 \hlkwd{library}\hlstd{(broom)}
 
 
-\hlcom{################}
-\hlcom{##### Data #####}
-\hlcom{################}
+\hlcom{################ Data #####}
 \hlkwd{data}\hlstd{(}\hlstr{"homicidios"}\hlstd{)}
 \hlkwd{data}\hlstd{(}\hlstr{"incendios"}\hlstd{)}
 
-\hlcom{###################################################}
-\hlcom{########## Poisson - Hidden Markov Model ##########}
-\hlcom{###################################################}
+\hlcom{################################################### Poisson - Hidden Markov Model ##########}
 
 
 \hlkwd{rm}\hlstd{(}\hlkwc{list} \hlstd{=} \hlkwd{ls}\hlstd{())}
 
-\hlcom{###################################################}
-\hlcom{### Zero Inflated Poisson - Hidden Markov Model ###}
-\hlcom{###################################################}
+\hlcom{################################################### Zero Inflated Poisson - Hidden Markov Model ###}
 
 \hlstd{incendios} \hlkwb{<-} \hlkwd{readRDS}\hlstd{(}\hlstr{"incendios.rds"}\hlstd{)}
-\hlstd{GIF} \hlkwb{<-} \hlkwd{ts}\hlstd{(}\hlkwc{data} \hlstd{= incendios}\hlopt{$}\hlstd{GIF,} \hlkwc{start} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{2002}\hlstd{,}\hlnum{1}\hlstd{),} \hlkwc{frequency} \hlstd{=} \hlnum{12}\hlstd{)}
+\hlstd{GIF} \hlkwb{<-} \hlkwd{ts}\hlstd{(}\hlkwc{data} \hlstd{= incendios}\hlopt{$}\hlstd{GIF,} \hlkwc{start} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{2002}\hlstd{,} \hlnum{1}\hlstd{),} \hlkwc{frequency} \hlstd{=} \hlnum{12}\hlstd{)}
 \hlstd{GIF}
 \end{alltt}
 \end{kframe}
