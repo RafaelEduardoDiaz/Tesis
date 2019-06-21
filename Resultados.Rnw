@@ -357,7 +357,7 @@ bf(bridge_H1, bridge_H3) # fuertemente a favor de H1 125542040.73572
 bf(bridge_H2, bridge_H3) # fuertemente a favor de H2 128023.60921
 @
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.527 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.478 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
 
 <<results='asis'>>=
 FactorBayes <- data.frame("mod 2 Estados" = c(NA, 3.36230, 3047.46, 390147608),
@@ -470,16 +470,20 @@ grid.arrange(p1, p2, ncol = 2)
 
 La prueba de convergencia utiliza la estadística de Cramer-von-Mises para probar la hipótesis nula de que los valores muestreados provienen de una distribución estacionaria. La prueba se aplica sucesivamente, primero a toda la cadena, luego, después de descartar el primer $10 \%$, $20 \%$, ... de la cadena hasta que se acepte la hipótesis nula, o se haya descartado el $50 \%$ de la cadena. El último resultado constituye un \emph{fallo} de la prueba de estacionariedad e indica que se necesita una ejecución MCMC más larga. Si se pasa la prueba de estacionariedad, se informa el número de iteraciones a mantener y el número a descartar.
 
-La prueba de ancho medio calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que \emph{eps}, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
+La prueba de ancho medio para la media calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que \emph{eps}, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
 
 <<results='asis'>>=
 library(coda)
 PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
 Test_HyW <- heidel.diag(PHMM_mcmc)
-Heidel1 <- data.frame(`Prueba de Estacionariedad` = rep("páso",7), check.names = F)
-Heidel2 <- data.frame(NA) 
-Test_HyW
+Heidel1 <- data.frame(`P. Estacionariedad` = rep("páso",7), `Valor p` = c(0.396, 0.978, 0.396, 0.978, 0.569, 0.862, 0.440), check.names = F)
+rownames(Heidel1) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
+Heidel2 <- data.frame(`P. Medio ancho`= rep("páso",7), Media = c(0.9526, 0.0994, 0.0474, 0.9006, 29.7014, 62.7417, -210.5250), `Valor p` = c(0.00139, 0.00250, 0.00139, 0.00250, 0.03430, 0.07890, 0.06213))
+rownames(Heidel2) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
+print(xtable(Heidel1, caption = "Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena.", type = "latex"), sanitize.text.function = function(x){x})
+print(xtable(Heidel2, caption = "Test de medio ancho para la media calculando el intervalo de confianza al 95 %.", type = "latex"), sanitize.text.function = function(x){x})
 @
+
 
 \subsubsection{Comparación PHMM clásico vs Bayesiano}
 
@@ -498,16 +502,16 @@ library(Bayeshmmcts)
 data(incendios)
 @
 
-En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016.  La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en Colombia fue 23 en febrero del 2017, seguido de 20 en enero del 2010 y en tercer puesto 18 incendios para marzo del 2016, además el promedio de GIF se ubico en 1.3 \pm 3.5 incendio por mes.
+En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016.  La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en Colombia fue 23 en febrero del 2017, seguido de 20 en enero del 2010 y en tercer puesto 18 incendios para marzo del 2016, además el promedio de GIF se ubico en $1.3 \pm 3.5$ incendio por mes.
 
 <<results='asis'>>=
 xtable(head(incendios,12), caption = "Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.")
 @
 
-<<>>=
+<<results='asis'>>=
 tabla.incendios <- data.frame(cbind(table(incendios$GIF),round(prop.table(table(incendios$GIF)),3)))
 colnames(tabla.incendios) <- c("Conteo","Proporción")
-xtable(tabla.incendios, caption = "Tabla de frecuencia para la base GIF Colombia.")
+xtable(tabla.incendios, caption = "Tabla de frecuencia para la base GIF Colombia (2002-2016).")
 @
 
 Se quiere determinar si existe correlación entre los GIF de cada mes, 
