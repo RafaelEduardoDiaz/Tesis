@@ -48,7 +48,7 @@ options(mc.cores = 4)
 data("homicidios")
 Homicidios <- ts(data = round(homicidios$Tasa), start = 1960)
 df1 <- rbind(Homicidios[1:20],Homicidios[21:40],Homicidios[41:60])
-print(xtable(df1,caption = "Número de homicidios en Colombia, 1960 - 2018.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
+print(xtable(df1,caption = "Número de homicidios por 100.000 habitantes en Colombia, 1960 - 2018.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
 @
 
 \vspace{5mm} %5mm vertical space
@@ -62,7 +62,7 @@ data("incendios")
 GIF <- ts(data = incendios$GIF, start = c(2002,1), frequency = 12)
 nom <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 trace(.preformat.ts, quote(month.abb <- nom), print = FALSE)
-xtable(GIF, caption = "Número de incendios en Colombia, 2002 - 2016.")
+xtable(GIF, caption = "Número de Grandes Incendios Forestales (GIF) en Colombia, 2002 - 2016.")
 @
 
 \subsubsection*{Estadísticas de resumen}
@@ -452,11 +452,13 @@ mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]
 #mcmc_acf_bar(x=posterior,pars=c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]","lambda[1]","lambda[2]"))
 @
 
-<<fig.height=5, fig.cap="Traza de las cadenas.">>=
+El gráfico de traza, muestra por cada una de las iteraciones los valores muestreados correspondiente a una o más cadenas de Markov, separado por parámetro. Las cadenas proporcionan una forma visual para inspeccionar el comportamiento de muestreo y evaluar la mezcla a través de las cadenas y la convergencia, como vemos se comportana bastante bien, pues hay un mínimo de muestras divergentes.
+
+<<fig.height=5, fig.cap="Gráfico de trazas de las cadenas, para cada iteración y por cadena.">>=
 rstan::traceplot(PHMM_2states)
 @
                               
-Las gráficas de intervalos de incertidumbre calculados a partir de las muestras posteriores con todas las cadenas fusionadas.
+Los intervalos de credibilidad, para los parámetros calculados a partir de las muestras posteriores con todas las cadenas fusionadas. Índican valores consistentes en las estimaciones de los parámetros.
 
 <<fig.width=6, fig.height=3.3, fig.cap="Intervalos de crédibilidad.">>=
 library(gridExtra)
@@ -468,12 +470,14 @@ grid.arrange(p1, p2, ncol = 2)
 
 La prueba de convergencia utiliza la estadística de Cramer-von-Mises para probar la hipótesis nula de que los valores muestreados provienen de una distribución estacionaria. La prueba se aplica sucesivamente, primero a toda la cadena, luego, después de descartar el primer $10 \%$, $20 \%$, ... de la cadena hasta que se acepte la hipótesis nula, o se haya descartado el $50 \%$ de la cadena. El último resultado constituye un \emph{fallo} de la prueba de estacionariedad e indica que se necesita una ejecución MCMC más larga. Si se pasa la prueba de estacionariedad, se informa el número de iteraciones a mantener y el número a descartar.
 
-La prueba de ancho medio calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que eps, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
+La prueba de ancho medio calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que \emph{eps}, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
 
-<<>>=
+<<results='asis'>>=
 library(coda)
 PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
 Test_HyW <- heidel.diag(PHMM_mcmc)
+Heidel1 <- data.frame(`Prueba de Estacionariedad` = rep("páso",7), check.names = F)
+Heidel2 <- data.frame(NA) 
 Test_HyW
 @
 
