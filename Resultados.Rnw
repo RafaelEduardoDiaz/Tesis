@@ -263,10 +263,10 @@ lines(x = mod2$lambda, y = c(max(dstat1), max(dstat2)), type = "h", col = c("red
 Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario.
 
 <<results='asis'>>=
-año <- homicidios[,1]
+`año` <- homicidios[,1]
 Estad_pred <- as.data.frame(pois.HMM.state_prediction(h = 12, x = Homicidios, mod = mod2))
 colnames(Estad_pred) <- c("Estado 1","Estado 2")
-rownames(Estad_pred) <- año[59]+1:12
+rownames(Estad_pred) <- `año`[59]+1:12
 Estad_pred$Estado <- apply(Estad_pred, 1, which.max)
 xtable(Estad_pred, caption = "Predicción para las probabilidades de los estados hasta un rezago h = 12.", digits = 4)
 @
@@ -279,7 +279,7 @@ forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
 par(mfrow = c(3, 4), las = 1)
 for(i in 1:h){
   fc <- forecasts[, i]
-  plot(xf, fc, type = "h", main = paste("Dist. pronós.", año[59] + i), 
+  plot(xf, fc, type = "h", main = paste("Dist. pronós.", `año`[59] + i), 
        xlim = c(5, max(xf+2)), ylim = c(0 ,0.1), cex.main = 0.85,
        xlab = "conteo", ylab = "probabilidad", lwd = 1)
   rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
@@ -301,9 +301,7 @@ for(j in 1:mod2$m) dstat <- dstat + delta[j] * dpois(xf, mod2$lambda[j])
 forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
 fc <- forecasts[,h]
 par(mfrow = c(1, 1), las = 1)
-plot(xf, fc, type ="h", main = paste (" Forecast distribution for ", año[59]+h), 
-     xlim = c(5, max(xf)), 
-     ylim = c(0 ,0.10), xlab ="conteo", ylab = "probabilidad", lwd =3)
+plot(xf,fc,type="h",main="",xlim=c(5,max(xf)),ylim=c(0,0.10),xlab="conteo",ylab="probabilidad",lwd =3)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 lines(xf, fc,type = "h", lwd = 3)
 lines(xf, dstat, col = "chartreuse2", lwd = 3)
@@ -380,11 +378,11 @@ Por lo tanto se ajusta un PHMM de orden 2 lo cual coincide con la teoría clási
 
 <<results='asis'>>=
 resumenPHMM <- as.data.frame(summary(PHMM_2states)$summary)
-#colnames(resumenPHMM) <- c("Media","Err.Sta","Desv","2.5%","25%","50%","75%","97.5%","n_eff","Rhat")
-#rownames(resumenPHMM) <- c("$\\A_{11}$","$\\A_{12}$","$\\A_{21}$","$\\A_{22}$","$\\lambda_1$","$\\lambda_2$","$lp__$")
-print(xtable(resumenPHMM))#, sanitize.colnames.function = identity)
 A_bayes <- matrix(resumenPHMM$mean[1:4], 2,2)
 lambda_bayes <- resumenPHMM$mean[5:6]
+colnames(resumenPHMM) <- c("Media","Err.Sta","Desv","2.5%","25%","50%","75%","97.5%","n_eff","Rhat")
+rownames(resumenPHMM) <- c("$\\Gamma_{11}$","$\\Gamma_{12}$","$\\Gamma_{21}$","$\\Gamma_{22}$","$\\lambda_1$","$\\lambda_2$","lp")
+print(xtable(resumenPHMM, caption = "Estimación bayesiana de los parámetros para un PHMM."), sanitize.rownames.function = function(x) {x})
 @
 
 <<results='asis'>>=
@@ -427,7 +425,7 @@ lines(x = lambda_bayes, y = c(max(dstatB1), max(dstatB2)), type = "h", col = c("
 <<results='asis'>>=
 B_state_pred <- as.data.frame(bayes.state_prediction(h = 12, x = Homicidios, model = PHMM_2states,m = 2))
 colnames(B_state_pred) <- c("Estado 1","Estado 2")
-rownames(B_state_pred) <- año[59]+1:12
+rownames(B_state_pred) <- `año`[59]+1:12
 B_state_pred$Estado <- apply(B_state_pred, 1, which.max)
 xtable(B_state_pred, caption = "Predicción bayesiana para las probabilidades de los estados hasta un rezago h = 12.", digits = 4)
 @
@@ -448,8 +446,6 @@ np_cp <- nuts_params(PHMM_2states)
 color_scheme_set("mix-brightblue-gray")
 mcmc_pairs(posterior, np = np_cp, pars = c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]",
                                            "lambda[1]","lambda[2]"), off_diag_args = list(size = 0.75))
-#mcmc_acf(posterior,pars=c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]","lambda[1]","lambda[2]"))
-#mcmc_acf_bar(x=posterior,pars=c("Gamma[1,1]","Gamma[1,2]","Gamma[2,1]","Gamma[2,2]","lambda[1]","lambda[2]"))
 @
 
 El gráfico de traza, muestra por cada una de las iteraciones los valores muestreados correspondiente a una o más cadenas de Markov, separado por parámetro. Las cadenas proporcionan una forma visual para inspeccionar el comportamiento de muestreo y evaluar la mezcla a través de las cadenas y la convergencia, como vemos se comportana bastante bien, pues hay un mínimo de muestras divergentes.
@@ -478,11 +474,17 @@ PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
 Test_HyW <- heidel.diag(PHMM_mcmc)
 Heidel1 <- data.frame(`P. Estacionariedad` = rep("páso",7), `Valor p` = c(0.396, 0.978, 0.396, 0.978, 0.569, 0.862, 0.440), check.names = F)
 rownames(Heidel1) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
+
+print(xtable(Heidel1, caption = "Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena.", type = "latex"), sanitize.text.function = function(x){x})
+@
+
+<<results='asis'>>=
 Heidel2 <- data.frame(`P. Medio ancho`= rep("páso",7), Media = c(0.9526, 0.0994, 0.0474, 0.9006, 29.7014, 62.7417, -210.5250), `Valor p` = c(0.00139, 0.00250, 0.00139, 0.00250, 0.03430, 0.07890, 0.06213))
 rownames(Heidel2) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
-print(xtable(Heidel1, caption = "Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena.", type = "latex"), sanitize.text.function = function(x){x})
-print(xtable(Heidel2, caption = "Test de medio ancho para la media calculando el intervalo de confianza al 95 %.", type = "latex"), sanitize.text.function = function(x){x})
+
+print(xtable(Heidel2, caption = "Test de medio ancho para la media calculando el intervalo de confianza al 0.95.", type = "latex"), sanitize.text.function = function(x){x})
 @
+
 
 
 \subsubsection{Comparación PHMM clásico vs Bayesiano}
@@ -523,7 +525,6 @@ rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),bo
 par(new = T)
 acf(incendios$GIF, xlab="",main="", lag.max = 80)
 @
-
 
 Como se vio en la tabla 11 y 12, a
 \section{Anexo Códigos}
