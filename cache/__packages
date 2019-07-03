@@ -15,3 +15,8 @@ lattice
 flexmix
 Matrix
 expm
+gridExtra
+coda
+ziphsmm
+kableExtra
+grattanCharts

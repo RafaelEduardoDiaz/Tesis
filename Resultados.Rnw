@@ -19,7 +19,7 @@ opts_chunk$set(background = "#e8e8e8", tidy = TRUE,echo = FALSE, message = FALSE
 \begin{document}
 
 \maketitle
-\section{Aplicación e ilustración}
+\section{Aplicación}
 
 A continuación, ilustramos todos los modelos descritos anteriormente aplicándolos a dos conjuntos de datos, para la serie anual del número de homicidios en Colombia de 1960 a 2018 se ajustaron varios PHMM, mientras que para la serie mensual de incendios forestales en Colombia, entre el 2002 y 2016 se ajustaron diversos ZIP-HMM. Antes de que se ajusten los modelos, se llevo a cabo un análisis exploratorio básico del conjunto de datos que aborda algunos problemas que generalmente se presentan al visualizar los datos de conteo. Al final de la sección, se comparan todos los modelos ajustados, tanto desde el enfoque clásico como Bayesiano, y se selecciona el mejor modelo a partir de las dos metodologías. 
 
@@ -45,7 +45,9 @@ options(mc.cores = 4)
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 <<results='asis', echo=FALSE>>=
-data("homicidios")
+data("homicides")
+homicidios <- homicides
+colnames(homicidios) <- c("Año","Homicidios","Población","Tasa")
 Homicidios <- ts(data = round(homicidios$Tasa), start = 1960)
 df1 <- rbind(Homicidios[1:20],Homicidios[21:40],Homicidios[41:60])
 print(xtable(df1,caption = "Número de homicidios por 100.000 habitantes en Colombia, 1960 - 2018.", digits = 0), include.colnames = FALSE, include.rownames = FALSE)
@@ -57,11 +59,16 @@ print(xtable(df1,caption = "Número de homicidios por 100.000 habitantes en Colo
 \\
 Las estadísticas sobre incendios en Colombia, permiten en términos generales, realizar análisis de su comportamiento bajo diferentes escenarios, esto es, por regiones, departamentos o municipios, con Niño o en condiciones climáticas normales,  por cobertura vegetal afectada, por Corporación Autónoma Regional, por año o por mes, y de esta manera, poder ser  utilizarlas para priorizar áreas, orientar acciones o sustentar la necesidad de realizar estudios más detallados. El Ideam ha venido realizando una revisión histórica de los datos reportados por las instituciones anteriormente mencionadas, con el fin de tener datos más confiables que permitan tener una mejor aproximación al tema. La variable de interés es el número de grandes incendios forestales (GIF), y se definen como aquellos incendios que superan las 500 hectáreas forestales afectadas. El número de observaciones es mensual iniciando en enero del 2002 y finalizando en diciembre del 2016, para un total 180 observaciones.
 
-<<echo=FALSE, results='asis'>>=
-data("incendios")
+<<echo=FALSE, include=FALSE>>=
+data("wildfires")
+incendios <- wildfires
+colnames(incendios) <- c("Fecha","GIF")
 GIF <- ts(data = incendios$GIF, start = c(2002,1), frequency = 12)
 nom <- c("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic")
 trace(.preformat.ts, quote(month.abb <- nom), print = FALSE)
+@
+
+<<echo=FALSE, results='asis'>>=
 xtable(GIF, caption = "Número de Grandes Incendios Forestales (GIF) en Colombia, 2002 - 2016.")
 @
 
@@ -139,7 +146,6 @@ mod5 <- pois.HMM.mle(x = Homicidios, m = 5,
                      stationary = TRUE)
 @
 
-
 <<>>=
 library(flexmix)
 fmod2 <- flexmix(Homicidios~1, k = 2, model = FLXMRglm(family = "poisson"))
@@ -176,7 +182,7 @@ print(Tab, floating=FALSE, tabular.environment="pmatrix",hline.after=NULL,
       include.rownames=FALSE, include.colnames=FALSE)
 @
 
-La estimaciones del modelo son las siguientes la media de los estados dependientes $\lambda = (29.72, 62.8)$  y los valores de la distribución estacionaria son $\pi = (0.764, 0.236)$. Ahora veamos la estimación de la matriz de transición para el modelo con 2 estados:
+La estimaciones del PHMM de dos estados se muestran a continuación, primero la tpm $A$, además del vector de medias de los estados dependientes $\lambda$ y los valores de la distribución estacionaria $\pi$. 
 
 $$
 A = \begin{pmatrix}{}
@@ -184,6 +190,8 @@ A = \begin{pmatrix}{}
   0.064 & 0.936 \\ 
 \end{pmatrix}
 $$
+
+$$\lambda = (29.715, 62.812) \ \ \ \ \pi = (0.764, 0.235)$$
 
 Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
@@ -198,7 +206,7 @@ colnames(ACFHMM) <- 1:12
 xtable(ACFHMM, caption = "Datos homicidios: ACF y ACF de los cuatro modelos hasta el rezago 12.")
 @
 
-<<fig.height=4.3, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.", fig.pos='h'>>=
+<<fig.height=4.1, fig.cap="Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.", fig.pos='h'>>=
 plot(x = 0:12, y = acf(Homicidios, plot = FALSE, lag.max = 12)$acf, ylab = "", type = "h", col = 1,xlab="Rezago",xaxt="n")
 axis(1, at = 0:12)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
@@ -223,7 +231,9 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 
 \subsubsection*{Algoritmo Viterbi}
 
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, indicando la secuencia más probable de los estados ocultos. Para la serie homicidios de 59 observaciones, el algoritmo Viterbi clasifico 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi, y las distribuciones marginales para cada estado.
+\\
+La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas aplicaciones, especialmente cuando existen interpretaciones importantes para los estados. Sin embargo los estados no observados en el modelo, no siemprre necesitan tener interpretaciones sustantiva, pues se consideran artefactos útiles para adaptarse a la heterogeneidad no explicada y la dependencia serial de los datos. En el caso de la serie homicidios no parce haber una interpretación clara de los estados.
 
 <<results='asis'>>=
 viterbi2 <- pois.HMM.viterbi(x = Homicidios, mod = mod2)
@@ -239,7 +249,7 @@ plot(Homicidios,xlab="Año",type='o', col=4, ylab = "Número")
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 lines(Homicidios, type='o', col=4)
 abline(h = mod2$lambda, col = "chartreuse2", lty = 2)
-points(x = homicidios[,1], y = ifelse(viterbi2 == 1, mod2$lambda[1], mod2$lambda[2]), pch = 16, col = "chartreuse2")
+points(x = homicidios[,1], y = ifelse(viterbi2 == 1, mod2$lambda[1], mod2$lambda[2]), pch = 21, bg =  "chartreuse2", col = "white")
 ### Plot 2
 delta <- pois.HMM.stadist(mod2)
 xf <- 5:95
@@ -260,23 +270,13 @@ lines(xf, dstat2, col = "blue", lwd = 2)
 lines(x = mod2$lambda, y = c(max(dstat1), max(dstat2)), type = "h", col = c("red", "blue"), lwd = 2, lty = 2)
 @
 
-Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario.
-
-<<results='asis'>>=
-`año` <- homicidios[,1]
-Estad_pred <- as.data.frame(pois.HMM.state_prediction(h = 12, x = Homicidios, mod = mod2))
-colnames(Estad_pred) <- c("Estado 1","Estado 2")
-rownames(Estad_pred) <- `año`[59]+1:12
-Estad_pred$Estado <- apply(Estad_pred, 1, which.max)
-xtable(Estad_pred, caption = "Predicción para las probabilidades de los estados hasta un rezago h = 12.", digits = 4)
-@
-
-<<fig.cap="Pronostico de la distribución para los años 2019 a 2030.">>=
+<<fig.cap="Pronostico de la distribución para los años 2019 a 2034.", fig.height=9.5>>=
 #=== Forecast 1-4 steps ahead and plot these .
-h <- 12
+h <- 16
 xf <- 5:75
+`año` <- homicidios[,1]
 forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
-par(mfrow = c(3, 4), las = 1)
+par(mfrow = c(4, 4), las = 1)
 for(i in 1:h){
   fc <- forecasts[, i]
   plot(xf, fc, type = "h", main = paste("Dist. pronós.", `año`[59] + i), 
@@ -284,28 +284,22 @@ for(i in 1:h){
        xlab = "conteo", ylab = "probabilidad", lwd = 1)
   rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
   lines(xf, fc, type = "h", lwd = 1)
+  dstat <- numeric(length(xf))
+  for(j in 1:mod2$m) dstat <- dstat + delta[j] * dpois(xf, mod2$lambda[j])
+  lines(xf, dstat, col = "chartreuse2", lwd = 2)
   }
 @
 
+Se realiza la predicción de los estados más probables para los proximos 16 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura 8 a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario. En la tabla 7, se observa que el prónstico de los estados, para los próximos 16 años es el 1, es decir que se espera una tasa de homidios por cada 100.000 habitantes cercana a 29, la cual sigue siendo alta ya que según datos de la ONUDD (Oficina de Naciones Unidas contra la Droga y el Delito), en sur America la tasa se situa en 20/100.000 homicidios, lo que indica quee la tasa de homicidios en  Colombia está por encima de la región. Además según estadísticas de la ONUDD, Colombia se situa como uno de los países más violentos del mundo ubicandose en el top 20, las cifras de la fiscalia indican que despues de haber disminuido la tasa de homidios en los últimos años, a partir del 2018 hubo un incremento del $3.25 \%$, de este delito siendo caso críticos las ciudades de Medellín, bajo Cauca y Tumaco, mientras la capital sigue con tendencia a la baja.
 
-<<fig.height=5, fig.cap="La distribución prónosticada para el año 2098", fig.pos='t'>>=
-#=== Compute the marginal distribution ( called " dstat " below ) for mod2.
-#=== This is also the long - term forecast .
-delta <- pois.HMM.stadist(mod2)
-h <- 80
-xf <- 0:80
-
-dstat <- numeric(length(xf))
-for(j in 1:mod2$m) dstat <- dstat + delta[j] * dpois(xf, mod2$lambda[j])
-#=== Compare the 50- year - ahead forecast with the long - term forecast.
-forecasts <- pois.HMM.forecast(xf, h, Homicidios, mod2)
-fc <- forecasts[,h]
-par(mfrow = c(1, 1), las = 1)
-plot(xf,fc,type="h",main="",xlim=c(5,max(xf)),ylim=c(0,0.10),xlab="conteo",ylab="probabilidad",lwd =3)
-rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
-lines(xf, fc,type = "h", lwd = 3)
-lines(xf, dstat, col = "chartreuse2", lwd = 3)
+<<results='asis'>>=
+Estad_pred <- data.frame(`Año`=`año`[59]+1:16,pois.HMM.state_prediction(h=16,x=Homicidios,mod=mod2))
+colnames(Estad_pred) <- c("Año","Estado 1","Estado 2")
+Estad_pred$Estado <- apply(Estad_pred, 1, which.max)
+print(xtable(Estad_pred, caption = "Predicción para las probabilidades de los estados hasta un rezago h = 16.", digits = 4), include.rownames = FALSE)
 @
+
+En el siguiente aparto se muestran las estimaciones bayesianas realizadas a la serie homicidios
 
 %http://www.scielo.br/pdf/csc/v17n12/06.pdf
 
@@ -318,11 +312,11 @@ lines(xf, dstat, col = "chartreuse2", lwd = 3)
 system.time(
 PHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
 
-# Modelo de 3 estados - 45.70
+# Modelo de 3 estados - 33.97
 system.time(
 PHMM_3states <- bayes.PHMM(y = Homicidios, m = 3, chains = 3, iter = 1000, control = list(adapt_delta = 0.99)))
 
-# Modelo de 4 estados - 1345.76
+# Modelo de 4 estados - 252.90
 system.time(
 PHMM_4states <- bayes.PHMM(y = Homicidios, m = 4, chains = 3, iter = 1000, control = list(adapt_delta = 0.9999, max_treedepth = 15)))
 
@@ -334,32 +328,47 @@ PHMM_5states <- bayes.PHMM(y = Homicidios, m = 5, chains = 3, iter = 1000, contr
 <<eval=FALSE>>=
 library(bridgesampling)
 # estimates of the log marginal likelihoods
-set.seed(1)
-bridge_H0 <- bridge_sampler(samples = PHMM_2states)
-bridge_H1 <- bridge_sampler(samples = PHMM_3states)
-bridge_H2 <- bridge_sampler(samples = PHMM_4states, method = "normal")
-bridge_H3 <- bridge_sampler(samples = PHMM_5states,repetitions = 1)
+set.seed(1)                                         #   loglm       lp     mllk
+bridge_H0 <- bridge_sampler(samples = PHMM_2states) # -211.69  -210.58  -201.32
+bridge_H1 <- bridge_sampler(samples = PHMM_3states) # -212.89  -219.31  -193.00
+bridge_H2 <- bridge_sampler(samples = PHMM_4states) # -219.54  -240.80  -190.84
+bridge_H3 <- bridge_sampler(samples = PHMM_5states)
 
 error_measures(bridge_H0)$percentage #"0.616%"
-error_measures(bridge_H1)$percentage #"3.11%"
-error_measures(bridge_H2)$percentage #"28.7%"
+error_measures(bridge_H1)$percentage #"2.76%"
+error_measures(bridge_H2)$percentage #"27.2%"
 error_measures(bridge_H3)$percentage #"31.9%"
 #The Bayes factor in favor of H0 over H1 can then be obtained as follows:
 bf(bridge_H0, bridge_H1) # A favor de H0 3.36230
-bf(bridge_H0, bridge_H2) # fuertemente a favor de H0 3047.46
+bf(bridge_H0, bridge_H2) # fuertemente a favor de H0 2545.85
 bf(bridge_H0, bridge_H3) # fuertemente a favor de H0 390147608.97574
 
-bf(bridge_H1, bridge_H2) # fuertemente a favor de H1 980.61632
+bf(bridge_H1, bridge_H2) # fuertemente a favor de H1 766.05
 bf(bridge_H1, bridge_H3) # fuertemente a favor de H1 125542040.73572
 
 bf(bridge_H2, bridge_H3) # fuertemente a favor de H2 128023.60921
 @
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.478 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador del muestreador por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función `bridge sampler` del paquete bridgesampling, del autor Gronau. El paquete \textbf{bridgesampling}, permite además calcular el error de la estimación para la verosimilitud marginal, obtendido via muestreo por puente que en el caso del modelo con dos estados, el error es de $0.478 \%$. 
+
+Un factor de Bayes es la relación entre la probabilidad de una hipótesis particular y la probabilidad de otra. Puede interpretarse como una medida de la fuerza de la evidencia en favor de una teoría entre dos teorías en competencia. Esto se debe a que el factor de Bayes nos permite evaluar los datos a favor de una hipótesis nula y utilzar información externa para hacerlo. Nos dice cuál es el peso de la evidencia a favor de una hipótesis dada.
+
+Cuando estamos comparando dos hipótesis, $H_0$ (la hipótesis nula) y $H_1$ (la hipótesis alternativa) y , el factor de Bayes a menudo se escribe como $B_{01}$. Se puede definir matemáticamente como
+
+$$B_{01} = \frac{\text{verosimilitud de los datos dado $H_0$}}{\text{verosimilitud de los datos dado $H_1$}} = \frac{P(D | H_0)}{P(D | H_1)}$$
+
+El factor de Bayes puede es un número positivo, y una de las interpretaciones más comunes es esta: propuesta por primera vez por Harold Jeffereys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013:
 
 <<results='asis'>>=
-FactorBayes <- data.frame("mod 2 Estados" = c(NA, 3.36230, 3047.46, 390147608),
-                          "mod 3 Estados" = c(NA, NA, 980.61, 125542040),
+print(xtable(
+data.frame(B01 = c(">100","30 - 100","10 - 30","3 - 10","1 - 3","1","1/3 - 1","1/10 - 1/3","1/30 - 1/3","1/100 - 1/30","< 1/100"), `Desición` =c("Evidencia extrema para H0","Evidencia muy fuerte para H0","Evidencia fuerte para H0","Evidencia moderada para H0","Evidencia apenas mencionable para H0","No hay evidencia","Evidencia apenas mencionable para H1","Evidencia moderada para H1","Evidencia fuerte para H1","Evidencia muy fuerte para H1","Evidencia extrema para H1")), caption = "Interpretación del factor de Bayes, Lee y Wagenmakers (2013)."),include.rownames = FALSE)
+@
+
+Ahora utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, en la siguiente tabla ilustra el contraste de hipótesis, donde las filas indican $P(D | H_0)$ y las columnas $P(D | H_1)$. Por ejemplo en el contraste de hipótesis entre el modelo de 3 estados vs el modelo de 4 estados, el valor obtenido fue $B_{01} = 766.05$, lo que indica evidencia extrema para $H_0$, es decir el modelo de 3 estados es más apropiado que el de 4 estados.
+
+<<results='asis'>>=
+FactorBayes <- data.frame("mod 2 Estados" = c(NA, 3.36230, 2545.85, 390147608),
+                          "mod 3 Estados" = c(NA, NA, 766.05361, 125542040),
                           "mod 4 Estados" = c(NA, NA, NA, 128023), check.names = F)
 rownames(FactorBayes) <- c("mod 2 Estados", "mod 3 Estados", "mod 4 Estados", "mod 5 Estados")
 xtable(t(FactorBayes), caption = "Comparación resultados Factor de Bayes.")
@@ -368,13 +377,13 @@ xtable(t(FactorBayes), caption = "Comparación resultados Factor de Bayes.")
 <<include=FALSE, cache=TRUE>>=
 system.time(
 PHMM_2states <- bayes.PHMM(y = Homicidios, m = 2, chains = 3, iter = 5000, thin = 3, 
-                            control = list(adapt_delta = 0.99)))  # 57.07 seg vs 13.80 seg
+                            control = list(adapt_delta = 0.8), seed = 7))  # 8.74 seg
 set.seed(3)
 bridge_H0 <- bridge_sampler(samples = PHMM_2states)
 error_measures(bridge_H0)
 @
 
-Por lo tanto se ajusta un PHMM de orden 2 lo cual coincide con la teoría clásica. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
+De la tabla 9, se concluye que el modelo apropiado es el de orden 2, lo cual coincide con el BIC. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 <<results='asis'>>=
 resumenPHMM <- as.data.frame(summary(PHMM_2states)$summary)
@@ -382,7 +391,7 @@ A_bayes <- matrix(resumenPHMM$mean[1:4], 2,2)
 lambda_bayes <- resumenPHMM$mean[5:6]
 colnames(resumenPHMM) <- c("Media","Err.Sta","Desv","2.5%","25%","50%","75%","97.5%","n_eff","Rhat")
 rownames(resumenPHMM) <- c("$\\Gamma_{11}$","$\\Gamma_{12}$","$\\Gamma_{21}$","$\\Gamma_{22}$","$\\lambda_1$","$\\lambda_2$","lp")
-print(xtable(resumenPHMM, caption = "Estimación bayesiana de los parámetros para un PHMM."), sanitize.rownames.function = function(x) {x})
+print(xtable(resumenPHMM, caption = "Estimación bayesiana de los parámetros para un PHMM.", digits = 3), sanitize.rownames.function = function(x) {x})
 @
 
 <<results='asis'>>=
@@ -401,7 +410,7 @@ plot(Homicidios,xlab="Año",type='o', col=4, ylab = "Número")
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 lines(Homicidios, type='o', col=4)
 abline(h = lambda_bayes, col = "orange", lty = 2)
-points(x = homicidios[,1], y = ifelse(B_viterbi == 1, lambda_bayes[1], lambda_bayes[2]), pch = 16, col = "orange")
+points(x = homicidios[,1], y = ifelse(B_viterbi == 1, lambda_bayes[1], lambda_bayes[2]), pch = 21, bg = "orange", col = "white")
 ### Plot 2
 delta_bayes <- bayes.stadist(model = PHMM_2states, m = 2)
 xf <- 5:95
@@ -472,26 +481,65 @@ La prueba de medio ancho calcula un intervalo de confianza del $95 \%$ para la m
 library(coda)
 PHMM_mcmc <- as.mcmc(as.matrix(PHMM_2states))
 Test_HyW <- heidel.diag(PHMM_mcmc)
+# Tabla 1
 Heidel1 <- data.frame(`P. Estacionariedad` = rep("páso",7), `Valor p` = c(0.396, 0.978, 0.396, 0.978, 0.569, 0.862, 0.440), check.names = F)
-rownames(Heidel1) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
-
-print(xtable(Heidel1, caption = "Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena.", type = "latex", digits = 3), sanitize.text.function = function(x){x})
-@
-
-<<results='asis'>>=
+# Tabla 2
 Heidel2 <- data.frame(`P. Medio ancho`= rep("páso",7), Media = c(0.9526, 0.0994, 0.0474, 0.9006, 29.7014, 62.7417, -210.5250), `Valor p` = c(0.00139, 0.00250, 0.00139, 0.00250, 0.03430, 0.07890, 0.06213))
-rownames(Heidel2) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
+Heidel <- cbind(Heidel1, Heidel2)
+rownames(Heidel) <- c("$\\Gamma_{11}$","$\\Gamma_{21}$", "$\\Gamma_{12}$", "$\\Gamma_{22}$", "$\\lambda_1$", "$\\lambda_2$", "lp")
 
-print(xtable(Heidel2, caption = "Test de medio ancho para la media calculando el intervalo de confianza al 0.95.", type = "latex", digits = 3), sanitize.text.function = function(x){x})
+print(xtable(Heidel, caption = "Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena y prueba de medio ancho para la media calculando el intervalo de confianza al 0.95.", type = "latex", digits = 3), sanitize.text.function = function(x){x})
 @
 
 \subsubsection{Comparación PHMM clásico vs Bayesiano}
 
-<<>>=
-set.seed(201906)
-muestras <- pois.HMM.generate_sample(ns = 10000, mod = mod2)
-sum(pois.HMM.viterbi(x = muestras, mod = mod2) == bayes.viterbi(x = muestras, model = PHMM_2states, m = 2))
+La inferencia para los parámetros bajo el enfoque clásico se realizo utilizando bootstrap (Zucchini (2016)). El método bootstrap es una técnicas de remuestreo diseñadas para aproximar la función de distribución de probabilidad de los datos mediante una función empírica de una muestra finita. El método bootstrap se puede usar para estimar los intervalos de confianza directamente. Se utilizo el ``método de percentil" (Efron y Tibshirani, 1993) para estimar los intervalos, se generaron 250 muestras independientes a partir del PHMM de orden 2 de longitud 59 igual a la serie homicidios en Colombia. Los valores iniciales usados fueron los estimados por PHMM de 2 estados con el fin de evitar inestabilidad numérica o problemas de convergencia. Los intervalos de credibilidad fueron calculados a partir de las distribuciones aposteriori de los parámetros de las muestras generadas por MCMC. El nivel y la probabilidad de los intervalos de confianza y credibilidad, respectivamente, se fijaron en 0.95.
+
+<<eval=FALSE>>=
+#round(HPDinterval(PHMM_mcmc, 0.95),5)
+intervalos_cred <- as.data.frame(mcmc_intervals_data(posterior, prob_outer = 0.95, point_est = "mean"))[,c(5,7,9)]
+intervalos_cred$Ancho <- intervalos_cred$hh - intervalos_cred$ll
+intervalos_cred <- intervalos_cred[,c(2,1,3:4)]
+system.time(intervalos_conf <- pois.HMM.confint(mod = mod2, n = 59, B = 250)) # 28 seg
+rownames(intervalos_cred) <- c(rownames(intervalos_conf),"lp__")
+Inter <- cbind(Parámetros = rownames(intervalos_conf), intervalos_cred[-7,],intervalos_conf)
+colnames(Inter) <- colnames(Inter) <- c("Parámetros","Intervalos de Credibilidad__Media","Intervalos de Credibilidad__2.5","Intervalos de Credibilidad__97.5","Intervalos de Credibilidad__Ancho","Intervalos de Confianza__Media","Intervalos de Confianza__2.5","Intervalos de Confianza__97.5","Intervalos de Confianza__Ancho")
+rownames(Inter) <- 1:nrow(Inter)
+#xtable(Inter, digits = 4, caption = "Intervalos de Credibilidad y Confianza fijados al 0.95.")
+dput(Inter)
 @
+
+<<results='asis'>>=
+Inter <- structure(list(`Parámetros` = structure(c(1L, 3L, 2L, 4L, 5L, 6L
+), .Label = c("gamma11", "gamma12", "gamma21", "gamma22", "lambda1", 
+"lambda2"), class = "factor"), `Intervalos de Credibilidad__Media` = c(0.953306305245798, 
+0.0988650895931146, 0.0466936947542024, 0.901134910406885, 29.7146461795756, 
+62.848881470366), `Intervalos de Credibilidad__2.5` = c(0.8730943032276, 
+0.0137328284845021, 0.00644181146650225, 0.742764299683423, 28.0974843512562, 
+59.0680219574867), `Intervalos de Credibilidad__97.5` = c(0.993558188533498, 
+0.257235700316577, 0.1269056967724, 0.986267171515498, 31.4600097828223, 
+66.7345814746465), `Intervalos de Credibilidad__Ancho` = c(0.120463885305898, 
+0.243502871832075, 0.120463885305898, 0.243502871832075, 3.36252543156606, 
+7.66655951715981), `Intervalos de Confianza__EMV` = c(0.98024196466361, 
+0.063967950749355, 0.01975803533639, 0.936032049250645, 29.7159253816026, 
+62.8126152684851), `Intervalos de Confianza__2.5` = c(0.844180217176474, 
+0.01536203142682, 1.28184117164957e-13, 1.25124093299868e-05, 
+27.6886806238408, 30.1401054496543), `Intervalos de Confianza__97.5` = c(0.999999999999872, 
+0.99998748759067, 0.155819782823526, 0.98463796857318, 31.647902636959, 
+68.4966722513429), `Intervalos de Confianza__Ancho` = c(0.155819782823398, 
+0.98462545616385, 0.155819782823398, 0.98462545616385, 3.95922201311823, 
+38.3565668016886)), class = "data.frame", row.names = c(NA, 6L
+))
+
+library(grattanCharts)
+print_2heading_xtable(Inter, separator = "__", xtable.dots = list(caption = "Intervalos de Credibilidad y Confianza para el PHMM de orden 2.", digits = 3))
+@
+
+Al calcular los intervalos de confianza y de credibilidad, es importante determinar cuál de estos métodos son más eficaces. Para determinar el comportamiento de los intervalos propuestos, usualmente se utiliza, la longitud del intervalo, su probabilidad de cobertura el valor esperado y la varianza de su longitud. Un buen método debe tener valores pequeños en la longitud del intervalo, en su valor esperado y en la varianza de su longitud; con probabilidades de cobertura cercanas a los niveles de confianza nominal.
+\\
+La longitud del intervalo, que indica su precisión, se muestran en la tabla 14, junto con la media de las estimaciones en el caso Bayesiano y el estimador de máxima verosimilitu para el caso clásico. Tanto para los parámetros de la matriz de transición como para el vector de medias de los estados dependientes, los intervalos de credibilidad indican una longitud menor es decir mayor precisión.
+
+\clearpage
 
 \subsection{Modelo Poisson Cero inflado - Oculto de Markov}
 
@@ -499,31 +547,25 @@ sum(pois.HMM.viterbi(x = muestras, mod = mod2) == bayes.viterbi(x = muestras, mo
 rm(list = ls())
 library(Bayeshmmcts)
 library(ziphsmm)
-data(incendios)
+data("wildfires")
+incendios <- wildfires
+colnames(incendios) <- c("Fecha", "GIF")
 GIF <- ts(data = incendios$GIF, start = c(2002,1), frequency = 12)
 @
 
-En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016.  La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en un mes en Colombia fue 23 en febrero del 2017, lo cual es preocupante; pues aunque los incendios forestales naturales han ocurrido desde siempre como un elemento normal en el funcionamiento de los ecosistemas. El fuego ha permitido la regeneración de diversos ecosistemas y la producción de una serie de hábitats en los que distintos organismos pueden prosperar. No obstante notemos que el promedio de GIF se ubico en $1.3 \pm 3.5$ incendio por mes, haciendo que la enorme proliferación de los incendios a causa de la actividad humana en estas últimas décadas sobrepasa la capacidad de recuperación natural.
+En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016. La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en un mes en Colombia fue 23 en febrero del 2017, lo cual es preocupante; pues aunque los incendios forestales naturales han ocurrido desde siempre como un elemento normal en el funcionamiento de los ecosistemas. El fuego ha permitido la regeneración de diversos ecosistemas y la producción de una serie de hábitats en los que distintos organismos pueden prosperar. No obstante notemos que el promedio de GIF se ubico en $1.3 \pm 3.5$ incendio por mes, haciendo que la enorme proliferación de los incendios a causa de la actividad humana en estas últimas décadas sobrepasa la capacidad de recuperación natural.
 
-<<fig.width=6, fig.height=4, fig.cap="Serie de tiempo Grandes Incendios Forestales en Colombia desde el año 2002 hasta el año 2016.">>=
-par(mar=c(2,2,1,.5)+.5, mgp=c(1.6,.6,0))
-plot(GIF, xlab="Año", type='o', col=4, ylab = "Número")
+<<fig.width=5.8, fig.height=4, fig.cap="Serie de tiempo Grandes Incendios Forestales en Colombia desde el año 2002 hasta el año 2016.", fig.pos='h'>>=
+par(mar=c(2,2,1,.5)+.5, mgp=c(1.6,.6,0), mfrow = c(1,1))
+plot(GIF, xlab="Año", type='o', col=4, ylab = "Número", xaxt="n")
+axis(1, at = 2002:2016, las=1)
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 lines(GIF, type='o', col=4)
 @
 
-
-<<results='asis'>>=
-xtable(head(incendios,12), caption = "Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.")
-@
-
-<<results='asis'>>=
-tabla.incendios <- data.frame(cbind(table(GIF),round(prop.table(table(GIF)),3)))
-colnames(tabla.incendios) <- c("Conteo","Proporción")
-xtable(tabla.incendios, caption = "Tabla de frecuencia para la base GIF Colombia (2002-2016).")
-@
-
-Se quiere determinar si existe correlación entre los GIF de cada mes, 
+En la figura 13, se observa dos picos altos en el 2007 y el 2010. Después del año 2011 la cero inflación disminuye considerablemente y el número de incendios en gran parte de los meses parece estar por encima de 5, este fenómeno se presenta de manera recurrente en gran parte del país, en especial durante los periodos secos prolongados, durante los cuales los ecosistemas tropicales húmedos y muy húmedos pierden parte de los contenidos de humedad superficial e interior, incrementando sus niveles de susceptibilidad y amenaza hacia la combustión de la biomasa vegetal que los compone. En la tabla 2 sse encuentran todos los datos de GIF en Colombia-
+\\
+Para determinar si existe correlación entre los GIF de cada mes, se calcula la función de autocorrelación muestral, la figura 14 indica no solo la existencia de la dependencia serial sino una estructura estacional
 
 <<fig.width=6, fig.height=3.5, fig.cap="Función de autocorrelación muetral, para la serie GIF.">>=
 par(mar=c(2,2,1,.5)+.5, mgp=c(1.3,.6,0), mfrow = c(1,1))
@@ -533,79 +575,102 @@ par(new = T)
 acf(GIF, xlab="",main="", lag.max = 80)
 @
 
-Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales ocurridos de Colombia, además parece haber una estructura estacional entre los meses donde ocurrieron estos incendios.
+Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales ocurridos de Colombia, además parece haber una estructura estacional entre los meses donde ocurrieron estos incendios. 
 
-<<>>=
+<<fig.width=6.3, fig.height=4.8, fig.cap="Kernel Densidad serie Grandes Incendios Forestales en Colombia (2002-2016).">>=
 d <- density(GIF)
 plot(d, ylab = "Densidad", main = "")
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 polygon(d, col=alpha("red", 0.4))
 @
 
-
 \subsubsection{Ajuste del ZIP-HMM}
 
-<<include=FALSE>>=
+<<include=FALSE, cache=TRUE>>=
 ZIPHMM_2states <- hmmfit(y=incendios$GIF,
                          M = 2, prior_init = c(0.6, 0.4),
                          tpm_init = matrix(c(0.9,0.1,
-                                             0.1,0.9),2,2,byrow=TRUE),
-                         emit_init=c(1, 5), zero_init = c(0.5,0),
-                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=500,trace=1))
+                                             0.5,0.5),2,2,byrow=TRUE),
+                         emit_init=c(7, 45), zero_init = c(0.4,0),
+                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=1000,trace=1))
 
 ZIPHMM_3states <- hmmfit(y=incendios$GIF,
                          M = 3, prior_init = c(0.5,0.2,0.3),
-                         tpm_init = matrix(c(0.8,0.1,0.1,
-                                             0.1,0.8,0.1,
-                                             0.1,0.1,0.8),3,3,byrow=TRUE),
-                         emit_init=c(1, 2, 3), zero_init = c(0.5,0,0),
-                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=500,trace=1))
+                         tpm_init = matrix(c(0.8,0.15,0.05,
+                                             0.45,0.4,0.15,
+                                             0.2,0.35,0.45),3,3,byrow=TRUE),
+                         emit_init=c(3, 17, 54), zero_init = c(0.45,0,0),
+                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=1000,trace=1))
 
 ZIPHMM_4states <- hmmfit(y=incendios$GIF,
-                         M = 4, prior_init = c(0.4,0.2,0.1,0.3),
-                         tpm_init = matrix(c(0.85,0.05,0.05,0.05,
-                                             0.05,0.85,0.05,0.05,
-                                             0.05,0.05,0.85,0.05,
-                                             0.05,0.05,0.05,0.85),4,4,byrow=TRUE),
-                         emit_init=c(1, 2, 3, 5), zero_init = c(0.5,0,0,0),
-                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=500,trace=1))
+                         M = 4, prior_init = c(0.5,0.2,0.2,0.1),
+                         tpm_init = matrix(c(0.80,0.15,0.04,0.01,
+                                             0.50,0.30,0.15,0.05,
+                                             0.15,0.35,0.45,0.05,
+                                             0.15,0.35,0.25,0.25),4,4,byrow=TRUE),
+                         emit_init=c(3, 15, 43, 100), zero_init = c(0.45,0,0,0),
+                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=1000,trace=1))
 
 ZIPHMM_5states <- hmmfit(y=incendios$GIF,
-                         M = 5, prior_init = c(0.4,0.2,0.1,0.2,0.1),
-                         tpm_init = matrix(c(0.80,0.05,0.05,0.05,0.05,
-                                             0.05,0.80,0.05,0.05,0.05,
-                                             0.05,0.05,0.80,0.05,0.05,
-                                             0.05,0.05,0.05,0.80,0.05,
-                                             0.05,0.05,0.05,0.05,0.80),5,5,byrow=TRUE),
-                         emit_init=c(1, 2, 3, 5, 7), zero_init = c(0.5,0,0,0,0),
-                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=500,trace=1))
+                         M = 5, prior_init = c(1,1,1,1,1)/5,
+                         tpm_init = matrix(c(0.75,0.15,0.05,0.025,0.025,
+                                             0.35,0.30,0.25,0.05,0.05,
+                                             0.35,0.20,0.20,0.20,0.05,
+                                             0.15,0.20,0.25,0.35,0.05,
+                                             0.10,0.20,0.25,0.20,0.25),5,5,byrow=TRUE),
+                         emit_init=c(2.5, 11, 25, 49, 100), zero_init = c(0.45,0,0,0,0),
+                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=1000,trace=1))
+
+ZIPHMM_6states <- hmmfit(y=incendios$GIF,
+                         M = 6, prior_init = c(1,1,1,1,1,1)/6,
+                         tpm_init = matrix(c(0.75,0.15,0.05,0.02,0.02,0.01,
+                                             0.15,0.40,0.25,0.10,0.05,0.05,
+                                             0.45,0.05,0.20,0.20,0.05,0.05,
+                                             0.15,0.15,0.30,0.15,0.20,0.05,
+                                             0.10,0.10,0.20,0.20,0.25,0.15,
+                                             0.10,0.10,0.25,0.20,0.15,0.20),6,6,byrow=TRUE),
+                         emit_init=c(2, 6, 15, 31, 51, 100), zero_init = c(0.48,0,0,0,0,0),
+                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=1000,trace=1))
+
+ZIPHMM_7states <- hmmfit(y=incendios$GIF,
+                         M = 7, prior_init = c(1,1,1,1,1,1,1)/7,
+                         tpm_init = matrix(c(0.70,0.10,0.05,0.05,0.020,0.04,0.04,
+                                             0.25,0.30,0.20,0.10,0.050,0.05,0.05,
+                                             0.30,0.10,0.15,0.20,0.150,0.05,0.05,
+                                             0.30,0.10,0.10,0.175,0.175,0.05,0.10,
+                                             0.10,0.10,0.15,0.20,0.15,0.20,0.10,
+                                             0.10,0.15,0.15,0.15,0.15,0.25,0.05,
+                                             0.10,0.10,0.15,0.15,0.20,0.10,0.20),7,7,byrow=TRUE),
+                         emit_init=c(1.5, 4.5, 11, 17, 32, 52, 99), zero_init = c(0.48,0,0,0,0,0,0),
+                         method="Nelder-Mead",hessian=TRUE,control=list(maxit=1000,trace=1))
 @
 
 <<results='asis'>>=
 Tabla2 <- data.frame(
-  Modelo = c("ZIPHMM - Estados 2", "ZIPHMM - Estados 3", "ZIPHMM - Estados 4", "ZIPHMM - Estados 5"),
-  p = c(5, 10, 17, 26),
-  logL = c(ZIPHMM_2states$nllk, ZIPHMM_3states$nllk, ZIPHMM_4states$nllk, ZIPHMM_5states$nllk),
-  AIC = c(ZIPHMM_2states$aic, ZIPHMM_3states$aic, ZIPHMM_4states$aic, ZIPHMM_5states$aic),
-  BIC = c(ZIPHMM_2states$bic, ZIPHMM_3states$bic, ZIPHMM_4states$bic, ZIPHMM_5states$bic))
+  Modelo = c("ZIPHMM - Estados 2", "ZIPHMM - Estados 3", "ZIPHMM - Estados 4", "ZIPHMM - Estados 5","ZIPHMM - Estados 6","ZIPHMM - Estados 7"),
+  p = c(6, 12, 20, 30, 42, 56),
+  logL = c(ZIPHMM_2states$nllk, ZIPHMM_3states$nllk, ZIPHMM_4states$nllk, ZIPHMM_5states$nllk, ZIPHMM_6states$nllk, ZIPHMM_7states$nllk),
+  AIC = c(ZIPHMM_2states$aic, ZIPHMM_3states$aic, ZIPHMM_4states$aic, ZIPHMM_5states$aic, ZIPHMM_6states$aic, ZIPHMM_7states$aic),
+  BIC = c(ZIPHMM_2states$bic, ZIPHMM_3states$bic, ZIPHMM_4states$bic, ZIPHMM_5states$bic, ZIPHMM_6states$bic, ZIPHMM_7states$bic))
 xtable(Tabla2, caption = "Datos incendios: comparación de modelos ocultos de Markov (Cero inflados) por AIC y BIC.")
 @
 
 <<fig.height=4.8, fig.cap="Serie incendios: selección de modelos AIC y BIC.", fig.pos='h'>>=
-plot(x = 2:5, y = Tabla2$AIC, type = "o", pch = 16, lty=2,xlim=c(1.5,6), ylim=c(470,650), xlab = "Número de estados", ylab = "")
+plot(x = 2:7, y = Tabla2$AIC, type = "o", pch = 16, lty=2,xlim=c(1.5,7.5), ylim=c(1000,1600), xlab = "Número de estados", ylab = "")
 rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1,col='white')
-lines(x = 2:5, y = Tabla2$AIC, type = "o", pch = 16, lty = 2)
-lines(x = 2:5, y = Tabla2$BIC, type = "o", pch = 16, lty = 2)
-text(x = c(5.3,5.3), y = c(543, 639), labels = c("AIC","BIC"))
+lines(x = 2:7, y = Tabla2$AIC, type = "o", pch = 16, lty = 2)
+lines(x = 2:7, y = Tabla2$BIC, type = "o", pch = 16, lty = 2)
+text(x = c(7.2,7.2), y = c(1135, 1317), labels = c("AIC","BIC"))
+# AIC 6 estados y BIC 4 estados
 @
 
 <<>>=
 ZIP.viterbi <- hmmviterbi(y = incendios$GIF, 
            ntimes = length(incendios$GIF), 
-           M = 3, prior_init = ZIPHMM_3states$prior, 
-           tpm_init = ZIPHMM_3states$tpm, 
-           emit_init = ZIPHMM_3states$emit_parm, 
-           zero_init = ZIPHMM_3states$zeroprop)
+           M = 4, prior_init = ZIPHMM_4states$prior, 
+           tpm_init = ZIPHMM_4states$tpm, 
+           emit_init = ZIPHMM_4states$emit_parm, 
+           zero_init = ZIPHMM_4states$zeroprop)
 @
 
 <<fig.width=8, fig.height=4, fig.cap="Algoritmo Viterbi aplicado al ZIPHMM de tres estados.">>=
@@ -615,11 +680,91 @@ par(mar=c(2,2,1,.5)+.5, mgp=c(1.6,.6,0))
 plot(GIF,xlab="Año",type='o', col=4, ylab = "Número")
 rect(par("usr")[1], par("usr")[3],par("usr")[2],par("usr")[4],col=gray(.9,.9),border='white');grid(lty=1, col='white')
 lines(GIF, type='o', col=4)
-abline(h = ZIPHMM_3states$emit_parm, col = "yellowgreen", lty = 2)
-points(x = time(GIF), y = ifelse(ZIP.viterbi == 1, ZIPHMM_3states$emit_parm[1],ifelse(ZIP.viterbi == 2,ZIPHMM_3states$emit_parm[2],ZIPHMM_3states$emit_parm[3])), pch = 16, col = "orange")
+abline(h = ZIPHMM_4states$emit_parm, col = "orange", lty = 2)
+points(x = time(GIF), y = ifelse(ZIP.viterbi == 1, ZIPHMM_4states$emit_parm[1],
+                                 ifelse(ZIP.viterbi == 2, ZIPHMM_4states$emit_parm[2],
+                                        ifelse(ZIP.viterbi == 3,ZIPHMM_4states$emit_parm[3],
+                                               ZIPHMM_4states$emit_parm[4]))), pch = 21, bg = "orange", col = "white")
+@
+
+<<eval=FALSE>>=
+system.time(Bayes_ZIPHMM1_2S <- bayes.ZIPHMM1(y=GIF,m=2,chains=4,iter=2000))#38.90
+system.time(Bayes_ZIPHMM1_3S <- bayes.ZIPHMM1(y=GIF,m=3,chains=4,iter=2000))#44.23
+system.time(Bayes_ZIPHMM1_4S <- bayes.ZIPHMM1(y=GIF,m=4,chains=4,iter=2000))#60.88
+system.time(Bayes_ZIPHMM1_5S <- bayes.ZIPHMM1(y=GIF,m=5,chains=4,iter=2000,control=list(adapt_delta=0.99)))#600.85
+system.time(Bayes_ZIPHMM1_6S <- bayes.ZIPHMM1(y=GIF,m=6,chains=4,iter=2000,control=list(adapt_delta=0.99)))#968.67
+system.time(Bayes_ZIPHMM1_7S <- bayes.ZIPHMM1(y=GIF,m=7,chains=4,iter=2000,control=list(adapt_delta=0.99, max_treedepth = 15)))#808.83
+@
+
+<<eval=FALSE>>=
+library(bridgesampling)
+# estimates of the log marginal likelihoods
+set.seed(1)
+bridge_H0 <- bridge_sampler(samples = Bayes_ZIPHMM1_2S)
+bridge_H1 <- bridge_sampler(samples = Bayes_ZIPHMM1_3S)
+bridge_H2 <- bridge_sampler(samples = Bayes_ZIPHMM1_4S)
+bridge_H3 <- bridge_sampler(samples = Bayes_ZIPHMM1_5S)
+bridge_H4 <- bridge_sampler(samples = Bayes_ZIPHMM1_6S)
+bridge_H5 <- bridge_sampler(samples = Bayes_ZIPHMM1_7S)
+
+error_measures(bridge_H0)$percentage #"0.224%"
+error_measures(bridge_H1)$percentage #"0.447%"
+error_measures(bridge_H2)$percentage #"1.080%"
+error_measures(bridge_H3)$percentage #"5.350%"
+error_measures(bridge_H4)$percentage #"3.260%"
+error_measures(bridge_H5)$percentage #"25.00%"
+
+#The Bayes factor in favor of H0 over H1 can then be obtained as follows:
+Tabla2          #     nllk    bridge Estados
+bridge_H0$logml # 764.6139 -769.0118  2
+bridge_H1$logml # 592.8111 -603.9224  3
+bridge_H2$logml # 536.0731 -557.4197  4
+bridge_H3$logml # 521.8713 -553.6015  5
+bridge_H4$logml # 508.6004 -557.9988  6
+bridge_H5$logml # 510.7902 -571.662   7
+
+bf(bridge_H0, bridge_H1) # Evidencia extrema para H1 0.00000
+bf(bridge_H0, bridge_H2) # Evidencia extrema para H2 0.00000
+bf(bridge_H0, bridge_H3) # Evidencia extrema para H3 0.00000
+bf(bridge_H0, bridge_H4) # Evidencia extrema para H4 0.00000
+bf(bridge_H0, bridge_H5) # Evidencia extrema para H5 0.00000
+
+bf(bridge_H1, bridge_H2) # Evidencia extrema para H2 0.00000
+bf(bridge_H1, bridge_H3) # Evidencia extrema para H3 0.00000
+bf(bridge_H1, bridge_H4) # Evidencia extrema para H4 0.00000
+bf(bridge_H1, bridge_H5) # Evidencia extrema para H5 0.00000
+
+bf(bridge_H2, bridge_H3) # Evidencia muy fuerte para H3 0.02197 modelo 5 estados
+bf(bridge_H2, bridge_H4) # Apenas mencionable para H2 1.78455
+bf(bridge_H2, bridge_H5) # Eviencia extrema para H2 1513518
+
+bf(bridge_H3, bridge_H4) # Evidencia muy fuerte para H3 81.22963
+bf(bridge_H3, bridge_H5) # Evidencia muy fuerte para H3 84986740
+
+bf(bridge_H4, bridge_H5) # Evidencia muy fuerte para H4 956226
+# Nos quedamos con H3 5 estados
+@
+
+
+<<echo=FALSE, cache=TRUE, include=FALSE>>=
+Bayes_ZIPHMM1_4S <- bayes.ZIPHMM1(y=GIF,m=4,chains=3,iter=2000, seed = 7)
+@
+
+<<results='asis'>>=
+resumenZIP_HMM <- as.data.frame(summary(Bayes_ZIPHMM1_4S)$summary)
+A_Zbayes <- matrix(resumenZIP_HMM$mean[6:21], 4,4)
+lambda_Zbayes <- resumenZIP_HMM$mean[2:5]
+theta_Zbayes <- resumenZIP_HMM$mean[1]
+colnames(resumenZIP_HMM) <- c("Media","Err.Sta","Desv","2.5%","25%","50%","75%","97.5%","n_eff","Rhat")
+rownames(resumenZIP_HMM) <- c("$\\theta$","$\\lambda_1$","$\\lambda_2$","$\\lambda_3$","$\\lambda_4$","$\\Gamma_{11}$","$\\Gamma_{12}$","$\\Gamma_{13}$","$\\Gamma_{14}$","$\\Gamma_{21}$","$\\Gamma_{22}$","$\\Gamma_{23}$","$\\Gamma_{24}$","$\\Gamma_{31}$","$\\Gamma_{32}$","$\\Gamma_{33}$","$\\Gamma_{34}$","$\\Gamma_{41}$","$\\Gamma_{42}$","$\\Gamma_{43}$","$\\Gamma_{44}$","lp")
+print(xtable(resumenZIP_HMM, caption = "Estimación bayesiana de los parámetros para un ZIPH-MM.", digits = 3), sanitize.rownames.function = function(x) {x})
 @
 
 \section{Anexo Códigos}
+
+A continuación se anexa el código utilizado para el desarrollo de esta tesis, en la aplicación del PHMM a la base homicidios en Colombia y el ajuste del ZIP-HMM a los Grandes Incendios Forestales (GIF) en Colombia. 
+
+\clearpage
 
 <<eval=FALSE, echo=TRUE>>=
 
@@ -639,7 +784,6 @@ data("incendios")
 #################################
 # Poisson - Hidden Markov Model #
 #################################
-
 
 ###############################################
 # Zero Inflated Poisson - Hidden Markov Model #

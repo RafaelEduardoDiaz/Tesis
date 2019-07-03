@@ -69,7 +69,7 @@
 \begin{document}
 
 \maketitle
-\section{Aplicación e ilustración}
+\section{Aplicación}
 
 A continuación, ilustramos todos los modelos descritos anteriormente aplicándolos a dos conjuntos de datos, para la serie anual del número de homicidios en Colombia de 1960 a 2018 se ajustaron varios PHMM, mientras que para la serie mensual de incendios forestales en Colombia, entre el 2002 y 2016 se ajustaron diversos ZIP-HMM. Antes de que se ajusten los modelos, se llevo a cabo un análisis exploratorio básico del conjunto de datos que aborda algunos problemas que generalmente se presentan al visualizar los datos de conteo. Al final de la sección, se comparan todos los modelos ajustados, tanto desde el enfoque clásico como Bayesiano, y se selecciona el mejor modelo a partir de las dos metodologías. 
 
@@ -84,7 +84,7 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:30 2019
+% Wed Jul 03 02:59:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -105,30 +105,31 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \\
 Las estadísticas sobre incendios en Colombia, permiten en términos generales, realizar análisis de su comportamiento bajo diferentes escenarios, esto es, por regiones, departamentos o municipios, con Niño o en condiciones climáticas normales,  por cobertura vegetal afectada, por Corporación Autónoma Regional, por año o por mes, y de esta manera, poder ser  utilizarlas para priorizar áreas, orientar acciones o sustentar la necesidad de realizar estudios más detallados. El Ideam ha venido realizando una revisión histórica de los datos reportados por las instituciones anteriormente mencionadas, con el fin de tener datos más confiables que permitan tener una mejor aproximación al tema. La variable de interés es el número de grandes incendios forestales (GIF), y se definen como aquellos incendios que superan las 500 hectáreas forestales afectadas. El número de observaciones es mensual iniciando en enero del 2002 y finalizando en diciembre del 2016, para un total 180 observaciones.
 
-[1] ".preformat.ts"
+
+
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:30 2019
+% Wed Jul 03 02:59:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
   \hline
  & Jan & Feb & Mar & Apr & May & Jun & Jul & Aug & Sep & Oct & Nov & Dec \\ 
   \hline
-2002 &   0 &   1 &   4 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
-  2003 &   0 &   2 &   1 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
-  2004 &   1 &   6 &   3 &   0 &   0 &   0 &   0 &   1 &   0 &   0 &   0 &   0 \\ 
-  2005 &   0 &   0 &   1 &   0 &   0 &   0 &   0 &   1 &   2 &   0 &   0 &   0 \\ 
-  2006 &   0 &   0 &   0 &   0 &   0 &   0 &   2 &   0 &   0 &   0 &   0 &   0 \\ 
-  2007 &   3 &  23 &   3 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
-  2008 &   0 &   1 &   1 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
-  2009 &   0 &   0 &   0 &   0 &   0 &   0 &   1 &   2 &   2 &   1 &   0 &   1 \\ 
-  2010 &  20 &  16 &   6 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
-  2011 &   1 &  10 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
-  2012 &   1 &   3 &   3 &   0 &   0 &   0 &   2 &   1 &   8 &   0 &   0 &   0 \\ 
-  2013 &   4 &   6 &   2 &   0 &   0 &   0 &   0 &   1 &   3 &   0 &   0 &   0 \\ 
-  2014 &   4 &   4 &  11 &   4 &   0 &   0 &   5 &   4 &   3 &   0 &   0 &   0 \\ 
-  2015 &   1 &   2 &   3 &   1 &   0 &   0 &   0 &   6 &   6 &   0 &   0 &   0 \\ 
-  2016 &   1 &  10 &  18 &   0 &   0 &   0 &   0 &   2 &   1 &   0 &   0 &   0 \\ 
+2002 &  10 &   8 &  12 &   2 &   0 &   1 &   0 &   6 &   1 &   1 &   0 &   0 \\ 
+  2003 &   5 &   6 &  11 &   3 &   0 &   0 &   5 &   0 &   3 &   0 &   0 &   0 \\ 
+  2004 &   7 &  14 &  10 &   1 &   0 &   0 &   3 &  12 &   4 &   1 &   0 &   3 \\ 
+  2005 &   5 &   6 &  13 &   4 &   1 &   0 &   4 &   9 &  25 &   1 &   0 &   2 \\ 
+  2006 &   2 &   3 &   0 &   0 &   0 &   0 &   6 &   6 &  10 &   0 &   0 &   0 \\ 
+  2007 &  19 & 100 &  16 &   1 &   1 &   0 &   0 &   0 &   1 &   0 &   1 &   0 \\ 
+  2008 &   3 &   4 &   3 &   1 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
+  2009 &   1 &   6 &   5 &   3 &   3 &   3 &  12 &  24 &  58 &  22 &   0 &   7 \\ 
+  2010 & 103 &  95 &  37 &   3 &   0 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
+  2011 &  14 &  21 &   3 &   0 &   0 &   1 &   2 &  16 &  20 &   0 &   0 &   0 \\ 
+  2012 &  16 &  27 &  14 &   1 &   3 &   3 &  31 &  36 &  45 &   4 &   3 &   3 \\ 
+  2013 &  62 &  56 &  33 &  14 &   0 &   1 &  19 &  17 &  36 &  13 &   2 &   0 \\ 
+  2014 &  15 &  32 &  18 &  17 &   2 &   0 &  48 &  38 &  47 &   3 &   1 &   0 \\ 
+  2015 &  18 &  19 &  27 &   4 &   9 &   5 &  11 &  31 &  39 &  12 &   0 &   8 \\ 
+  2016 &  40 &  60 &  58 &  12 &   0 &   0 &   5 &  22 &  18 &   1 &   0 &   2 \\ 
    \hline
 \end{tabular}
 \caption{Número de Grandes Incendios Forestales (GIF) en Colombia, 2002 - 2016.} 
@@ -161,7 +162,7 @@ En el conjunto de los países con conflictos armados en el mundo, Colombia prese
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-6-1} \caption[Serie de tiempo homicidios en Colombia desde el año 1960 hasta el año 2018]{Serie de tiempo homicidios en Colombia desde el año 1960 hasta el año 2018.}\label{fig:unnamed-chunk-6}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} \caption[Serie de tiempo homicidios en Colombia desde el año 1960 hasta el año 2018]{Serie de tiempo homicidios en Colombia desde el año 1960 hasta el año 2018.}\label{fig:unnamed-chunk-7}
 \end{figure}
 
 
@@ -173,7 +174,7 @@ Un primer período de incremento acelerado que va desde comienzos de los 80, en 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-7-1} \caption[Kernel Densidad de homicidios en Colombia (1960-2018)]{Kernel Densidad de homicidios en Colombia (1960-2018).}\label{fig:unnamed-chunk-7}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} \caption[Kernel Densidad de homicidios en Colombia (1960-2018)]{Kernel Densidad de homicidios en Colombia (1960-2018).}\label{fig:unnamed-chunk-8}
 \end{figure}
 
 
@@ -183,7 +184,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-8-1} \caption[Función de autocorrelación muetral, para la serie de homicidios]{Función de autocorrelación muetral, para la serie de homicidios.}\label{fig:unnamed-chunk-8}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-9-1} \caption[Función de autocorrelación muetral, para la serie de homicidios]{Función de autocorrelación muetral, para la serie de homicidios.}\label{fig:unnamed-chunk-9}
 \end{figure}
 
 
@@ -195,11 +196,10 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 
 
 
-
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:39 2019
+% Wed Jul 03 02:59:12 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -222,7 +222,7 @@ Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-12-1} \caption[Serie homicidios]{Serie homicidios: selección de modelos AIC y BIC.}\label{fig:unnamed-chunk-12}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-13-1} \caption[Serie homicidios]{Serie homicidios: selección de modelos AIC y BIC.}\label{fig:unnamed-chunk-13}
 \end{figure}
 
 
@@ -232,7 +232,7 @@ Varios comentarios surgen de la Tabla 4. En primer lugar, dada la dependencia en
 
 
 
-La estimaciones del modelo son las siguientes la media de los estados dependientes $\lambda = (29.72, 62.8)$  y los valores de la distribución estacionaria son $\pi = (0.764, 0.236)$. Ahora veamos la estimación de la matriz de transición para el modelo con 2 estados:
+La estimaciones del PHMM de dos estados se muestran a continuación, primero la tpm $A$, además del vector de medias de los estados dependientes $\lambda$ y los valores de la distribución estacionaria $\pi$. 
 
 $$
 A = \begin{pmatrix}{}
@@ -241,10 +241,12 @@ A = \begin{pmatrix}{}
 \end{pmatrix}
 $$
 
+$$\lambda = (29.715, 62.812) \ \ \ \ \pi = (0.764, 0.235)$$
+
 Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:40 2019
+% Wed Jul 03 02:59:12 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -254,7 +256,7 @@ Ahora miraremos otras metodologías alternativas a los criterios de información
 observaciones & 0.94 & 0.89 & 0.83 & 0.75 & 0.66 & 0.58 & 0.49 & 0.39 & 0.30 & 0.20 & 0.11 & -0.00 \\ 
   PHMM 2 Estados & 0.77 & 0.71 & 0.65 & 0.59 & 0.54 & 0.50 & 0.46 & 0.42 & 0.38 & 0.35 & 0.32 & 0.29 \\ 
   PHMM 3 Estados & 0.79 & 0.75 & 0.71 & 0.68 & 0.64 & 0.61 & 0.58 & 0.55 & 0.52 & 0.50 & 0.47 & 0.45 \\ 
-  PHMM 4 Estados & 0.80 & 0.76 & 0.72 & 0.68 & 0.65 & 0.62 & 0.58 & 0.55 & 0.52 & 0.49 & 0.47 & 0.44 \\ 
+  PHMM 4 Estados & 0.80 & 0.76 & 0.72 & 0.69 & 0.65 & 0.62 & 0.58 & 0.55 & 0.52 & 0.50 & 0.47 & 0.44 \\ 
    \hline
 \end{tabular}
 \caption{Datos homicidios: ACF y ACF de los cuatro modelos hasta el rezago 12.} 
@@ -263,7 +265,7 @@ observaciones & 0.94 & 0.89 & 0.83 & 0.75 & 0.66 & 0.58 & 0.49 & 0.39 & 0.30 & 0
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-15-1} \caption[Datos homicidios]{Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.}\label{fig:unnamed-chunk-15}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16-1} \caption[Datos homicidios]{Datos homicidios: ACF y ACF de los PHMM con dos y tres estados.}\label{fig:unnamed-chunk-16}
 \end{figure}
 
 
@@ -277,7 +279,7 @@ En este caso hemos elegido el BIC como criterio para la selección del mejor mod
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-16-1} \caption[Grafico pseudo-residuales ordinarios para el PHMM de 2 estados]{Grafico pseudo-residuales ordinarios para el PHMM de 2 estados.}\label{fig:unnamed-chunk-16}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-17-1} \caption[Grafico pseudo-residuales ordinarios para el PHMM de 2 estados]{Grafico pseudo-residuales ordinarios para el PHMM de 2 estados.}\label{fig:unnamed-chunk-17}
 \end{figure}
 
 
@@ -287,10 +289,12 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 
 \subsubsection*{Algoritmo Viterbi}
 
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, dando como resultado la anterior tabla, para un total de 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi.
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, indicando la secuencia más probable de los estados ocultos. Para la serie homicidios de 59 observaciones, el algoritmo Viterbi clasifico 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi, y las distribuciones marginales para cada estado.
+\\
+La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas aplicaciones, especialmente cuando existen interpretaciones importantes para los estados. Sin embargo los estados no observados en el modelo, no siemprre necesitan tener interpretaciones sustantiva, pues se consideran artefactos útiles para adaptarse a la heterogeneidad no explicada y la dependencia serial de los datos. En el caso de la serie homicidios no parce haber una interpretación clara de los estados.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:40 2019
+% Wed Jul 03 02:59:13 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -307,56 +311,53 @@ El algoritmo Viterbi, permite realizar la decodificación global de los estados 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-18-1} \caption[Algoritmo Viterbi aplicado a un PHMM de dos estados]{Algoritmo Viterbi aplicado a un PHMM de dos estados.}\label{fig:unnamed-chunk-18}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-19-1} \caption[Algoritmo Viterbi aplicado a un PHMM de dos estados]{Algoritmo Viterbi aplicado a un PHMM de dos estados.}\label{fig:unnamed-chunk-19}
 \end{figure}
 
 
 \end{knitrout}
 
-Ahora realizaremos la predicción de los estados más probables para los proximos 12 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura () a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} \caption[Pronostico de la distribución para los años 2019 a 2034]{Pronostico de la distribución para los años 2019 a 2034.}\label{fig:unnamed-chunk-20}
+\end{figure}
+
+
+\end{knitrout}
+
+Se realiza la predicción de los estados más probables para los proximos 16 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura 8 a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario. En la tabla 7, se observa que el prónstico de los estados, para los próximos 16 años es el 1, es decir que se espera una tasa de homidios por cada 100.000 habitantes cercana a 29, la cual sigue siendo alta ya que según datos de la ONUDD (Oficina de Naciones Unidas contra la Droga y el Delito), en sur America la tasa se situa en 20/100.000 homicidios, lo que indica quee la tasa de homicidios en  Colombia está por encima de la región. Además según estadísticas de la ONUDD, Colombia se situa como uno de los países más violentos del mundo ubicandose en el top 20, las cifras de la fiscalia indican que despues de haber disminuido la tasa de homidios en los últimos años, a partir del 2018 hubo un incremento del $3.25 \%$, de este delito siendo caso críticos las ciudades de Medellín, bajo Cauca y Tumaco, mientras la capital sigue con tendencia a la baja.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:41 2019
+% Wed Jul 03 02:59:13 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
   \hline
- & Estado 1 & Estado 2 & Estado \\ 
+Año & Estado 1 & Estado 2 & Estado \\ 
   \hline
-2019 & 0.9802 & 0.0198 &     1 \\ 
-  2020 & 0.9621 & 0.0379 &     1 \\ 
-  2021 & 0.9456 & 0.0544 &     1 \\ 
-  2022 & 0.9304 & 0.0696 &     1 \\ 
-  2023 & 0.9164 & 0.0836 &     1 \\ 
-  2024 & 0.9037 & 0.0963 &     1 \\ 
-  2025 & 0.8920 & 0.1080 &     1 \\ 
-  2026 & 0.8813 & 0.1187 &     1 \\ 
-  2027 & 0.8714 & 0.1286 &     1 \\ 
-  2028 & 0.8624 & 0.1376 &     1 \\ 
-  2029 & 0.8542 & 0.1458 &     1 \\ 
-  2030 & 0.8467 & 0.1533 &     1 \\ 
+ 2019 & 0.9802 & 0.0198 &     1 \\ 
+   2020 & 0.9621 & 0.0379 &     1 \\ 
+   2021 & 0.9456 & 0.0544 &     1 \\ 
+   2022 & 0.9304 & 0.0696 &     1 \\ 
+   2023 & 0.9164 & 0.0836 &     1 \\ 
+   2024 & 0.9037 & 0.0963 &     1 \\ 
+   2025 & 0.8920 & 0.1080 &     1 \\ 
+   2026 & 0.8813 & 0.1187 &     1 \\ 
+   2027 & 0.8714 & 0.1286 &     1 \\ 
+   2028 & 0.8624 & 0.1376 &     1 \\ 
+   2029 & 0.8542 & 0.1458 &     1 \\ 
+   2030 & 0.8467 & 0.1533 &     1 \\ 
+   2031 & 0.8397 & 0.1603 &     1 \\ 
+   2032 & 0.8334 & 0.1666 &     1 \\ 
+   2033 & 0.8276 & 0.1724 &     1 \\ 
+   2034 & 0.8223 & 0.1777 &     1 \\ 
    \hline
 \end{tabular}
-\caption{Predicción para las probabilidades de los estados hasta un rezago h = 12.} 
+\caption{Predicción para las probabilidades de los estados hasta un rezago h = 16.} 
 \end{table}
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-20-1} \caption[Pronostico de la distribución para los años 2019 a 2030]{Pronostico de la distribución para los años 2019 a 2030.}\label{fig:unnamed-chunk-20}
-\end{figure}
-
-
-\end{knitrout}
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[t]
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-21-1} \caption[La distribución prónosticada para el año 2098]{La distribución prónosticada para el año 2098}\label{fig:unnamed-chunk-21}
-\end{figure}
-
-
-\end{knitrout}
+En el siguiente aparto se muestran las estimaciones bayesianas realizadas a la serie homicidios
 
 %http://www.scielo.br/pdf/csc/v17n12/06.pdf
 
@@ -368,18 +369,53 @@ Ahora realizaremos la predicción de los estados más probables para los proximo
 
 
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador de muestreo por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función ` bridge sampler` del paquete bridgesampling, del autor Gronau. Inclusive calcular el error para la verosimilitud marginal, que en el caso del modelo con dos estados es de $0.478 \%$, mientras que para el modelo de 3 estados el error es de $3.11 \%$ aunque es más alto, sigue siendo relativamente bajo. Después utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, la siguiente tabla ilustra el contraste de hipótesis:
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador del muestreador por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función `bridge sampler` del paquete bridgesampling, del autor Gronau. El paquete \textbf{bridgesampling}, permite además calcular el error de la estimación para la verosimilitud marginal, obtendido via muestreo por puente que en el caso del modelo con dos estados, el error es de $0.478 \%$. 
+
+Un factor de Bayes es la relación entre la probabilidad de una hipótesis particular y la probabilidad de otra. Puede interpretarse como una medida de la fuerza de la evidencia en favor de una teoría entre dos teorías en competencia. Esto se debe a que el factor de Bayes nos permite evaluar los datos a favor de una hipótesis nula y utilzar información externa para hacerlo. Nos dice cuál es el peso de la evidencia a favor de una hipótesis dada.
+
+Cuando estamos comparando dos hipótesis, $H_0$ (la hipótesis nula) y $H_1$ (la hipótesis alternativa) y , el factor de Bayes a menudo se escribe como $B_{01}$. Se puede definir matemáticamente como
+
+$$B_{01} = \frac{\text{verosimilitud de los datos dado $H_0$}}{\text{verosimilitud de los datos dado $H_1$}} = \frac{P(D | H_0)}{P(D | H_1)}$$
+
+El factor de Bayes puede es un número positivo, y una de las interpretaciones más comunes es esta: propuesta por primera vez por Harold Jeffereys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:41 2019
+% Wed Jul 03 02:59:13 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+  \hline
+B01 & Desición \\ 
+  \hline
+$>$100 & Evidencia extrema para H0 \\ 
+  30 - 100 & Evidencia muy fuerte para H0 \\ 
+  10 - 30 & Evidencia fuerte para H0 \\ 
+  3 - 10 & Evidencia moderada para H0 \\ 
+  1 - 3 & Evidencia apenas mencionable para H0 \\ 
+  1 & No hay evidencia \\ 
+  1/3 - 1 & Evidencia apenas mencionable para H1 \\ 
+  1/10 - 1/3 & Evidencia moderada para H1 \\ 
+  1/30 - 1/3 & Evidencia fuerte para H1 \\ 
+  1/100 - 1/30 & Evidencia muy fuerte para H1 \\ 
+  $<$ 1/100 & Evidencia extrema para H1 \\ 
+   \hline
+\end{tabular}
+\caption{Interpretación del factor de Bayes, Lee y Wagenmakers (2013).} 
+\end{table}
+
+
+Ahora utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, en la siguiente tabla ilustra el contraste de hipótesis, donde las filas indican $P(D | H_0)$ y las columnas $P(D | H_1)$. Por ejemplo en el contraste de hipótesis entre el modelo de 3 estados vs el modelo de 4 estados, el valor obtenido fue $B_{01} = 766.05$, lo que indica evidencia extrema para $H_0$, es decir el modelo de 3 estados es más apropiado que el de 4 estados.
+
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Wed Jul 03 02:59:13 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
   \hline
  & mod 2 Estados & mod 3 Estados & mod 4 Estados & mod 5 Estados \\ 
   \hline
-mod 2 Estados &  & 3.36 & 3047.46 & 390147608.00 \\ 
-  mod 3 Estados &  &  & 980.61 & 125542040.00 \\ 
+mod 2 Estados &  & 3.36 & 2545.85 & 390147608.00 \\ 
+  mod 3 Estados &  &  & 766.05 & 125542040.00 \\ 
   mod 4 Estados &  &  &  & 128023.00 \\ 
    \hline
 \end{tabular}
@@ -389,23 +425,23 @@ mod 2 Estados &  & 3.36 & 3047.46 & 390147608.00 \\
 
 
 
-Por lo tanto se ajusta un PHMM de orden 2 lo cual coincide con la teoría clásica. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
+De la tabla 9, se concluye que el modelo apropiado es el de orden 2, lo cual coincide con el BIC. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependiesntes:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:42 2019
+% Wed Jul 03 02:59:13 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrr}
   \hline
  & Media & Err.Sta & Desv & 2.5\% & 25\% & 50\% & 75\% & 97.5\% & n\_eff & Rhat \\ 
   \hline
-$\Gamma_{11}$ & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 2489.68 & 1.00 \\ 
-  $\Gamma_{12}$ & 0.05 & 0.00 & 0.03 & 0.01 & 0.02 & 0.04 & 0.06 & 0.13 & 2489.68 & 1.00 \\ 
-  $\Gamma_{21}$ & 0.10 & 0.00 & 0.06 & 0.01 & 0.05 & 0.08 & 0.13 & 0.25 & 2241.08 & 1.00 \\ 
-  $\Gamma_{22}$ & 0.90 & 0.00 & 0.06 & 0.75 & 0.87 & 0.92 & 0.95 & 0.99 & 2241.08 & 1.00 \\ 
-  $\lambda_1$ & 29.71 & 0.02 & 0.88 & 27.97 & 29.11 & 29.73 & 30.31 & 31.41 & 2270.72 & 1.00 \\ 
-  $\lambda_2$ & 62.75 & 0.04 & 1.94 & 58.95 & 61.43 & 62.74 & 64.02 & 66.44 & 2647.06 & 1.00 \\ 
-  lp & -210.61 & 0.03 & 1.48 & -214.32 & -211.32 & -210.28 & -209.52 & -208.75 & 2051.34 & 1.00 \\ 
+$\Gamma_{11}$ & 0.953 & 0.001 & 0.032 & 0.873 & 0.935 & 0.961 & 0.977 & 0.994 & 2491.677 & 1.000 \\ 
+  $\Gamma_{12}$ & 0.047 & 0.001 & 0.032 & 0.006 & 0.023 & 0.039 & 0.065 & 0.127 & 2491.677 & 1.000 \\ 
+  $\Gamma_{21}$ & 0.099 & 0.001 & 0.065 & 0.014 & 0.051 & 0.084 & 0.133 & 0.257 & 2417.781 & 1.000 \\ 
+  $\Gamma_{22}$ & 0.901 & 0.001 & 0.065 & 0.743 & 0.867 & 0.916 & 0.949 & 0.986 & 2417.781 & 1.000 \\ 
+  $\lambda_1$ & 29.715 & 0.018 & 0.871 & 28.097 & 29.111 & 29.684 & 30.299 & 31.460 & 2456.451 & 1.001 \\ 
+  $\lambda_2$ & 62.849 & 0.039 & 1.961 & 59.068 & 61.491 & 62.811 & 64.184 & 66.735 & 2560.484 & 1.000 \\ 
+  lp & -210.558 & 0.030 & 1.426 & -214.125 & -211.268 & -210.260 & -209.512 & -208.739 & 2200.204 & 1.002 \\ 
    \hline
 \end{tabular}
 \caption{Estimación bayesiana de los parámetros para un PHMM.} 
@@ -413,7 +449,7 @@ $\Gamma_{11}$ & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 2489.68 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:43 2019
+% Wed Jul 03 02:59:14 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -430,32 +466,32 @@ $\Gamma_{11}$ & 0.95 & 0.00 & 0.03 & 0.87 & 0.94 & 0.96 & 0.98 & 0.99 & 2489.68 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-28-1} \caption[Algoritmo Viterbi aplicado a un PHMM de dos estados]{Algoritmo Viterbi aplicado a un PHMM de dos estados.}\label{fig:unnamed-chunk-28}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-29-1} \caption[Algoritmo Viterbi aplicado a un PHMM de dos estados]{Algoritmo Viterbi aplicado a un PHMM de dos estados.}\label{fig:unnamed-chunk-29}
 \end{figure}
 
 
 \end{knitrout}
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:53:43 2019
+% Wed Jul 03 02:59:14 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
   \hline
  & Estado 1 & Estado 2 & Estado \\ 
   \hline
-2019 & 0.9517 & 0.0483 &     1 \\ 
-  2020 & 0.9104 & 0.0896 &     1 \\ 
-  2021 & 0.8751 & 0.1249 &     1 \\ 
-  2022 & 0.8449 & 0.1551 &     1 \\ 
-  2023 & 0.8191 & 0.1809 &     1 \\ 
-  2024 & 0.7971 & 0.2029 &     1 \\ 
-  2025 & 0.7783 & 0.2217 &     1 \\ 
-  2026 & 0.7622 & 0.2378 &     1 \\ 
-  2027 & 0.7484 & 0.2516 &     1 \\ 
-  2028 & 0.7366 & 0.2634 &     1 \\ 
-  2029 & 0.7266 & 0.2734 &     1 \\ 
-  2030 & 0.7180 & 0.2820 &     1 \\ 
+2019 & 0.9533 & 0.0467 &     1 \\ 
+  2020 & 0.9134 & 0.0866 &     1 \\ 
+  2021 & 0.8793 & 0.1207 &     1 \\ 
+  2022 & 0.8502 & 0.1498 &     1 \\ 
+  2023 & 0.8253 & 0.1747 &     1 \\ 
+  2024 & 0.8040 & 0.1960 &     1 \\ 
+  2025 & 0.7859 & 0.2141 &     1 \\ 
+  2026 & 0.7703 & 0.2297 &     1 \\ 
+  2027 & 0.7571 & 0.2429 &     1 \\ 
+  2028 & 0.7457 & 0.2543 &     1 \\ 
+  2029 & 0.7361 & 0.2639 &     1 \\ 
+  2030 & 0.7278 & 0.2722 &     1 \\ 
    \hline
 \end{tabular}
 \caption{Predicción bayesiana para las probabilidades de los estados hasta un rezago h = 12.} 
@@ -472,7 +508,7 @@ En este caso parece no haber problemas con la identificabilidad, es decir que no
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-30-1} \caption[Gráfico de dispersión para las muestras MCMC]{Gráfico de dispersión para las muestras MCMC.}\label{fig:unnamed-chunk-30}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-1} \caption[Gráfico de dispersión para las muestras MCMC]{Gráfico de dispersión para las muestras MCMC.}\label{fig:unnamed-chunk-31}
 \end{figure}
 
 
@@ -482,7 +518,7 @@ El gráfico de traza, muestra por cada una de las iteraciones los valores muestr
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-31-1} \caption[Gráfico de trazas de las cadenas, para cada iteración y por cadena]{Gráfico de trazas de las cadenas, para cada iteración y por cadena.}\label{fig:unnamed-chunk-31}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-32-1} \caption[Gráfico de trazas de las cadenas, para cada iteración y por cadena]{Gráfico de trazas de las cadenas, para cada iteración y por cadena.}\label{fig:unnamed-chunk-32}
 \end{figure}
 
 
@@ -492,7 +528,7 @@ Los intervalos de credibilidad, para los parámetros calculados a partir de las 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-32-1} \caption[Intervalos de crédibilidad]{Intervalos de crédibilidad.}\label{fig:unnamed-chunk-32}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-33-1} \caption[Intervalos de crédibilidad]{Intervalos de crédibilidad.}\label{fig:unnamed-chunk-33}
 \end{figure}
 
 
@@ -503,161 +539,114 @@ La prueba de convergencia utiliza la estadística de Cramer-von-Mises para proba
 La prueba de medio ancho calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que \emph{eps}, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:54:00 2019
+% Wed Jul 03 02:59:35 2019
 \begin{table}[ht]
 \centering
-\begin{tabular}{rlr}
+\begin{tabular}{rlrlrr}
   \hline
- & P. Estacionariedad & Valor p \\ 
+ & P. Estacionariedad & Valor p & P..Medio.ancho & Media & Valor.p \\ 
   \hline
-$\Gamma_{11}$ & páso & 0.396 \\ 
-  $\Gamma_{21}$ & páso & 0.978 \\ 
-  $\Gamma_{12}$ & páso & 0.396 \\ 
-  $\Gamma_{22}$ & páso & 0.978 \\ 
-  $\lambda_1$ & páso & 0.569 \\ 
-  $\lambda_2$ & páso & 0.862 \\ 
-  lp & páso & 0.440 \\ 
+$\Gamma_{11}$ & páso & 0.396 & páso & 0.953 & 0.001 \\ 
+  $\Gamma_{21}$ & páso & 0.978 & páso & 0.099 & 0.002 \\ 
+  $\Gamma_{12}$ & páso & 0.396 & páso & 0.047 & 0.001 \\ 
+  $\Gamma_{22}$ & páso & 0.978 & páso & 0.901 & 0.002 \\ 
+  $\lambda_1$ & páso & 0.569 & páso & 29.701 & 0.034 \\ 
+  $\lambda_2$ & páso & 0.862 & páso & 62.742 & 0.079 \\ 
+  lp & páso & 0.440 & páso & -210.525 & 0.062 \\ 
    \hline
 \end{tabular}
-\caption{Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena.} 
-\end{table}
-
-
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:54:00 2019
-\begin{table}[ht]
-\centering
-\begin{tabular}{rlrr}
-  \hline
- & P..Medio.ancho & Media & Valor.p \\ 
-  \hline
-$\Gamma_{11}$ & páso & 0.953 & 0.001 \\ 
-  $\Gamma_{21}$ & páso & 0.099 & 0.002 \\ 
-  $\Gamma_{12}$ & páso & 0.047 & 0.001 \\ 
-  $\Gamma_{22}$ & páso & 0.901 & 0.002 \\ 
-  $\lambda_1$ & páso & 29.701 & 0.034 \\ 
-  $\lambda_2$ & páso & 62.742 & 0.079 \\ 
-  lp & páso & -210.525 & 0.062 \\ 
-   \hline
-\end{tabular}
-\caption{Test de medio ancho para la media calculando el intervalo de confianza al 0.95.} 
+\caption{Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena y prueba de medio ancho para la media calculando el intervalo de confianza al 0.95.} 
 \end{table}
 
 
 \subsubsection{Comparación PHMM clásico vs Bayesiano}
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-## [1] 9998
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+La inferencia para los parámetros bajo el enfoque clásico se realizo utilizando bootstrap (Zucchini (2016)). El método bootstrap es una técnicas de remuestreo diseñadas para aproximar la función de distribución de probabilidad de los datos mediante una función empírica de una muestra finita. El método bootstrap se puede usar para estimar los intervalos de confianza directamente. Se utilizo el ``método de percentil" (Efron y Tibshirani, 1993) para estimar los intervalos, se generaron 250 muestras independientes a partir del PHMM de orden 2 de longitud 59 igual a la serie homicidios en Colombia. Los valores iniciales usados fueron los estimados por PHMM de 2 estados con el fin de evitar inestabilidad numérica o problemas de convergencia. Los intervalos de credibilidad fueron calculados a partir de las distribuciones aposteriori de los parámetros de las muestras generadas por MCMC. El nivel y la probabilidad de los intervalos de confianza y credibilidad, respectivamente, se fijaron en 0.95.
+
+
+
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Wed Jul 03 02:59:35 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lrrrrrrrr}
+  \toprule
+   & \multicolumn{4}{c}{\textbf{Intervalos de Credibilidad}} & \multicolumn{4}{c}{\textbf{Intervalos de Confianza}}\\
+ \cmidrule(lr){2-5}\cmidrule(lr){6-9}
+ \textbf{Parámetros} & \textbf{Media} & \textbf{2.5} & \textbf{97.5} & \textbf{Ancho} & \textbf{EMV} & \textbf{2.5} & \textbf{97.5} & \textbf{Ancho}\\
+ \midrule
+gamma11 & 0.953 & 0.873 & 0.994 & 0.120 & 0.980 & 0.844 & 1.000 & 0.156 \\ 
+  gamma21 & 0.099 & 0.014 & 0.257 & 0.244 & 0.064 & 0.015 & 1.000 & 0.985 \\ 
+  gamma12 & 0.047 & 0.006 & 0.127 & 0.120 & 0.020 & 0.000 & 0.156 & 0.156 \\ 
+  gamma22 & 0.901 & 0.743 & 0.986 & 0.244 & 0.936 & 0.000 & 0.985 & 0.985 \\ 
+  lambda1 & 29.715 & 28.097 & 31.460 & 3.363 & 29.716 & 27.689 & 31.648 & 3.959 \\ 
+  lambda2 & 62.849 & 59.068 & 66.735 & 7.667 & 62.813 & 30.140 & 68.497 & 38.357 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Intervalos de Credibilidad y Confianza para el PHMM de orden 2.} 
+\end{table}
+
+
+Al calcular los intervalos de confianza y de credibilidad, es importante determinar cuál de estos métodos son más eficaces. Para determinar el comportamiento de los intervalos propuestos, usualmente se utiliza, la longitud del intervalo, su probabilidad de cobertura el valor esperado y la varianza de su longitud. Un buen método debe tener valores pequeños en la longitud del intervalo, en su valor esperado y en la varianza de su longitud; con probabilidades de cobertura cercanas a los niveles de confianza nominal.
+\\
+La longitud del intervalo, que indica su precisión, se muestran en la tabla 14, junto con la media de las estimaciones en el caso Bayesiano y el estimador de máxima verosimilitu para el caso clásico. Tanto para los parámetros de la matriz de transición como para el vector de medias de los estados dependientes, los intervalos de credibilidad indican una longitud menor es decir mayor precisión.
+
+\clearpage
 
 \subsection{Modelo Poisson Cero inflado - Oculto de Markov}
 
 
 
-En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016.  La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en un mes en Colombia fue 23 en febrero del 2017, lo cual es preocupante; pues aunque los incendios forestales naturales han ocurrido desde siempre como un elemento normal en el funcionamiento de los ecosistemas. El fuego ha permitido la regeneración de diversos ecosistemas y la producción de una serie de hábitats en los que distintos organismos pueden prosperar. No obstante notemos que el promedio de GIF se ubico en $1.3 \pm 3.5$ incendio por mes, haciendo que la enorme proliferación de los incendios a causa de la actividad humana en estas últimas décadas sobrepasa la capacidad de recuperación natural.
+En esta sección utilizaremos, los datos de incendios forestales en Colombia, desde enero del 2001 hasta diciembre del 2016. La variable de interés es el número de grandes incendios forestales (GIF), que son aquellos incendios que superan las 500 hectáreas forestales afectadas. La periodicidad de los datos es mensual con un total 180 observaciones, en la Tabla 11 se muestran los primeros 12 registros, mientras que la Tabla 12 indica la frecuencia. Allí observamos que hay una alta proporción de ceros en los datos, pues de las 180 observaciones 124 son cero, es decir el $68.9 \%$ de los registros. Por otra parte el número máximo de GIF ocurridos en un mes en Colombia fue 23 en febrero del 2017, lo cual es preocupante; pues aunque los incendios forestales naturales han ocurrido desde siempre como un elemento normal en el funcionamiento de los ecosistemas. El fuego ha permitido la regeneración de diversos ecosistemas y la producción de una serie de hábitats en los que distintos organismos pueden prosperar. No obstante notemos que el promedio de GIF se ubico en $1.3 \pm 3.5$ incendio por mes, haciendo que la enorme proliferación de los incendios a causa de la actividad humana en estas últimas décadas sobrepasa la capacidad de recuperación natural.
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-37-1} \caption[Serie de tiempo Grandes Incendios Forestales en Colombia desde el año 2002 hasta el año 2016]{Serie de tiempo Grandes Incendios Forestales en Colombia desde el año 2002 hasta el año 2016.}\label{fig:unnamed-chunk-37}
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-38-1} \caption[Serie de tiempo Grandes Incendios Forestales en Colombia desde el año 2002 hasta el año 2016]{Serie de tiempo Grandes Incendios Forestales en Colombia desde el año 2002 hasta el año 2016.}\label{fig:unnamed-chunk-38}
 \end{figure}
 
 
 \end{knitrout}
 
-
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:54:02 2019
-\begin{table}[ht]
-\centering
-\begin{tabular}{rlr}
-  \hline
- & Fecha & GIF \\ 
-  \hline
-1 & 2002-01 &   0 \\ 
-  2 & 2002-02 &   1 \\ 
-  3 & 2002-03 &   4 \\ 
-  4 & 2002-04 &   0 \\ 
-  5 & 2002-05 &   0 \\ 
-  6 & 2002-06 &   0 \\ 
-  7 & 2002-07 &   0 \\ 
-  8 & 2002-08 &   0 \\ 
-  9 & 2002-09 &   0 \\ 
-  10 & 2002-10 &   0 \\ 
-  11 & 2002-11 &   0 \\ 
-  12 & 2002-12 &   0 \\ 
-   \hline
-\end{tabular}
-\caption{Grandes Incendios forestales, en Colombia desde enero del 2002 a diceiembre del 2016.} 
-\end{table}
-
-
-% latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:54:02 2019
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrr}
-  \hline
- & Conteo & Proporción \\ 
-  \hline
-0 & 124.00 & 0.69 \\ 
-  1 & 19.00 & 0.11 \\ 
-  2 & 9.00 & 0.05 \\ 
-  3 & 8.00 & 0.04 \\ 
-  4 & 6.00 & 0.03 \\ 
-  5 & 1.00 & 0.01 \\ 
-  6 & 5.00 & 0.03 \\ 
-  8 & 1.00 & 0.01 \\ 
-  10 & 2.00 & 0.01 \\ 
-  11 & 1.00 & 0.01 \\ 
-  16 & 1.00 & 0.01 \\ 
-  18 & 1.00 & 0.01 \\ 
-  20 & 1.00 & 0.01 \\ 
-  23 & 1.00 & 0.01 \\ 
-   \hline
-\end{tabular}
-\caption{Tabla de frecuencia para la base GIF Colombia (2002-2016).} 
-\end{table}
-
-
-Se quiere determinar si existe correlación entre los GIF de cada mes, 
+En la figura 13, se observa dos picos altos en el 2007 y el 2010. Después del año 2011 la cero inflación disminuye considerablemente y el número de incendios en gran parte de los meses parece estar por encima de 5, este fenómeno se presenta de manera recurrente en gran parte del país, en especial durante los periodos secos prolongados, durante los cuales los ecosistemas tropicales húmedos y muy húmedos pierden parte de los contenidos de humedad superficial e interior, incrementando sus niveles de susceptibilidad y amenaza hacia la combustión de la biomasa vegetal que los compone. En la tabla 2 sse encuentran todos los datos de GIF en Colombia-
+\\
+Para determinar si existe correlación entre los GIF de cada mes, se calcula la función de autocorrelación muestral, la figura 14 indica no solo la existencia de la dependencia serial sino una estructura estacional
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-40-1} \caption[Función de autocorrelación muetral, para la serie GIF]{Función de autocorrelación muetral, para la serie GIF.}\label{fig:unnamed-chunk-40}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-39-1} \caption[Función de autocorrelación muetral, para la serie GIF]{Función de autocorrelación muetral, para la serie GIF.}\label{fig:unnamed-chunk-39}
 \end{figure}
 
 
 \end{knitrout}
 
-Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales ocurridos de Colombia, además parece haber una estructura estacional entre los meses donde ocurrieron estos incendios.
+Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales ocurridos de Colombia, además parece haber una estructura estacional entre los meses donde ocurrieron estos incendios. 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-41-1} 
+\definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-40-1} \caption[Kernel Densidad serie Grandes Incendios Forestales en Colombia (2002-2016)]{Kernel Densidad serie Grandes Incendios Forestales en Colombia (2002-2016).}\label{fig:unnamed-chunk-40}
+\end{figure}
+
 
 \end{knitrout}
-
 
 \subsubsection{Ajuste del ZIP-HMM}
 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Tue Jun 25 00:54:05 2019
+% Wed Jul 03 02:59:36 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
   \hline
  & Modelo & p & logL & AIC & BIC \\ 
   \hline
-1 & ZIPHMM - Estados 2 & 5.00 & 239.40 & 490.80 & 509.96 \\ 
-  2 & ZIPHMM - Estados 3 & 10.00 & 227.31 & 478.63 & 516.94 \\ 
-  3 & ZIPHMM - Estados 4 & 17.00 & 229.81 & 499.62 & 563.48 \\ 
-  4 & ZIPHMM - Estados 5 & 26.00 & 240.53 & 541.06 & 636.85 \\ 
+1 & ZIPHMM - Estados 2 & 6.00 & 764.61 & 1541.23 & 1560.39 \\ 
+  2 & ZIPHMM - Estados 3 & 12.00 & 592.81 & 1209.62 & 1247.94 \\ 
+  3 & ZIPHMM - Estados 4 & 20.00 & 536.07 & 1112.15 & 1176.01 \\ 
+  4 & ZIPHMM - Estados 5 & 30.00 & 521.87 & 1103.74 & 1199.53 \\ 
+  5 & ZIPHMM - Estados 6 & 42.00 & 508.60 & 1101.20 & 1235.31 \\ 
+  6 & ZIPHMM - Estados 7 & 56.00 & 510.79 & 1133.58 & 1312.39 \\ 
    \hline
 \end{tabular}
 \caption{Datos incendios: comparación de modelos ocultos de Markov (Cero inflados) por AIC y BIC.} 
@@ -666,7 +655,7 @@ Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales o
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-44-1} \caption[Serie incendios]{Serie incendios: selección de modelos AIC y BIC.}\label{fig:unnamed-chunk-44}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-43-1} \caption[Serie incendios]{Serie incendios: selección de modelos AIC y BIC.}\label{fig:unnamed-chunk-43}
 \end{figure}
 
 
@@ -682,13 +671,60 @@ Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales o
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
-\includegraphics[width=\maxwidth]{figure/unnamed-chunk-46-1} \caption[Algoritmo Viterbi aplicado al ZIPHMM de tres estados]{Algoritmo Viterbi aplicado al ZIPHMM de tres estados.}\label{fig:unnamed-chunk-46}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-45-1} \caption[Algoritmo Viterbi aplicado al ZIPHMM de tres estados]{Algoritmo Viterbi aplicado al ZIPHMM de tres estados.}\label{fig:unnamed-chunk-45}
 \end{figure}
 
 
 \end{knitrout}
 
+
+
+
+
+
+
+
+% latex table generated in R 3.6.0 by xtable 1.8-4 package
+% Wed Jul 03 03:00:25 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrrrr}
+  \hline
+ & Media & Err.Sta & Desv & 2.5\% & 25\% & 50\% & 75\% & 97.5\% & n\_eff & Rhat \\ 
+  \hline
+$\theta$ & 0.449 & 0.001 & 0.050 & 0.351 & 0.414 & 0.449 & 0.483 & 0.545 & 5219.355 & 0.999 \\ 
+  $\lambda_1$ & 2.868 & 0.004 & 0.266 & 2.371 & 2.684 & 2.866 & 3.047 & 3.408 & 4810.999 & 0.999 \\ 
+  $\lambda_2$ & 15.369 & 0.012 & 0.775 & 13.859 & 14.830 & 15.361 & 15.874 & 16.877 & 4492.668 & 0.999 \\ 
+  $\lambda_3$ & 43.153 & 0.040 & 1.807 & 39.600 & 42.040 & 43.143 & 44.300 & 46.658 & 2036.872 & 1.001 \\ 
+  $\lambda_4$ & 99.235 & 0.145 & 6.120 & 87.428 & 95.445 & 99.219 & 103.236 & 110.912 & 1790.696 & 1.001 \\ 
+  $\Gamma_{11}$ & 0.795 & 0.001 & 0.037 & 0.719 & 0.772 & 0.797 & 0.821 & 0.861 & 4587.670 & 0.999 \\ 
+  $\Gamma_{12}$ & 0.158 & 0.000 & 0.034 & 0.098 & 0.134 & 0.156 & 0.180 & 0.231 & 4676.747 & 0.999 \\ 
+  $\Gamma_{13}$ & 0.034 & 0.000 & 0.017 & 0.009 & 0.022 & 0.032 & 0.044 & 0.076 & 4870.506 & 1.000 \\ 
+  $\Gamma_{14}$ & 0.013 & 0.000 & 0.011 & 0.000 & 0.005 & 0.010 & 0.018 & 0.040 & 3815.711 & 0.999 \\ 
+  $\Gamma_{21}$ & 0.470 & 0.001 & 0.079 & 0.318 & 0.415 & 0.469 & 0.523 & 0.630 & 5238.938 & 0.999 \\ 
+  $\Gamma_{22}$ & 0.328 & 0.001 & 0.077 & 0.192 & 0.272 & 0.325 & 0.380 & 0.482 & 5096.108 & 0.999 \\ 
+  $\Gamma_{23}$ & 0.146 & 0.001 & 0.058 & 0.053 & 0.104 & 0.140 & 0.183 & 0.274 & 4306.099 & 1.000 \\ 
+  $\Gamma_{24}$ & 0.056 & 0.001 & 0.037 & 0.008 & 0.029 & 0.049 & 0.076 & 0.147 & 4611.951 & 1.000 \\ 
+  $\Gamma_{31}$ & 0.188 & 0.001 & 0.082 & 0.056 & 0.127 & 0.179 & 0.238 & 0.376 & 5736.173 & 1.000 \\ 
+  $\Gamma_{32}$ & 0.331 & 0.001 & 0.099 & 0.151 & 0.261 & 0.325 & 0.396 & 0.537 & 5985.893 & 0.999 \\ 
+  $\Gamma_{33}$ & 0.436 & 0.001 & 0.100 & 0.249 & 0.367 & 0.434 & 0.504 & 0.634 & 5179.787 & 1.000 \\ 
+  $\Gamma_{34}$ & 0.045 & 0.001 & 0.043 & 0.001 & 0.013 & 0.032 & 0.063 & 0.161 & 3481.429 & 1.000 \\ 
+  $\Gamma_{41}$ & 0.137 & 0.002 & 0.119 & 0.004 & 0.045 & 0.102 & 0.200 & 0.435 & 4984.285 & 0.999 \\ 
+  $\Gamma_{42}$ & 0.309 & 0.002 & 0.163 & 0.055 & 0.182 & 0.287 & 0.421 & 0.658 & 5002.104 & 0.999 \\ 
+  $\Gamma_{43}$ & 0.280 & 0.002 & 0.162 & 0.041 & 0.155 & 0.253 & 0.388 & 0.639 & 4855.509 & 1.000 \\ 
+  $\Gamma_{44}$ & 0.274 & 0.002 & 0.157 & 0.037 & 0.152 & 0.252 & 0.376 & 0.630 & 4757.794 & 0.999 \\ 
+  lp & -565.076 & 0.096 & 3.098 & -572.077 & -566.969 & -564.699 & -562.881 & -559.905 & 1032.526 & 1.007 \\ 
+   \hline
+\end{tabular}
+\caption{Estimación bayesiana de los parámetros para un ZIPH-MM.} 
+\end{table}
+
+
 \section{Anexo Códigos}
+
+A continuación se anexa el código utilizado para el desarrollo de esta tesis, en la aplicación del PHMM a la base homicidios en Colombia y el ajuste del ZIP-HMM a los Grandes Incendios Forestales (GIF) en Colombia. 
+
+\clearpage
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{kframe}
@@ -703,7 +739,6 @@ Como se vio en la figura 14, existe dependencia serial entre los GIF mensuales o
 \hlkwd{data}\hlstd{(}\hlstr{"incendios"}\hlstd{)}
 
 \hlcom{################################# Poisson - Hidden Markov Model #}
-
 
 \hlcom{############################################### Zero Inflated Poisson - Hidden Markov Model #}
 \end{alltt}
