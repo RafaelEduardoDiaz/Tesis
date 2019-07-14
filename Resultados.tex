@@ -75,16 +75,16 @@ A continuación, ilustramos todos los modelos descritos anteriormente aplicándo
 
 \vspace{5mm} %5mm vertical space
 
-Para ambas series, la aplicación de modelos estándar como modelos auto regresivos de media móvil (ARMA) sería inapropiado, ya que estos modelos se basan en la distribución normal. En cambio, se propone un modelo usual para datos con conteos la distribución de Poisson, pero, como se demostrará más adelante, las series presenta una sobredispersión considerable con respecto a la distribución de Poisson, y fuerte dependencia serial positiva además de inflación en ceros en el caso de la serie de incendios. Por lo tanto, un modelo que consiste en variables aleatorias independientes de Poisson; sería por dos razones inadecuado. Primero que puede haber algunos períodos con una baja tasa de homicidios e incendios, y algunos con una tasa relativamente alta. Los HMMs, permiten que la distribución de probabilidad de cada observación dependa del estado no observado (u oculto) de una cadena de Markov, por lo tanto puede acomodar la sobredispersión y la dependencia serial al mismo tiempo.
+Para ambas series, la aplicación de modelos estándar como modelos auto regresivos de media móvil (ARMA) sería inapropiado, ya que estos modelos se basan en la distribución normal. En cambio, se propone un modelo usual para datos con conteos la distribución de Poisson, pero, como se demostrará más adelante, las series presenta una sobre dispersión considerable con respecto a la distribución de Poisson, y fuerte dependencia serial positiva además de inflación en ceros en el caso de la serie de incendios. Por lo tanto, un modelo que consiste en variables aleatorias independientes de Poisson; sería por dos razones inadecuado. Primero que puede haber algunos períodos con una baja tasa de homicidios e incendios, y algunos con una tasa relativamente alta. Los HMMs, permiten que la distribución de probabilidad de cada observación dependa del estado no observado (u oculto) de una cadena de Markov, por lo tanto puede acomodar la sobre dispersión y la dependencia serial al mismo tiempo.
 
 
 
 \subsection{Descripción de los datos}
 
-\textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comunmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
+\textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comúnmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:40 2019
+% Sun Jul 14 15:40:32 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -108,7 +108,7 @@ Las estadísticas sobre incendios en Colombia, permiten en términos generales, 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:40 2019
+% Sun Jul 14 15:40:33 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -192,7 +192,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:43 2019
+% Sun Jul 14 15:40:36 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -236,10 +236,10 @@ $$
 
 $$\lambda = (29.715, 62.812) \ \ \ \ \pi = (0.764, 0.235)$$
 
-Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función `Bayeshmmcts::pois.HMM.moments` utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
+Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función \emph{Bayeshmmcts::pois.HMM.moments} utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:43 2019
+% Sun Jul 14 15:40:36 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -282,12 +282,12 @@ En el gráfico 6, se muestra los pseudo residuales ordinarios del PHMM con 2 est
 
 \subsubsection*{Algoritmo Viterbi}
 
-El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, indicando la secuencia más probable de los estados ocultos. Para la serie homicidios de 59 observaciones, el algoritmo Viterbi clasifico 40 observaciones en el estado 1 y 19 en el estado 2. En la grafica 5 se visualiza el algoritmo viterbi, y las distribuciones marginales para cada estado.
+El algoritmo Viterbi, permite realizar la decodificación global de los estados clasificando a cada una de las observaciones en su correspondiente estado, indicando la secuencia más probable de los estados ocultos. Para la serie homicidios de 59 observaciones, el algoritmo Viterbi clasifico 40 observaciones en el estado 1 y 19 en el estado 2. En la gráfica 5 se visualiza el algoritmo viterbi, y las distribuciones marginales para cada estado.
 \\
-La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas aplicaciones, especialmente cuando existen interpretaciones importantes para los estados. Sin embargo los estados no observados en el modelo, no siemprre necesitan tener interpretaciones sustantiva, pues se consideran artefactos útiles para adaptarse a la heterogeneidad no explicada y la dependencia serial de los datos. En el caso de la serie homicidios no parce haber una interpretación clara de los estados.
+La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas aplicaciones, especialmente cuando existen interpretaciones importantes para los estados. Sin embargo los estados no observados en el modelo, no siempre necesitan tener interpretaciones sustantiva, pues se consideran artefactos útiles para adaptarse a la heterogeneidad no explicada y la dependencia serial de los datos. En el caso de la serie homicidios no parce haber una interpretación clara de los estados.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:44 2019
+% Sun Jul 14 15:40:37 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -318,10 +318,10 @@ La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas
 
 \end{knitrout}
 
-Se realiza la predicción de los estados más probables para los proximos 16 años, tambien podemos pronosticar la distribución para estos mismos años. Como se observa en la figura 8 a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario. En la tabla 7, se observa que el prónstico de los estados, para los próximos 16 años es el 1, es decir que se espera una tasa de homidios por cada 100.000 habitantes cercana a 29, la cual sigue siendo alta ya que según datos de la ONUDD (Oficina de Naciones Unidas contra la Droga y el Delito), en sur America la tasa se situa en 20/100.000 homicidios, lo que indica quee la tasa de homicidios en  Colombia está por encima de la región. Además según estadísticas de la ONUDD, Colombia se situa como uno de los países más violentos del mundo ubicandose en el top 20, las cifras de la fiscalia indican que despues de haber disminuido la tasa de homidios en los últimos años, a partir del 2018 hubo un incremento del $3.25 \%$, de este delito siendo caso críticos las ciudades de Medellín, bajo Cauca y Tumaco, mientras la capital sigue con tendencia a la baja.
+Se realiza la predicción de los estados más probables para los próximos 16 años, también podemos pronosticar la distribución para estos mismos años. Como se observa en la figura 8 a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario. En la tabla 7, se observa que el pronóstico de los estados, para los próximos 16 años es el 1, es decir que se espera una tasa de homicidios por cada 100.000 habitantes cercana a 29, la cual sigue siendo alta ya que según datos de la ONUDD (Oficina de Naciones Unidas contra la Droga y el Delito), en sur América la tasa se sitúa en 20/100.000 homicidios, lo que indica que la tasa de homicidios en  Colombia está por encima de la región. Además según estadísticas de la ONUDD, Colombia se sitúa como uno de los países más violentos del mundo ubicándose en el top 20, las cifras de la fiscalia indican que después de haber disminuido la tasa de homicidios en los últimos años, a partir del 2018 hubo un incremento del $3.25 \%$, de este delito siendo caso críticos las ciudades de Medellín, bajo Cauca y Tumaco, mientras la capital sigue con tendencia a la baja.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:45 2019
+% Sun Jul 14 15:40:39 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
@@ -362,18 +362,18 @@ En el siguiente apartado se muestran las estimaciones bayesianas realizadas a la
 
 
 
-Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consitente tiene un gran problema varianza infinita. Mientras que el estimador del muestreador por puente, no presenta ese problema además de su facil implementación, pues esta metodología se puede ejecutar con la función `bridge sampler` del paquete bridgesampling, del autor Gronau. El paquete \textbf{bridgesampling}, permite además calcular el error de la estimación para la verosimilitud marginal, obtendido via muestreo por puente que en el caso del modelo con dos estados, el error es de $0.478 \%$. 
+Primero se ajustaron cuatro modelos, con la función `Bayeshmmcts::bayes.PHMM`, para 2, 3, 4 y 5 estados, después, se estimo la $\log$ - verosimilitud marginal, utilizando muestreo por puente como alternativa a las propuesta hecha por Newton y Raftery (1994) que sugiere utilizar la verosimilitud integrada, para hallar el estimador de la media armónica de los valores de la verosimilitud de una muestra obtenida desde la distribución posterior. Pero como se vio en la sección (4), aunque el estimador es consistente tiene un gran problema varianza infinita. Mientras que el estimador del muestreador por puente, no presenta ese problema además de su fácil implementación, pues esta metodología se puede ejecutar con la función `bridge sampler` del paquete bridgesampling, del autor Gronau. El paquete \textbf{bridgesampling}, permite además calcular el error de la estimación para la verosimilitud marginal, obtenido vía muestreo por puente que en el caso del modelo con dos estados, el error es de $0.478 \%$. 
 
-Un factor de Bayes es la relación entre la probabilidad de una hipótesis particular y la probabilidad de otra. Puede interpretarse como una medida de la fuerza de la evidencia en favor de una teoría entre dos teorías en competencia. Esto se debe a que el factor de Bayes nos permite evaluar los datos a favor de una hipótesis nula y utilzar información externa para hacerlo. Nos dice cuál es el peso de la evidencia a favor de una hipótesis dada.
+Un factor de Bayes es la relación entre la probabilidad de una hipótesis particular y la probabilidad de otra. Puede interpretarse como una medida de la fuerza de la evidencia en favor de una teoría entre dos teorías en competencia. Esto se debe a que el factor de Bayes nos permite evaluar los datos a favor de una hipótesis nula y utilizar información externa para hacerlo. Nos dice cuál es el peso de la evidencia a favor de una hipótesis dada.
 
 Cuando estamos comparando dos hipótesis, $H_0$ (la hipótesis nula) y $H_1$ (la hipótesis alternativa) y , el factor de Bayes a menudo se escribe como $B_{01}$. Se puede definir matemáticamente como
 
 $$B_{01} = \frac{\text{verosimilitud de los datos dado $H_0$}}{\text{verosimilitud de los datos dado $H_1$}} = \frac{P(D | H_0)}{P(D | H_1)}$$
 
-El factor de Bayes puede es un número positivo, y una de las interpretaciones más comunes es esta: propuesta por primera vez por Harold Jeffereys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013:
+El factor de Bayes puede es un número positivo, y una de las interpretaciones más comunes es esta: propuesta por primera vez por Harold Jeffreys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:45 2019
+% Sun Jul 14 15:40:39 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{ll}
@@ -400,7 +400,7 @@ $>$100 & Evidencia extrema para H0 \\
 Ahora utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, en la siguiente tabla ilustra el contraste de hipótesis, donde las filas indican $P(D | H_0)$ y las columnas $P(D | H_1)$. Por ejemplo en el contraste de hipótesis entre el modelo de 3 estados vs el modelo de 4 estados, el valor obtenido fue $B_{01} = 766.05$, lo que indica evidencia extrema para $H_0$, es decir el modelo de 3 estados es más apropiado que el de 4 estados.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:45 2019
+% Sun Jul 14 15:40:39 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -421,7 +421,7 @@ mod 2 Estados &  & 3.36 & 2545.85 & 390147608.00 \\
 De la tabla 9, se concluye que el modelo apropiado es el de orden 2, lo cual coincide con el BIC. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependientes:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:46 2019
+% Sun Jul 14 15:40:39 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrr}
@@ -445,7 +445,7 @@ Para cada parámetro estimado a partir de las muestras obtenidas por MCMC se cal
 Stan define el logaritmo de la función de densidad de probabilidad de una distribución posterior hasta una constante aditiva desconocida. Usando a lp para representar las realizaciones de este $\log$ kernel en cada iteración ($lp$ se trata como una incógnita en el resumen y el cálculo de la división $\hat{R}$ y el tamaño de muestra efectivo).
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:47 2019
+% Sun Jul 14 15:40:40 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -481,10 +481,10 @@ Entonces, $n\_eff$ es la suma de las iteraciones de muestreo efectivamente indep
 \\
 La mayoría de nuestros parámetros tienen un $n\_eff$ bastante alto, aunque vemos que algunos son un poco más bajos. ¿Cómo sabemos si un $n\_eff$ como 2500 (de 7500 posibles) es demasiado bajo?. El estadístico Rhat nos ayuda a saber si estos parámetros están tan mal muestreados que tenemos un problema. Más o menos Rhat le dice si cada una de las cadenas ha alcanzado o no una distribución posterior estable, a pesar de comenzar con diferentes valores iniciales. Gelman recomienda que Rhat para cada parámetro sea inferior a 1.1.
 \\
-En la parte izquierda de la figura 8 y en la tabla 11, se muestra la decodificación global de la secuencia de estados más probables, para la serie homicidios en Colombia. Al igual que otros algoritmos de programación dinámica, Viterbi funciona de forma recursiva; encontrando el estado más probable al tomar el máximo sobre todas las posibles secuencias de estados anteriores. Dada la secuencia de observaciones sobre homicidios en Colombia y los modelos clásico con el bayesiano de orden dos, dan exactamente los mismos resultados. Mientras que la parte derecha de la figura 8 muestra las distribuciones marginales, utilizadas para hacer el prónostico de las distribuciones para un rezago $h$ dado.
+En la parte izquierda de la figura 8 y en la tabla 11, se muestra la decodificación global de la secuencia de estados más probables, para la serie homicidios en Colombia. Al igual que otros algoritmos de programación dinámica, Viterbi funciona de forma recursiva; encontrando el estado más probable al tomar el máximo sobre todas las posibles secuencias de estados anteriores. Dada la secuencia de observaciones sobre homicidios en Colombia y los modelos clásico con el bayesiano de orden dos, dan exactamente los mismos resultados. Mientras que la parte derecha de la figura 8 muestra las distribuciones marginales, utilizadas para hacer el pronóstico de las distribuciones para un rezago $h$ dado.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:13:47 2019
+% Sun Jul 14 15:40:40 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
@@ -513,11 +513,11 @@ En la parte izquierda de la figura 8 y en la tabla 11, se muestra la decodificac
 \end{table}
 
 
-La tabla 12 muestra, las probabilidades correspondientes a la predicción de los rezagos para un $h \in \mathbb{N}$. El error de la predicción aumenta a medida que crece el horizonte en el tiempo, por ejemplo para los dos proximos años 2019 y 2020, la probabilidad de estar en el estado 1 es mayor al $90 \%$ mientrass que para los años 2033 y 2034, la probabilidad de estar en el estado 1 se reduce a un $70 \%$, sin embargo en los proximos 16 años se espera que la tasa de homicidios este alrededor 30 muertes por cada 100.000 habitantes.
+La tabla 12 muestra, las probabilidades correspondientes a la predicción de los rezagos para un $h \in \mathbb{N}$. El error de la predicción aumenta a medida que crece el horizonte en el tiempo, por ejemplo para los dos próximos años 2019 y 2020, la probabilidad de estar en el estado 1 es mayor al $90 \%$ mientras que para los años 2033 y 2034, la probabilidad de estar en el estado 1 se reduce a un $70 \%$, sin embargo en los próximos 16 años se espera que la tasa de homicidios este alrededor 30 muertes por cada 100.000 habitantes.
 
-\subsubsection*{Diagnosticos de la cadena}
+\subsubsection*{Diagnósticos de la cadena}
 
-En esta sección se verificara el diagnostico de convergencia de las cadenas utilizadas en la extracción de las muestras. Para los métodos MCMC ajustados con \textbf{Stan}, ya sean Hamiltonian Monte (HMC) o No-U-Turn-Sampler (NUTS), el paquete \emph{bayesplot} y \emph{coda}, cuenta con una serie de herrmientas gráficas y purebas diagnosticas para después del ajuste de modelos bayesianos. En la figura No se muestra los histogramas univariados y diagramas de dispersión bivariados para los parámetros de la matriz de transición de probabilidad y para el vector de medias de los estados dependientes, especialmente útil para identificar la colinealidad entre variables (que se manifiesta como gráficos bivariados estrechos), así como la presencia de no-identificabilidad multiplicativa (formas tipo plátano).
+En esta sección se verificara el diagnostico de convergencia de las cadenas utilizadas en la extracción de las muestras. Para los métodos MCMC ajustados con \textbf{Stan}, ya sean Hamiltonian Monte (HMC) o No-U-Turn-Sampler (NUTS), el paquete \emph{bayesplot} y \emph{coda}, cuenta con una serie de herramientas gráficas y pruebas diagnosticas para después del ajuste de modelos bayesianos. En la figura No se muestra los histogramas univariados y diagramas de dispersión bivariados para los parámetros de la matriz de transición de probabilidad y para el vector de medias de los estados dependientes, especialmente útil para identificar la colinealidad entre variables (que se manifiesta como gráficos bivariados estrechos), así como la presencia de no-identificabilidad multiplicativa (formas tipo plátano).
 
 En sentido estricto, la no identificabilidad significa que dos valores de los parámetros dan como resultado la misma distribución de probabilidad de los datos observados. Algunas veces también se usa para cubrir situaciones en las que no hay un máximo local único de la densidad posterior, ya sea porque hay múltiples máximos separados o porque hay una meseta donde un conjunto de puntos tiene la misma densidad posterior (estos pueden o pueden No ser identificable en sentido estricto).
 
@@ -525,7 +525,7 @@ En la figura 9 se observa que no parece haber problemas con la identificabilidad
 
 \vspace{5mm} %5mm vertical space
 
-El gráfico de traza, muestra por cada una de las iteraciones los valores muestreados correspondiente a una o más cadenas de Markov, separado por parámetro. Las cadenas proporcionan una forma visual para inspeccionar el comportamiento de muestreo y evaluar la mezcla a través de las cadenas y la convergencia, como vemos se comportana bastante bien, pues hay un mínimo de muestras divergentes.
+El gráfico de traza, muestra por cada una de las iteraciones los valores muestreados correspondiente a una o más cadenas de Markov, separado por parámetro. Las cadenas proporcionan una forma visual para inspeccionar el comportamiento de muestreo y evaluar la mezcla a través de las cadenas y la convergencia, como vemos se comportan bastante bien, pues hay un mínimo de muestras divergentes.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}[h]
@@ -535,7 +535,7 @@ El gráfico de traza, muestra por cada una de las iteraciones los valores muestr
 
 \end{knitrout}
                               
-Los intervalos de credibilidad, para los parámetros calculados a partir de las muestras posteriores con todas las cadenas fusionadas. Los resultados índican valores consistentes en las estimaciones de los parámetros, pues la longitud del intervalo es bastante pequeña como se mostrara más adelante.
+Los intervalos de credibilidad, para los parámetros calculados a partir de las muestras posteriores con todas las cadenas fusionadas. Los resultados indican valores consistentes en las estimaciones de los parámetros, pues la longitud del intervalo es bastante pequeña como se mostrara más adelante.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
@@ -560,7 +560,7 @@ La prueba de convergencia utiliza la estadística de Cramer-von-Mises para proba
 La prueba de medio ancho calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que \emph{eps}, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:14 2019
+% Sun Jul 14 15:41:01 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrlrr}
@@ -589,7 +589,7 @@ La inferencia para los parámetros bajo el enfoque clásico se realizo utilizand
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:15 2019
+% Sun Jul 14 15:41:02 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrrrrrr}
@@ -655,7 +655,7 @@ Para seleccionar el modelo más apropiado, se debe escoger el valor que minimiza
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:16 2019
+% Sun Jul 14 15:41:03 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -702,7 +702,7 @@ $$\lambda = (2.763, 15.114, 43.147, 99.306) \ \ \ \ \pi = (0.002, 0.997, 0.001, 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:17 2019
+% Sun Jul 14 15:41:03 2019
 \begin{table}[ht]
 \centering
 \scalebox{0.85}{
@@ -730,7 +730,7 @@ $$\lambda = (2.763, 15.114, 43.147, 99.306) \ \ \ \ \pi = (0.002, 0.997, 0.001, 
 
 \end{knitrout}
 
-La decodificación global se muestra en la tabla 16 y figura 15. Se observa que el estado 4 con una media de 99, sol hay 3 observaciones correspondientes a los GIF de febrero del 2007, enero del 2010 y febrero del 2010, mientras que el estado 3 con una media de 43 indica que estos 18 incendios la mayoría ocurrieron en tercer semestre, es decir en los meses julio, agosto y septiembre. Para el estado 2 con una media de 15 la mayoria de estos incendios ocurrieron en el primer semestre, finalmente para el estado 1 con una media de 2.8, se observa que en el último trimestre fue donde en su mayoría no ocurrieron GIF. Es así como el algoritmo Viterbi nos indica efectivamente que la serie tiene perídos estacionales.
+La decodificación global se muestra en la tabla 16 y figura 15. Se observa que el estado 4 con una media de 99, sol hay 3 observaciones correspondientes a los GIF de febrero del 2007, enero del 2010 y febrero del 2010, mientras que el estado 3 con una media de 43 indica que estos 18 incendios la mayoría ocurrieron en tercer semestre, es decir en los meses julio, agosto y septiembre. Para el estado 2 con una media de 15 la mayoría de estos incendios ocurrieron en el primer semestre, finalmente para el estado 1 con una media de 2.8, se observa que en el último trimestre fue donde en su mayoría no ocurrieron GIF. Es así como el algoritmo Viterbi nos indica efectivamente que la serie tiene períodos estacionales.
 
 
 
@@ -740,16 +740,16 @@ La decodificación global se muestra en la tabla 16 y figura 15. Se observa que 
 
 \subsubsection*{Estimación Bayesiana del ZIP HMM}
 
-Analogamente al caso de la serie homicidios a la cual se ajusto un PHMM, para la serie de homicidios se determinara el modelo más apropiado utilizanddo el factor de bayes. Para esto se ajustaron un total de seis modelos con estados 2, 3, 4, 5, 6 y 7. Como vimos anteriormente el factor de Bayes permite evaluar los datos a favor de una hipótesis nula y utilzar información externa para hacerlo. Dando peso de la evidencia a favor de una hipótesis dada.
+Análogamente al caso de la serie homicidios a la cual se ajusto un PHMM, para la serie de homicidios se determinara el modelo más apropiado utilizando el factor de bayes. Para esto se ajustaron un total de seis modelos con estados 2, 3, 4, 5, 6 y 7. Como vimos anteriormente el factor de Bayes permite evaluar los datos a favor de una hipótesis nula y utilizar información externa para hacerlo. Dando peso de la evidencia a favor de una hipótesis dada.
 
-Utilizando la notación del factor de Bayes que notamos como $B_{01}$ al contrastar dos hipótesis, $H_0$ (la hipótesis nula) y $H_1$ (la hipótesis alternativa), que se defini matemáticamente como:
+Utilizando la notación del factor de Bayes que notamos como $B_{01}$ al contrastar dos hipótesis, $H_0$ (la hipótesis nula) y $H_1$ (la hipótesis alternativa), que se define matemáticamente como:
 
 $$B_{01} = \frac{\text{verosimilitud de los datos dado $H_0$}}{\text{verosimilitud de los datos dado $H_1$}} = \frac{P(D | H_0)}{P(D | H_1)}$$
 
 Utilizando otra vez la interpretación propuesta por primera vez por Harold Jeffereys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013, que está en la tabla 8, se deduce lo siguiente.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:18 2019
+% Sun Jul 14 15:41:03 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrr}
@@ -774,7 +774,7 @@ Recordemos que las filas de la tabla x corresponden a $H_0$ y las columnas son $
 Con el fin de comparar los resultados obtenidas de las estimaciones del ZIP HMM clásico vs el bayesiano, se decide ajustar el modelo con 4 estados. La salida que arroja Stan, en primer lugar la media de las estimaciones para los 21 parámetros más lp, el error y la desviación estándar que para este caso son bastante pequeños, seguidos de los intervalos de credibilidad alrededor de la media y a mediana que es casi identica a los valores de la media especialmnte para $\theta$ el parámetro de cero inflación y para el vector de medias, en la tpm varia ligeramente en algunos de los parámetros. Para este modelo se ajustaron 2.000 iteraciones con tres cadenas, la mitad de ellas se queman como calentamiento es decir que el número máximo de muestras efectivas debiera ser de 3.000, sin embargo ocurre algo extraño en varios de los parámetros $n\_eff > N$. Según el manual de Stan esto significa que los muestras que prroduce Stan son mejores que las muestras independientes para esos parámetros, o en otras palabras eel muestreo realizado por NUTS es súper eficiente, antitético y con sobre relajación (Geyer, 2011), esto ocurre porque en cada iteración es eliminada la correlación entre las muestras lo cual ocurre en casos extremadamente raros, para más información revise el manual o foro de Stan. Finalmente Gelman indica que el tamaño de muestra efectivo utilizados es el adecuado si Rhat es menor a 1.1, es decir que en este caso el muestreo fue óptimo.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:18 2019
+% Sun Jul 14 15:41:04 2019
 \begin{table}[ht]
 \centering
 \scalebox{0.95}{
@@ -823,7 +823,7 @@ El gráfico de traza proporcionan una forma visual para inspeccionar el comporta
 
 En la estadísticas bayesianas, un intervalo creíble es un intervalo dentro del cual un valor de parámetro no observado cae con una probabilidad subjetiva particular. Es un intervalo en el dominio de una distribución de probabilidad posterior o una distribución predictiva. El intervalo e credibilidad es el equivalentebayesiano del intervalo de confianza no obstante, este depende de una distribución prior. Otra diferencia importante es que mientras en el intervalo de confianza se trata el parámetro como un valor fijo y los límites son variables aleatorias; en los intervalos creíbles, el parámetro estimado se trata como una variable aleatoria mientras que los límites se consideran fijos.
 \\
-Los intervalos de credibilidad al $95 \%$ calculados para la estimación de los parámetros del ZIP HMM, se encuentran en la figura 18. En la gráfica de la izquierda se encuentra el parámetro de cero inflación $\theta$, junto con las entradas de la matriz de transición $\gamma_{ij}$, ya que todos estos se encuentran en la misma escala, es decir se mueven entre cero y uno, mientras que el vector de medias $\lambda > 0$, se dibujo en el grafico de la derecha. Se encontraron intervalos bastante compactos, es decir que la longitud del intervalo es pequeña en la mayoría de los casos, exceptuando las fila tres y cuatro de la tpm, que presentan una asimetría y una dispersión considerable. Los intervalos nos permiten un uso práctico de que tan precisas son las estimaciones.
+Los intervalos de credibilidad al $95 \%$ calculados para la estimación de los parámetros del ZIP HMM, se encuentran en la figura 18. En la gráfica de la izquierda se encuentra el parámetro de cero inflación $\theta$, junto con las entradas de la matriz de transición $\gamma_{ij}$, ya que todos estos se encuentran en la misma escala, es decir se mueven entre cero y uno, mientras que el vector de medias $\lambda > 0$, se dibujo en el gráfico de la derecha. Se encontraron intervalos bastante compactos, es decir que la longitud del intervalo es pequeña en la mayoría de los casos, exceptuando las fila tres y cuatro de la tpm, que presentan una asimetría y una dispersión considerable. Los intervalos nos permiten un uso práctico de que tan precisas son las estimaciones.
 \\
 El paquete bayesplot, proporciona la funciona MCMC-intervals basada en el método cuantil, que estima a partir de las muestras posterior los intervalos de credibilidad con un nivel de probabilidad fijado por el usuario. Por lo tanto su implementación es bastante sencilla.
 
@@ -835,7 +835,7 @@ El paquete bayesplot, proporciona la funciona MCMC-intervals basada en el métod
 
 \end{knitrout}
 
-En la figura 17 se graficaron los histogramas univariados y los diagramas de dispersión bivariados para el vector de medias de los estados dependientes y el parámetro de cero inflación, el gráfico para los parámetros restantes se adjunta en anexos. No se evidencian problemas de colinealidad, ni la presencia de no-identificabilidad multiplicativa (formas tipo plátano), o en términos más simples problemas de divergencias al momento de aplicar el No-U-Turn-Sampler (NUTS), asegurandonos que las inferencias sean apropiadas. Mientras que para la matriz de transición de probabilidad, parece haber problemas de colinealidad entre $\gamma_{11}$ con $\gamma_{12}$, y una ligera colinealidad entre $\gamma_{21}$ con $\gamma_{22}$ más no parecen haber problemas de no identificabilidad. Además se debe tener en cuenta que dada la restricción $\sum_{j=1}^m \gamma_{ij} = 1$, esto hace que los parámetros por fila de la tpm sean dependientes entre si, sin embargo a continuación se realizan pruebas más avanzadas como el Test de Heidel con el fin de determinar que los valores muestreados sean apropiados.
+En la figura 17 se graficaron los histogramas univariados y los diagramas de dispersión bivariados para el vector de medias de los estados dependientes y el parámetro de cero inflación, el gráfico para los parámetros restantes se adjunta en anexos. No se evidencian problemas de colinealidad, ni la presencia de no-identificabilidad multiplicativa (formas tipo plátano), o en términos más simples problemas de divergencias al momento de aplicar el No-U-Turn-Sampler (NUTS), asegurándonos que las inferencias sean apropiadas. Mientras que para la matriz de transición de probabilidad, parece haber problemas de colinealidad entre $\gamma_{11}$ con $\gamma_{12}$, y una ligera colinealidad entre $\gamma_{21}$ con $\gamma_{22}$ más no parecen haber problemas de no identificabilidad. Además se debe tener en cuenta que dada la restricción $\sum_{j=1}^m \gamma_{ij} = 1$, esto hace que los parámetros por fila de la tpm sean dependientes entre si, sin embargo a continuación se realizan pruebas más avanzadas como el Test de Heidel con el fin de determinar que los valores muestreados sean apropiados.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.91, 0.91, 0.91}\color{fgcolor}\begin{figure}
@@ -846,35 +846,35 @@ En la figura 17 se graficaron los histogramas univariados y los diagramas de dis
 \end{knitrout}
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:29 2019
+% Sun Jul 14 15:41:11 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrlrr}
   \hline
  & P. Estacionariedad & Valor p & Prueba & Media & Medio.Ancho \\ 
   \hline
-$\theta$ & páso & 0.928 & páso & 0.449 & 0.001 \\ 
-  $\lambda_1$ & páso & 0.645 & páso & 2.868 & 0.008 \\ 
-  $\lambda_2$ & páso & 0.689 & páso & 15.369 & 0.023 \\ 
-  $\lambda_3$ & páso & 0.477 & páso & 43.153 & 0.080 \\ 
-  $\lambda_4$ & páso & 0.594 & páso & 99.464 & 0.194 \\ 
-  $a_{11}$ & páso & 0.601 & páso & 0.795 & 0.001 \\ 
-  $a_{21}$ & páso & 0.504 & páso & 0.470 & 0.002 \\ 
-  $a_{31}$ & páso & 0.257 & páso & 0.188 & 0.002 \\ 
-  $a_{41}$ & páso & 0.611 & páso & 0.137 & 0.003 \\ 
-  $a_{12}$ & páso & 0.444 & páso & 0.158 & 0.001 \\ 
-  $a_{22}$ & páso & 0.356 & páso & 0.328 & 0.002 \\ 
-  $a_{32}$ & páso & 0.620 & páso & 0.331 & 0.002 \\ 
-  $a_{42}$ & páso & 0.992 & páso & 0.309 & 0.004 \\ 
-  $a_{13}$ & páso & 0.632 & páso & 0.034 & 0.000 \\ 
-  $a_{23}$ & páso & 0.786 & páso & 0.146 & 0.002 \\ 
-  $a_{33}$ & páso & 0.091 & páso & 0.436 & 0.003 \\ 
-  $a_{43}$ & páso & 0.462 & páso & 0.280 & 0.004 \\ 
-  $a_{14}$ & páso & 0.765 & páso & 0.012 & 0.000 \\ 
-  $a_{24}$ & páso & 0.234 & páso & 0.056 & 0.001 \\ 
-  $a_{34}$ & páso & 0.268 & páso & 0.045 & 0.001 \\ 
-  $a_{44}$ & páso & 0.583 & páso & 0.274 & 0.004 \\ 
-  lp & páso & 0.175 & páso & -564.870 & 0.207 \\ 
+$\theta$ & páso & 0.928 & pasó & 0.449 & 0.001 \\ 
+  $\lambda_1$ & páso & 0.645 & pasó & 2.868 & 0.008 \\ 
+  $\lambda_2$ & páso & 0.689 & pasó & 15.369 & 0.023 \\ 
+  $\lambda_3$ & páso & 0.477 & pasó & 43.153 & 0.080 \\ 
+  $\lambda_4$ & páso & 0.594 & pasó & 99.464 & 0.194 \\ 
+  $a_{11}$ & páso & 0.601 & pasó & 0.795 & 0.001 \\ 
+  $a_{21}$ & páso & 0.504 & pasó & 0.470 & 0.002 \\ 
+  $a_{31}$ & páso & 0.257 & pasó & 0.188 & 0.002 \\ 
+  $a_{41}$ & páso & 0.611 & pasó & 0.137 & 0.003 \\ 
+  $a_{12}$ & páso & 0.444 & pasó & 0.158 & 0.001 \\ 
+  $a_{22}$ & páso & 0.356 & pasó & 0.328 & 0.002 \\ 
+  $a_{32}$ & páso & 0.620 & pasó & 0.331 & 0.002 \\ 
+  $a_{42}$ & páso & 0.992 & pasó & 0.309 & 0.004 \\ 
+  $a_{13}$ & páso & 0.632 & pasó & 0.034 & 0.000 \\ 
+  $a_{23}$ & páso & 0.786 & pasó & 0.146 & 0.002 \\ 
+  $a_{33}$ & páso & 0.091 & pasó & 0.436 & 0.003 \\ 
+  $a_{43}$ & páso & 0.462 & pasó & 0.280 & 0.004 \\ 
+  $a_{14}$ & páso & 0.765 & pasó & 0.012 & 0.000 \\ 
+  $a_{24}$ & páso & 0.234 & pasó & 0.056 & 0.001 \\ 
+  $a_{34}$ & páso & 0.268 & pasó & 0.045 & 0.001 \\ 
+  $a_{44}$ & páso & 0.583 & pasó & 0.274 & 0.004 \\ 
+  lp & páso & 0.175 & pasó & -564.870 & 0.207 \\ 
    \hline
 \end{tabular}
 \caption{Prueba de estacionariedad, usando el estadístico de Cramer-von-Mises para la convergencia de la cadena y prueba de medio ancho para la media calculando el intervalo de confianza al 0.95.} 
@@ -882,22 +882,22 @@ $\theta$ & páso & 0.928 & páso & 0.449 & 0.001 \\
 
 
 Con el fin de establecer técnicas más sofisticadas para determinar si el proceso de muestreo por NUTS, fue exitosos existen diferentes metodologías, tanto gráficas como basadas en hipótesis. La gráfica de traza en la figura 16 parece consistente, sin embargo la prueba de convergencia de Heidel, permite determinar si los valores muestreados provienen de una distribución estacionaria. Por lo tanto se aplica esta prueba para cada uno de los parámetros obtenidos por el ZIP HMM y se contrasta contrastan con la estadística de Cramer-von-Mises para un nivel de significancia $\alpha = 0.05$ fijo, donde la hipótesis nula es que la cadena es estacionaria. En todos los casos el valor p fue mayor que 0.05 lo que indica que existe suficiente evidencia estadística para no rechazar la hipótesis nula, lo cual indica que los valores muestreados ofrecen una estimación confiable al provenir de una distribución estacionaria. 
-También se utilizo la prueba de medio ancho, que calcula un intervalo de confianza del $95 \%$ para la media, y utiliza la parte de la cadena que pasó la prueba de estacionariedad, para determinar si la muestra fue lo suficientemente grande para estimar la media con precisión. Los resultados indican que efectivamente cada uno de los parámetros aprobo la prueba de medio ancho.
+También se utilizo la prueba de medio ancho, que calcula un intervalo de confianza del $95 \%$ para la media, y utiliza la parte de la cadena que pasó la prueba de estacionariedad, para determinar si la muestra fue lo suficientemente grande para estimar la media con precisión. Los resultados indican que efectivamente cada uno de los parámetros aprobó la prueba de medio ancho.
 
 \clearpage
 
 \subsubsection{Comparación ZIP HMM clásico vs Bayesiano}
 
-Igual que en el caso del PHMM, la estimación bajo el enfoque clásico se realizo utilizando bootstrap, generando 100 muestras independientes a partir del ZIP HMM de orden 4 de longitud 180 igual a la serie GIF en Colombia. Los valores iniciales usados fueron los estimados por ZIP HMM de 4 estados, que permiten la convergencia del algoritmo en pocas iteraciones. La probabilidad y el nivel deconfianza se fijo al 0.95, para los intervalos de credibilidad y confianza, respectivamente, en la tabla 20 se encuentran rgistrados los resultados obtenidos.
+Igual que en el caso del PHMM, la estimación bajo el enfoque clásico se realizo utilizando bootstrap, generando 100 muestras independientes a partir del ZIP HMM de orden 4 de longitud 180 igual a la serie GIF en Colombia. Los valores iniciales usados fueron los estimados por ZIP HMM de 4 estados, que permiten la convergencia del algoritmo en pocas iteraciones. La probabilidad y el nivel de confianza se fijo al 0.95, para los intervalos de credibilidad y confianza, respectivamente, en la tabla 20 se encuentran registrados los resultados obtenidos.
 \\
-Ambos intervalos se relacionan con la precisión de nuestra estimación. La forma más comun para saber el desempeño del método, es calculando la longitud de este, donde se espera que el ancho sea lo más pequeño posible. Los resultados se muestran en la tabla 20, junto con la media de las estimaciones, tanto para el ZIP HMM frecuentista como para el bayesoano. No parece haber un ganador indiscutible, si embargo haciendo un análisis más detallado por parámetros se puede decir lo siguiente. Para $\theta$ el parámetro de cero inflación es más pequeña la longitud en el caso bayesiano, para el vetor de medias $\lambda$ es un empate 2 y 2 para cada uno, sin embargo preocupa que para $\lambda_4$ en el caso clásico el ancho es extremadamente grande. Finalmente para los valores de la tpm en 9 de los 16 intervalos estimados, el enfoque bayesiano nuevamente es el vencedor. En conclusión aunque el los intervalos de credibilidad tienen una longitud en la mayoría de los casos, no parece haber un método que sea evidentemente el mejor.
+Ambos intervalos se relacionan con la precisión de nuestra estimación. La forma más común para saber el desempeño del método, es calculando la longitud de este, donde se espera que el ancho sea lo más pequeño posible. Los resultados se muestran en la tabla 20, junto con la media de las estimaciones, tanto para el ZIP HMM frecuentista como para el bayesiano. No parece haber un ganador indiscutible, si embargo haciendo un análisis más detallado por parámetros se puede decir lo siguiente. Para $\theta$ el parámetro de cero inflación es más pequeña la longitud en el caso bayesiano, para el vcetor de medias $\lambda$ es un empate 2 y 2 para cada uno, sin embargo preocupa que para $\lambda_4$ en el caso clásico el ancho es extremadamente grande. Finalmente para los valores de la tpm en 9 de los 16 intervalos estimados, el enfoque bayesiano nuevamente es el vencedor. En conclusión aunque el los intervalos de credibilidad tienen una longitud en la mayoría de los casos, no parece haber un método que sea evidentemente el mejor.
 
 
 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 00:14:29 2019
+% Sun Jul 14 15:41:11 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrrrrrr}
@@ -1071,7 +1071,7 @@ A continuación se anexa el código utilizado para el desarrollo de esta tesis, 
     \hlkwc{M} \hlstd{=} \hlnum{4}\hlstd{,} \hlkwc{prior_init} \hlstd{= ZIPHMM_4states}\hlopt{$}\hlstd{prior,} \hlkwc{tpm_init} \hlstd{= ZIPHMM_4states}\hlopt{$}\hlstd{tpm,}
     \hlkwc{emit_init} \hlstd{= ZIPHMM_4states}\hlopt{$}\hlstd{emit_parm,} \hlkwc{zero_init} \hlstd{= ZIPHMM_4states}\hlopt{$}\hlstd{zeroprop)}
 
-\hlcom{# Grráfica ddeecodificación algoritmo Viterbi}
+\hlcom{# Gráfica decodificación algoritmo Viterbi}
 \hlkwd{par}\hlstd{(}\hlkwc{mfrow} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{1}\hlstd{))}
 \hlkwd{par}\hlstd{(}\hlkwc{mar} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{2}\hlstd{,} \hlnum{2}\hlstd{,} \hlnum{1}\hlstd{,} \hlnum{0.5}\hlstd{)} \hlopt{+} \hlnum{0.5}\hlstd{,} \hlkwc{mgp} \hlstd{=} \hlkwd{c}\hlstd{(}\hlnum{1.6}\hlstd{,} \hlnum{0.6}\hlstd{,} \hlnum{0}\hlstd{))}
 \hlcom{### Plot 1}
