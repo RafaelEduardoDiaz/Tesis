@@ -7,8 +7,8 @@ scales
 Bayeshmmcts
 broom
 bayesplot
-ggplot2
 StanHeaders
+ggplot2
 rstan
 bridgesampling
 lattice
@@ -17,6 +17,5 @@ Matrix
 expm
 gridExtra
 coda
-ziphsmm
-kableExtra
 grattanCharts
+ziphsmm

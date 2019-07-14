@@ -1,16 +1,16 @@
 pois.HMM.confint <- function(mod, n, B = 25, alpha = 0.05){
   m <- mod$m
   lambda <- matrix(data=NA,nrow=B,ncol=m,dimnames=list(c(1:B),paste0("lambda",1:m)))
-  Gamma <- matrix(data=NA,nrow=B,ncol=m*m,dimnames=list(c(1:B),
-                  paste0("gamma",as.vector(outer(1:m, 1:m, paste, sep = "")))))
+  A <- matrix(data=NA,nrow=B,ncol=m*m,dimnames=list(c(1:B),
+                  paste0("a",as.vector(outer(1:m, 1:m, paste, sep = "")))))
   for(i in 1:B){
     y <- pois.HMM.generate_sample(ns = n, mod = mod)
-    model <- pois.HMM.mle(y,m, mod$lambda , mod$gamma , stationary = TRUE)
+    model <- pois.HMM.mle(y,m, mod$lambda , mod$A , stationary = TRUE)
     lambda[i,] <- model$lambda
-    Gamma[i,] <- c(model$gamma)}
+    A[i,] <- c(model$A)}
   CI.lambda <- apply(X = lambda,MARGIN = 2, FUN = function(x)quantile(x,probs = c(alpha/2,1-alpha/2)))
-  CI.Gamma <- apply(X = Gamma,MARGIN = 2, FUN = function(x)quantile(x,probs = c(alpha/2,1-alpha/2)))
-  output <- rbind(cbind(mean = c(mod$gamma),t(CI.Gamma)),cbind(mean = mod$lambda,t(CI.lambda))) 
+  CI.A <- apply(X = A, MARGIN = 2, FUN = function(x)quantile(x, probs = c(alpha/2, 1-alpha/2)))
+  output <- rbind(cbind(mean = c(mod$A), t(CI.A)), cbind(mean = mod$lambda, t(CI.lambda))) 
   output <- as.data.frame(output)
   output$Ancho <- output[,3] - output[,2]
   return(output)
