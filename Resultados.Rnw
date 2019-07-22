@@ -272,7 +272,7 @@ lines(xf, dstat2, col = "blue", lwd = 2)
 lines(x = mod2$lambda, y = c(max(dstat1), max(dstat2)), type = "h", col = c("red", "blue"), lwd = 2, lty = 2)
 @
 
-<<fig.cap="Pronostico de la distribución para los años 2019 a 2034.", fig.height=9.5>>=
+<<fig.cap="Pronostico de la distribución para los años 2019 a 2034.", fig.height=8.5>>=
 #=== Forecast 1-4 steps ahead and plot these .
 h <- 16
 xf <- 5:75

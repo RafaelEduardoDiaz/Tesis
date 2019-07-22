@@ -84,7 +84,7 @@ Para ambas series, la aplicación de modelos estándar como modelos auto regresi
 \textbf{Homicidios:} Esta tabla contiene las cifras actualizadas de homicidios en Colombia 1960-2018, con base en la Compilación de estadísticas históricas económicas y sociales, extraída del \href{https://www.dnp.gov.co/estudios-y-publicaciones/estudios-economicos/Paginas/estadisticas-historicas-de-colombia.aspx}{departamento Nacional de Planeación} (DNP) se consulto específicamente el capítulo 8 indicadores de violencia, se complemento junto con las estadísticas delectivas de la \href{https://www.policia.gov.co/grupo-información-criminalidad/estadistica-delictiva}{Policía Nacional} y Medicina Legal. Los datos publicados corresponden a consolidados de los Delitos de Impacto del país, así mismo la Actividad Operativa realizada por la Policía Nacional. Mientras que para la población total Colombiana se extrajo la información de la sección Estadísticas por tema, demografía y población. La serie es anual para un total de 59 observaciones y se expresa como el número de homicidios por cada 100.000 habitantes comúnmente conocida como \emph{Tasa de homicidios}, para ser posible la modelación se redondeo la cifra al entero más cercano. Nota: La confiabilidad de los datos de la tasa de asesinatos puede variar, de acuerdo a la fuente.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:32 2019
+% Fri Jul 19 13:21:46 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -108,7 +108,7 @@ Las estadísticas sobre incendios en Colombia, permiten en términos generales, 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:33 2019
+% Fri Jul 19 13:21:46 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -192,7 +192,7 @@ En la figura 3 se observa la función de autocorrelación muestral para la serie
 Primero ajustamos varios modelos Poisson ocultos de Markov con 1 a 5 estados, y tres modelos con mixturas independientes con 2, 3 y 4 componentes de la distribución Poisson utilizando el paquete \textbf{flexmix} de R. Por último registramos los siguientes valores en la Tabla 3, el número de parámetros estimados, la log-verosimilitud el criterio de información de Akaike (AIC) y el criterio de información bayesiano (BIC). Con el fin de seleccionar el modelo más apropiado, el valor que minimiza el AIC es el PHMM de orden 3 con un valor de 404.02, mientras que el BIC indica que el modelo apropiado es un PHMM de orden 2, con un valor de 418.96. Tanto el BIC y AIC resuelven este problema mediante la introducción de un término de penalización para el número de parámetros en el modelo, el término de penalización es mayor en el BIC que en el AIC. El BIC generalmente penaliza parámetros libres con más fuerza que hace el criterio de información de Akaike, aunque depende del tamaño de $n$ y la magnitud relativa de $n$ y $p$. Como el tamaño de la muestra es relativamente grande $n = 59$, y la cantidad de parámetros que se estiman en un HMM es bastante utilizaremos el BIC en este caso en concreto, eligiendo por tanto el PHMM de orden 2.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:36 2019
+% Fri Jul 19 13:21:49 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -239,7 +239,7 @@ $$\lambda = (29.715, 62.812) \ \ \ \ \pi = (0.764, 0.235)$$
 Ahora miraremos otras metodologías alternativas a los criterios de información AIC y BIC, que determinan si el modelo tiene un buen ajuste. Entre estas es útil comparar las funciones de autocorrelación de los HMM con dos, tres, cuatro y cinco estados con la función de autocorrelación muestral (ACF). Los ACF de los modelos se pueden encontrar utilizando la función \emph{Bayeshmmcts::pois.HMM.moments} utilizando la ecuación de Zucchini, pág. 55. En forma tabular los ACF se muestran en la tabla 5:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:36 2019
+% Fri Jul 19 13:21:50 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrr}
@@ -287,7 +287,7 @@ El algoritmo Viterbi, permite realizar la decodificación global de los estados 
 La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas aplicaciones, especialmente cuando existen interpretaciones importantes para los estados. Sin embargo los estados no observados en el modelo, no siempre necesitan tener interpretaciones sustantiva, pues se consideran artefactos útiles para adaptarse a la heterogeneidad no explicada y la dependencia serial de los datos. En el caso de la serie homicidios no parce haber una interpretación clara de los estados.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:37 2019
+% Fri Jul 19 13:21:50 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -321,7 +321,7 @@ La decodificación global (algoritmo Viterbi) es el objetivo principal en muchas
 Se realiza la predicción de los estados más probables para los próximos 16 años, también podemos pronosticar la distribución para estos mismos años. Como se observa en la figura 8 a medida que el horizonte de pronóstico $h$ aumenta, la distribución de pronóstico converge a la distribución marginal del HMM estacionario. En la tabla 7, se observa que el pronóstico de los estados, para los próximos 16 años es el 1, es decir que se espera una tasa de homicidios por cada 100.000 habitantes cercana a 29, la cual sigue siendo alta ya que según datos de la ONUDD (Oficina de Naciones Unidas contra la Droga y el Delito), en sur América la tasa se sitúa en 20/100.000 homicidios, lo que indica que la tasa de homicidios en  Colombia está por encima de la región. Además según estadísticas de la ONUDD, Colombia se sitúa como uno de los países más violentos del mundo ubicándose en el top 20, las cifras de la fiscalia indican que después de haber disminuido la tasa de homicidios en los últimos años, a partir del 2018 hubo un incremento del $3.25 \%$, de este delito siendo caso críticos las ciudades de Medellín, bajo Cauca y Tumaco, mientras la capital sigue con tendencia a la baja.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:39 2019
+% Fri Jul 19 13:21:51 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
@@ -373,7 +373,7 @@ $$B_{01} = \frac{\text{verosimilitud de los datos dado $H_0$}}{\text{verosimilit
 El factor de Bayes puede es un número positivo, y una de las interpretaciones más comunes es esta: propuesta por primera vez por Harold Jeffreys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:39 2019
+% Fri Jul 19 13:21:51 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{ll}
@@ -400,7 +400,7 @@ $>$100 & Evidencia extrema para H0 \\
 Ahora utilizamos el factor de bayes para contrastar los modelos con m-estados de a parejas, y seleccionar el más adecuado, en la siguiente tabla ilustra el contraste de hipótesis, donde las filas indican $P(D | H_0)$ y las columnas $P(D | H_1)$. Por ejemplo en el contraste de hipótesis entre el modelo de 3 estados vs el modelo de 4 estados, el valor obtenido fue $B_{01} = 766.05$, lo que indica evidencia extrema para $H_0$, es decir el modelo de 3 estados es más apropiado que el de 4 estados.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:39 2019
+% Fri Jul 19 13:21:51 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
@@ -421,7 +421,7 @@ mod 2 Estados &  & 3.36 & 2545.85 & 390147608.00 \\
 De la tabla 9, se concluye que el modelo apropiado es el de orden 2, lo cual coincide con el BIC. Se corrieron 5.000 iteraciones con 3 cadenas y las primeras 2.500 iteraciones de calentamiento adelgazando la cadena cada 3 iteraciones; con tasa de aceptación para la función objetivo en el metropolis de 0.99. A continuación mostramos las estimaciones bayesianas de la matriz de transición, y la media de los estados dependientes:
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:39 2019
+% Fri Jul 19 13:21:52 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrr}
@@ -445,7 +445,7 @@ Para cada parámetro estimado a partir de las muestras obtenidas por MCMC se cal
 Stan define el logaritmo de la función de densidad de probabilidad de una distribución posterior hasta una constante aditiva desconocida. Usando a lp para representar las realizaciones de este $\log$ kernel en cada iteración ($lp$ se trata como una incógnita en el resumen y el cálculo de la división $\hat{R}$ y el tamaño de muestra efectivo).
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:40 2019
+% Fri Jul 19 13:21:53 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrrrrrrrr}
@@ -484,7 +484,7 @@ La mayoría de nuestros parámetros tienen un $n\_eff$ bastante alto, aunque vem
 En la parte izquierda de la figura 8 y en la tabla 11, se muestra la decodificación global de la secuencia de estados más probables, para la serie homicidios en Colombia. Al igual que otros algoritmos de programación dinámica, Viterbi funciona de forma recursiva; encontrando el estado más probable al tomar el máximo sobre todas las posibles secuencias de estados anteriores. Dada la secuencia de observaciones sobre homicidios en Colombia y los modelos clásico con el bayesiano de orden dos, dan exactamente los mismos resultados. Mientras que la parte derecha de la figura 8 muestra las distribuciones marginales, utilizadas para hacer el pronóstico de las distribuciones para un rezago $h$ dado.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:40:40 2019
+% Fri Jul 19 13:21:53 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrr}
@@ -560,7 +560,7 @@ La prueba de convergencia utiliza la estadística de Cramer-von-Mises para proba
 La prueba de medio ancho calcula un intervalo de confianza del $95 \%$ para la media, utilizando la parte de la cadena que pasó la prueba de estacionariedad. La mitad del ancho de este intervalo se compara con la estimación de la media. Si la relación entre la mitad del ancho y la media es menor que \emph{eps}, se pasa la prueba de la mitad del ancho. De lo contrario, la longitud de la muestra no se considera lo suficientemente larga como para estimar la media con suficiente precisión.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:01 2019
+% Fri Jul 19 13:22:20 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrlrr}
@@ -589,7 +589,7 @@ La inferencia para los parámetros bajo el enfoque clásico se realizo utilizand
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:02 2019
+% Fri Jul 19 13:22:22 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrrrrrr}
@@ -655,7 +655,7 @@ Para seleccionar el modelo más apropiado, se debe escoger el valor que minimiza
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:03 2019
+% Fri Jul 19 13:22:23 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrr}
@@ -702,7 +702,7 @@ $$\lambda = (2.763, 15.114, 43.147, 99.306) \ \ \ \ \pi = (0.002, 0.997, 0.001, 
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:03 2019
+% Fri Jul 19 13:22:23 2019
 \begin{table}[ht]
 \centering
 \scalebox{0.85}{
@@ -749,7 +749,7 @@ $$B_{01} = \frac{\text{verosimilitud de los datos dado $H_0$}}{\text{verosimilit
 Utilizando otra vez la interpretación propuesta por primera vez por Harold Jeffereys(1961) y modificada ligeramente por Lee y Wagenmakers en 2013, que está en la tabla 8, se deduce lo siguiente.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:03 2019
+% Fri Jul 19 13:22:24 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrr}
@@ -774,7 +774,7 @@ Recordemos que las filas de la tabla x corresponden a $H_0$ y las columnas son $
 Con el fin de comparar los resultados obtenidas de las estimaciones del ZIP HMM clásico vs el bayesiano, se decide ajustar el modelo con 4 estados. La salida que arroja Stan, en primer lugar la media de las estimaciones para los 21 parámetros más lp, el error y la desviación estándar que para este caso son bastante pequeños, seguidos de los intervalos de credibilidad alrededor de la media y a mediana que es casi identica a los valores de la media especialmnte para $\theta$ el parámetro de cero inflación y para el vector de medias, en la tpm varia ligeramente en algunos de los parámetros. Para este modelo se ajustaron 2.000 iteraciones con tres cadenas, la mitad de ellas se queman como calentamiento es decir que el número máximo de muestras efectivas debiera ser de 3.000, sin embargo ocurre algo extraño en varios de los parámetros $n\_eff > N$. Según el manual de Stan esto significa que los muestras que prroduce Stan son mejores que las muestras independientes para esos parámetros, o en otras palabras eel muestreo realizado por NUTS es súper eficiente, antitético y con sobre relajación (Geyer, 2011), esto ocurre porque en cada iteración es eliminada la correlación entre las muestras lo cual ocurre en casos extremadamente raros, para más información revise el manual o foro de Stan. Finalmente Gelman indica que el tamaño de muestra efectivo utilizados es el adecuado si Rhat es menor a 1.1, es decir que en este caso el muestreo fue óptimo.
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:04 2019
+% Fri Jul 19 13:22:25 2019
 \begin{table}[ht]
 \centering
 \scalebox{0.95}{
@@ -846,7 +846,7 @@ En la figura 17 se graficaron los histogramas univariados y los diagramas de dis
 \end{knitrout}
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:11 2019
+% Fri Jul 19 13:22:35 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrlrr}
@@ -897,7 +897,7 @@ Ambos intervalos se relacionan con la precisión de nuestra estimación. La form
 
 
 % latex table generated in R 3.6.0 by xtable 1.8-4 package
-% Sun Jul 14 15:41:11 2019
+% Fri Jul 19 13:22:35 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lrrrrrrrr}
